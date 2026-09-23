@@ -2,63 +2,95 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PublicController;
 use App\Http\Controllers\StudentController;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
 
-// Rute Halaman Utama
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+/*
+|--------------------------------------------------------------------------
+| 1. RUTE AKSES PUBLIK & GOOGLE ADSENSE
+|--------------------------------------------------------------------------
+| Semua rute ini dapat diakses secara publik oleh siapa saja tanpa login,
+| mendukung crawler Google untuk persetujuan Google AdSense & SEO organik.
+*/
 
-// Rute Login & Logout
+// Beranda Utama
+Route::get('/', [PublicController::class, 'index'])->name('home');
+
+// Live Coding Playground Publik
+Route::get('/playground', [PublicController::class, 'playground'])->name('public.playground');
+Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name('public.playground.submit');
+
+// Panduan & Tutorial Koding Interaktif
+Route::get('/panduan', [PublicController::class, 'tutorials'])->name('public.tutorials');
+
+// Halaman Legalitas Wajib Google AdSense
+Route::get('/privacy-policy', [PublicController::class, 'privacyPolicy'])->name('privacy');
+Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
+Route::get('/about', [PublicController::class, 'about'])->name('about');
+Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
+
+// Endpoint Resmi ads.txt (Dinamis dari Pengaturan Admin)
+Route::get('/ads.txt', [PublicController::class, 'adsTxt'])->name('ads.txt');
+
+/*
+|--------------------------------------------------------------------------
+| 2. AUTENTIKASI (LOGIN & LOGOUT)
+|--------------------------------------------------------------------------
+*/
 Route::get('/login', function () {
     return view('login');
 })->name('login');
+
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ----------------------------------------------------
-// RUTE SETUP (HANYA DIAKSES SEKALI LALU HAPUS)
-// ----------------------------------------------------
-Route::get('/setup-admin', function () {
-    $user = User::firstOrCreate(
-        ['email' => 'admin@vxai.online'],
-        [
-            'name' => 'Izak Robinson Koroh',
-            'password' => Hash::make('rahasia123'),
-            'role_id' => 1
-        ]
-    );
-    return 'Berhasil! Akun Super Admin telah dibuat. Email: admin@vxai.online | Password: rahasia123';
-});
-// ----------------------------------------------------
-
-// Rute Super Admin (Hanya bisa diakses jika sudah login)
-Route::middleware('auth')->prefix('admin')->group(function () {
+/*
+|--------------------------------------------------------------------------
+| 3. RUTE SUPER ADMIN (DIKUNCI KETAT: ROLE 1)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     
-    // Rute Manajemen User
+    // Manajemen User Lengkap (CRUD)
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('admin.users.create');
     Route::post('/users', [AdminController::class, 'storeUser'])->name('admin.users.store');
-    // Rute Import CSV
+    Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+    Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
     Route::post('/users/import', [AdminController::class, 'importUsers'])->name('admin.users.import');
-    // Rute Melihat Hasil Koding Siswa
+
+    // Monitoring Hasil Koding Siswa & Tamu
     Route::get('/submissions', [AdminController::class, 'submissions'])->name('admin.submissions');
+    Route::post('/submissions/{id}/grade', [AdminController::class, 'gradeSubmission'])->name('admin.submissions.grade');
     
-    // Rute Settings
+    // Global Settings & Google AdSense Configuration
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
-    Route::post('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update'); // RUTE BARU
+    Route::post('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
 });
 
-// Rute Sementara untuk Guru dan Siswa
-Route::get('/guru', function () { return 'Ini Halaman Dashboard Guru. (Sedang dibangun)'; })->middleware('auth');
-// Rute Siswa (Harus login)
-Route::middleware('auth')->prefix('siswa')->group(function () {
+/*
+|--------------------------------------------------------------------------
+| 4. RUTE GURU (DIKUNCI KETAT: ROLE 2)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:guru'])->prefix('guru')->group(function () {
+    Route::get('/', [TeacherController::class, 'dashboard'])->name('guru.dashboard');
+    Route::post('/submissions/{id}/grade', [TeacherController::class, 'grade'])->name('guru.submissions.grade');
+});
+
+/*
+|--------------------------------------------------------------------------
+| 5. RUTE SISWA (DIKUNCI: ROLE 3)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->group(function () {
     Route::get('/', [StudentController::class, 'dashboard'])->name('siswa.dashboard');
-    Route::get('/playground', [StudentController::class, 'playground'])->name('siswa.playground'); // RUTE BARU
-    // Rute Submit Kode dari Playground
-    Route::post('/playground/submit', [StudentController::class, 'submitCode'])->name('siswa.playground.submit');
+    Route::get('/playground', function () {
+        return redirect()->route('public.playground');
+    })->name('siswa.playground');
+    Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name('siswa.playground.submit');
 });

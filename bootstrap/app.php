@@ -11,7 +11,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'site.maintenance' => \App\Http\Middleware\CheckMaintenanceMode::class,
+            'track.traffic' => \App\Http\Middleware\TrackVisitorTraffic::class,
+        ]);
+
+        // Pasang middleware pelacak trafik dan pengecekan maintenance secara global untuk web
+        $middleware->web(append: [
+            \App\Http\Middleware\TrackVisitorTraffic::class,
+            \App\Http\Middleware\CheckMaintenanceMode::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
