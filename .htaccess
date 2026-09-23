@@ -1,0 +1,29 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # 1. Hapus /public dari URL jika terketik langsung (Redirect)
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /public/
+    RewriteRule ^public/(.*)$ /$1 [R=301,L]
+
+    # 2. Arahkan semua request ke folder public/ (Internal Forward)
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L,QSA]
+</IfModule>
+
+# Blokir akses langsung ke file sensitif (KEAMANAN)
+<Files .env>
+    Order allow,deny
+    Deny from all
+</Files>
+<Files artisan>
+    Order allow,deny
+    Deny from all
+</Files>
+<Files composer.json>
+    Order allow,deny
+    Deny from all
+</Files>
