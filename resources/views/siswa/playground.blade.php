@@ -6,12 +6,18 @@
     <title>Coding Playground - {{ $settings['app_name'] ?? 'VxAI' }}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
     
     <style>
-        .CodeMirror { height: 100%; position: absolute; top: 0; bottom: 0; left: 0; right: 0; font-family: 'Fira Code', monospace; font-size: 14px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .CodeMirror { height: 100%; position: absolute; top: 0; bottom: 0; left: 0; right: 0; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; }
         
         @media (max-width: 767px) {
             .mobile-hidden { display: none !important; }

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }} - Platform Belajar Koding & AI</title>
-    <meta name="description" content="Platform pembelajaran interaktif untuk koding HTML, CSS, JavaScript dan Kecerdasan Artifisial langsung dari peramban browser.">
+    <title>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }} - Platform Belajar Koding & AI dari NTT</title>
+    <meta name="description" content="Platform pembelajaran interaktif koding HTML, CSS, JavaScript dan Kecerdasan Artifisial langsung dari browser. Dikembangkan untuk SMKN 1 Kupang Barat dan talenta digital Nusa Tenggara Timur.">
 
     <!-- Favicon -->
     @if(!empty($settings['app_favicon']))
@@ -14,7 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Google AdSense Script (Otomatis Aktif jika Dikonfigurasi di Admin) -->
     @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
@@ -25,52 +25,58 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
-        /* Motif Garis Ikonik Argentina (#74ACDF dan #FFFFFF) */
-        .bg-argentina {
-            background: repeating-linear-gradient(
-                90deg,
-                #FFFFFF,
-                #FFFFFF 80px,
-                #74ACDF 80px,
-                #74ACDF 160px
-            );
-        }
+        
         .glass-nav {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(229, 231, 235, 0.8);
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid rgba(219, 234, 254, 0.85);
+        }
+        .hero-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#dbeafe 1.2px, transparent 1.2px);
+            background-size: 24px 24px;
+        }
+        .text-gradient-blue {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, #0284c7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body class="bg-argentina min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased hero-pattern selection:bg-blue-600 selection:text-white">
     
+    <!-- Decorative Top Accent Bar -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-blue-700 via-blue-600 to-sky-400 fixed top-0 z-[60]"></div>
+
     <!-- Navbar Utama -->
-    <nav class="glass-nav fixed top-0 w-full z-50 shadow-sm">
+    <nav class="glass-nav fixed top-1.5 w-full z-50 shadow-sm transition-all duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 
                 <!-- Logo & Brand -->
-                <a href="{{ route('home') }}" class="flex items-center gap-2.5">
+                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
                     @if(!empty($settings['app_logo']))
                         <img src="{{ asset($settings['app_logo']) }}" alt="Logo" class="h-9 w-auto">
                     @else
-                        <div class="w-9 h-9 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black text-lg shadow">Vx</div>
+                        <div class="w-10 h-10 bg-gradient-to-tr from-blue-700 via-blue-600 to-indigo-600 text-white rounded-xl flex items-center justify-center font-black text-lg shadow-md shadow-blue-500/25 group-hover:scale-105 transition">Vx</div>
                     @endif
-                    <span class="font-extrabold text-xl tracking-tight text-gray-900">{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
+                    <div>
+                        <span class="font-black text-lg tracking-tight text-slate-900 group-hover:text-blue-600 transition block leading-tight">{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
+                        <span class="text-[10px] text-blue-600 font-extrabold uppercase tracking-wider block">NTT Digital Academy</span>
+                    </div>
                 </a>
 
                 <!-- Navigasi Menu Lengkap Publik -->
-                <div class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-gray-700">
+                <div class="hidden lg:flex items-center space-x-7 text-sm font-semibold text-slate-700">
                     <a href="{{ route('home') }}" class="text-blue-600 font-bold transition">Beranda</a>
-                    <a href="{{ route('public.playground') }}" class="hover:text-blue-600 transition flex items-center gap-1">
-                        <span>⚡ Live Playground</span>
+                    <a href="{{ route('public.playground') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
+                        <span class="text-blue-600">⚡</span>
+                        <span>Live Playground</span>
                     </a>
-                    <a href="{{ route('public.tutorials') }}" class="hover:text-blue-600 transition">📖 Panduan Koding</a>
+                    <a href="{{ route('public.tutorials') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
+                        <span>📖</span>
+                        <span>Panduan Koding</span>
+                    </a>
                     <a href="{{ route('about') }}" class="hover:text-blue-600 transition">Tentang Kami</a>
                     <a href="{{ route('contact') }}" class="hover:text-blue-600 transition">Kontak</a>
                 </div>
@@ -79,21 +85,22 @@
                 <div class="flex items-center gap-3">
                     @auth
                         @if(Auth::user()->role_id == 1)
-                            <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-bold text-sm transition-all shadow-md">
+                            <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-500/20">
                                 Panel Admin 📊
                             </a>
                         @elseif(Auth::user()->role_id == 2)
-                            <a href="{{ route('guru.dashboard') }}" class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-bold text-sm transition-all shadow-md">
+                            <a href="{{ route('guru.dashboard') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-emerald-500/20">
                                 Dashboard Guru 👨‍🏫
                             </a>
                         @else
-                            <a href="{{ route('siswa.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full font-bold text-sm transition-all shadow-md">
+                            <a href="{{ route('siswa.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-500/20">
                                 Ruang Belajar 🎒
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-full font-bold text-sm transition-all shadow-md hover:scale-105">
-                            Masuk / Login
+                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 hover:scale-[1.02] flex items-center gap-1.5">
+                            <span>Masuk / Login</span>
+                            <span>→</span>
                         </a>
                     @endauth
                 </div>
@@ -102,108 +109,319 @@
         </div>
     </nav>
 
-    <!-- Konten Utama (Hero & Akses Terpadu) -->
-    <main class="flex-grow flex items-center justify-center pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div class="glass-effect rounded-3xl shadow-2xl p-6 sm:p-10 md:p-16 max-w-5xl w-full text-center my-6">
+    <!-- ======================================================== -->
+    <!-- HERO SECTION: Kuasai Koding & Inspirasi NTT -->
+    <!-- ======================================================== -->
+    <main class="flex-grow pt-24">
+        
+        <!-- Hero Header -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 sm:pb-16 text-center">
             
-            <!-- Badge Status -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold mb-6">
-                <span class="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-                <span>Terbuka Bebas untuk Publik & Pelajar</span>
+            <!-- Badge Asal & Pembinaan NTT -->
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-blue-100/90 border border-blue-200 text-blue-800 text-xs font-bold mb-6 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                <span>🏝️ Dari Nusa Tenggara Timur untuk Talenta Digital Indonesia</span>
+                <span class="text-blue-400">•</span>
+                <span class="text-blue-900 font-extrabold">SMKN 1 Kupang Barat</span>
             </div>
 
-            <!-- Judul Utama -->
-            <h1 class="text-3xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
-                Kuasai <span class="text-blue-600">Koding dan Kecerdasan Artifisial</span> Langsung dari Browser
+            <!-- Judul Utama (High Contrast & Clear Typography) -->
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight sm:leading-none tracking-tight max-w-5xl mx-auto">
+                Kuasai Pemrograman Web & <br class="hidden sm:block">
+                <span class="text-gradient-blue">Kecerdasan Artifisial</span> Langsung di Browser
             </h1>
 
-            <!-- Deskripsi -->
-            <p class="text-base sm:text-lg md:text-xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Platform pembelajaran interaktif yang dirancang khusus untuk mencetak talenta digital hebat di SMKN 1 Kupang Barat dan siapa saja yang ingin belajar. Ketik kode HTML, CSS, JS, lihat hasil *real-time*, dan pecahkan tantangan bersama AI Tutor.
+            <!-- Deskripsi Jelas & Nyaman Terbaca -->
+            <p class="text-base sm:text-lg md:text-xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
+                Platform laboratorium koding interaktif nomor satu di Nusa Tenggara Timur. Tulis HTML5, tata letak CSS3, logika JavaScript, dan jelajahi asisten AI modern tanpa hambatan instalasi.
             </p>
             
             <!-- Tombol Navigasi Utama -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-14">
-                <a href="{{ route('public.playground') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-blue-500/25 transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                    <span>⚡ Mulai Koding Sekarang (Playground)</span>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                <a href="{{ route('public.playground') }}" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-bold text-base shadow-xl shadow-blue-500/25 transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2.5">
+                    <span>⚡ Buka Live Playground</span>
+                    <span class="text-blue-200 text-xs font-semibold px-2 py-0.5 rounded-md bg-blue-700/60">10 Tingkatan</span>
                 </a>
-                <a href="{{ route('public.tutorials') }}" class="bg-white hover:bg-gray-50 text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-2xl font-bold text-base shadow transition-transform hover:-translate-y-1 flex items-center justify-center gap-2">
-                    <span>📖 Buka Panduan & Kurikulum</span>
+                <a href="{{ route('public.tutorials') }}" class="w-full sm:w-auto bg-white hover:bg-blue-50/60 text-slate-800 hover:text-blue-700 border-2 border-slate-200 hover:border-blue-300 px-8 py-4 rounded-2xl font-bold text-base shadow-sm transition-all hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <span>📖 Baca Panduan & Kurikulum</span>
                 </a>
             </div>
 
-            <!-- Kartu Akses Fitur Utama -->
-            <div id="fitur" class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            <!-- ======================================================== -->
+            <!-- HERO SHOWCASE: Foto Spektakuler Pulau Padar - NTT -->
+            <!-- ======================================================== -->
+            <div class="relative max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 group">
+                <!-- Gambar Utama Padar Island NTT -->
+                <img src="https://images.unsplash.com/photo-1548784741-0e7f108d7755?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=1600" 
+                     alt="Keindahan Pulau Padar Labuan Bajo NTT" 
+                     class="w-full h-72 sm:h-96 md:h-[440px] object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-95">
                 
-                <!-- Kartu 1: Live Code Editor -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
-                    <div>
-                        <div class="text-3xl mb-4">⚡</div>
-                        <h3 class="font-bold text-xl mb-2 text-gray-800">Live Code Editor</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                            HTML, CSS, dan JavaScript dieksekusi langsung secara interaktif. Tanpa perlu instalasi compiler tambahan.
+                <!-- Overlay Gradien Biru Lembut -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+
+                <!-- Floating Badges di Sudut Atas -->
+                <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap gap-2 z-10">
+                    <div class="bg-slate-900/80 backdrop-blur-md border border-white/20 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg">
+                        <span class="text-sky-400">📍</span>
+                        <span>Pulau Padar, Labuan Bajo - NTT</span>
+                    </div>
+                    <div class="hidden sm:inline-flex bg-blue-600/90 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl text-xs font-bold items-center gap-1.5 shadow-lg">
+                        <span>✨</span>
+                        <span>Inspirasi Flobamorata</span>
+                    </div>
+                </div>
+
+                <!-- Content Banner di Bawah Gambar -->
+                <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-8 sm:right-8 text-left text-white z-10">
+                    <div class="max-w-2xl">
+                        <span class="text-sky-300 text-xs font-extrabold uppercase tracking-wider block mb-1">Semangat Keunggulan Digital</span>
+                        <h3 class="text-lg sm:text-2xl font-black text-white leading-snug drop-shadow-md">
+                            "Membakar Semangat Juang Talenta Nusa Tenggara Timur Menuju Panggung Teknologi Dunia"
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-200 mt-2 font-normal hidden sm:block leading-relaxed opacity-95">
+                            Dari pesona alam megah Labuan Bajo hingga Kupang Barat, kami percaya anak-anak NTT mampu menciptakan karya perangkat lunak berkelas global.
                         </p>
                     </div>
-                    <a href="{{ route('public.playground') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        Buka Live Playground ➔
+                </div>
+            </div>
+
+            <!-- Stats Bar Ringkas -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center">
+                    <div class="text-2xl font-black text-blue-600">100%</div>
+                    <div class="text-xs font-semibold text-slate-500 mt-0.5">Eksekusi di Browser</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center">
+                    <div class="text-2xl font-black text-blue-600">10 Latihan</div>
+                    <div class="text-xs font-semibold text-slate-500 mt-0.5">Tingkatan Koding</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center">
+                    <div class="text-2xl font-black text-blue-600">4 Modul</div>
+                    <div class="text-xs font-semibold text-slate-500 mt-0.5">Kurikulum Lengkap</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center">
+                    <div class="text-2xl font-black text-blue-600">Terbuka</div>
+                    <div class="text-xs font-semibold text-slate-500 mt-0.5">Pelajar & Publik</div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- SECTION 2: Galeri Pesona NTT & Semangat Inovasi Digital -->
+        <!-- ======================================================== -->
+        <section class="bg-gradient-to-b from-blue-900 via-slate-900 to-blue-950 text-white py-16 sm:py-24 border-y border-blue-950">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Header Section NTT -->
+                <div class="text-center max-w-3xl mx-auto mb-14">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-sky-300 text-xs font-bold mb-4">
+                        <span>🏝️ Pesona Alam & Kebudayaan Flobamorata</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+                        Dari Bumi Nusa Tenggara Timur untuk Kemajuan Teknologi Bangsa
+                    </h2>
+                    <p class="text-sm sm:text-base text-slate-300 mt-4 leading-relaxed">
+                        Keindahan alam, kekayaan budaya, dan ketangguhan maritim NTT menjadi landasan filosofis kami dalam membangun wadah belajar koding yang inspiratif dan berakar pada kearifan lokal.
+                    </p>
+                </div>
+
+                <!-- 4 Bento Cards Destinasi & Nilai NTT -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Card 1: Pulau Padar / Labuan Bajo -->
+                    <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-sky-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
+                        <div class="relative h-48 overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1548784741-0e7f108d7755?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
+                                 alt="Pulau Padar Labuan Bajo" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-sky-300 border border-white/10">
+                                Manggarai Barat
+                            </div>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-sky-300 transition">Pulau Padar & Labuan Bajo</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Simbol keberanian menjelajah batas dunia. Menginspirasi siswa untuk memiliki wawasan teknologi luas dan berdaya saing global.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-sky-400 flex items-center gap-1">
+                                <span>Visi Global Talenta Muda</span> ➔
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Danau Tiga Warna Kelimutu -->
+                    <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-emerald-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
+                        <div class="relative h-48 overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1786101781735-56794d377e31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
+                                 alt="Danau Kelimutu Flores" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-emerald-300 border border-white/10">
+                                Ende - Flores
+                            </div>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-emerald-300 transition">Danau Kawah Kelimutu</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Harmoni tiga kawah yang bertransformasi warna secara menakjubkan. Seperti perpaduan HTML (fondasi), CSS (seni), dan JS (logika).
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
+                                <span>Kreativitas & Estetika Web</span> ➔
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Bahari Kepulauan Komodo -->
+                    <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-blue-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
+                        <div class="relative h-48 overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1738432323553-b9471e2239b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
+                                 alt="Bahari Labuan Bajo NTT" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-blue-300 border border-white/10">
+                                Bahari NTT
+                            </div>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-blue-300 transition">Bahari & Pinisi Flobamorata</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Ketangguhan para pelaut mengarungi samudra menjadi teladan ketekunan menyelesaikan error dan bug pemrograman tingkat lanjut.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-blue-400 flex items-center gap-1">
+                                <span>Ketangguhan Problem Solving</span> ➔
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: SMKN 1 Kupang Barat -->
+                    <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-indigo-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
+                        <div class="relative h-48 overflow-hidden bg-slate-900">
+                            <img src="https://images.unsplash.com/photo-1607427225127-a4ae1d4b050c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
+                                 alt="SMKN 1 Kupang Barat NTT" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-indigo-300 border border-white/10">
+                                Kupang Barat - Timor
+                            </div>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-indigo-300 transition">SMKN 1 Kupang Barat</h3>
+                                <p class="text-xs text-slate-300 leading-relaxed">
+                                    Rumah pembinaan vokasi kejuruan tempat platform VxAI ini diuji dan diterapkan langsung dalam kegiatan belajar mengajar sehari-hari.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-indigo-400 flex items-center gap-1">
+                                <span>Pusat Inovasi Vokasi</span> ➔
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- SECTION 3: Fitur Utama Platform Belajar -->
+        <!-- ======================================================== -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-blue-600 font-extrabold text-xs uppercase tracking-wider block mb-2">Fitur Belajar Unggulan</span>
+                <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                    Segala Kebutuhan Koding Anda Tersedia Lengkap
+                </h2>
+                <p class="text-slate-600 text-sm sm:text-base mt-3">
+                    Dirancang dengan antarmuka yang bersih, mudah dipahami, dan menyenangkan untuk pemula maupun pembelajar tingkat lanjut.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Fitur 1: Live Code Editor -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition">
+                            ⚡
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition">Live Code Playground</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6 font-normal">
+                            Ketik kode HTML, CSS, dan JavaScript secara terpisah. Pratinjau tampilan langsung diperbarui secara *real-time* tanpa perlu reload halaman atau instalasi compiler.
+                        </p>
+                    </div>
+                    <a href="{{ route('public.playground') }}" class="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition">
+                        <span>Buka Live Playground</span>
+                        <span>➔</span>
                     </a>
                 </div>
 
-                <!-- Kartu 2: Panduan Koding & Kurikulum -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                <!-- Fitur 2: 10 Tingkatan & Panduan -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
                     <div>
-                        <div class="text-3xl mb-4">💡</div>
-                        <h3 class="font-bold text-xl mb-2 text-gray-800">Panduan Koding</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                            Kamus sintaksis lengkap dari dasar HTML5, tata letak CSS3 Flexbox, hingga manipulasi DOM JavaScript.
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition">
+                            🎯
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition">10 Tingkatan Tantangan</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6 font-normal">
+                            Kurikulum berjenjang terstruktur dari Pemula (HTML dasar), Menengah (CSS Flexbox & Animasi), hingga Mahir (JavaScript DOM, To-Do List, dan Bot AI mini).
                         </p>
                     </div>
-                    <a href="{{ route('public.tutorials') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        Baca Panduan Lengkap ➔
+                    <a href="{{ route('public.tutorials') }}" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-800 transition">
+                        <span>Pelajari Kurikulum Lengkap</span>
+                        <span>➔</span>
                     </a>
                 </div>
 
-                <!-- Kartu 3: Sistem Gamifikasi Siswa -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                <!-- Fitur 3: Gamifikasi & Evaluasi Guru -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
                     <div>
-                        <div class="text-3xl mb-4">🏆</div>
-                        <h3 class="font-bold text-xl mb-2 text-gray-800">Sistem Gamifikasi</h3>
-                        <p class="text-gray-600 text-sm mb-4 leading-relaxed">
-                            Kumpulkan XP, raih lencana (Badge), dan naikkan levelmu di setiap tantangan yang berhasil diselesaikan dan dinilai guru.
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition">
+                            🏆
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition">Gamifikasi & Evaluasi Guru</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-6 font-normal">
+                            Siswa dapat mengumpulkan XP, lencana (Badge), dan menaikkan level. Guru dan Admin dapat mengevaluasi serta menguji pratinjau live karya koding siswa secara mudah.
                         </p>
                     </div>
                     @auth
-                        <a href="{{ route('siswa.dashboard') }}" class="text-xs font-bold text-green-600 hover:text-green-800 flex items-center gap-1">
-                            Buka Ruang Belajar ➔
+                        <a href="{{ route('siswa.dashboard') }}" class="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-800 transition">
+                            <span>Masuk Ruang Belajar</span>
+                            <span>➔</span>
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                            Masuk Akun Siswa ➔
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-800 transition">
+                            <span>Masuk Akun Pengguna</span>
+                            <span>➔</span>
                         </a>
                     @endauth
                 </div>
 
             </div>
 
-            <!-- Navigasi Cepat Halaman Pendukung (Tentang, Kontak, Legal) -->
-            <div class="mt-12 pt-8 border-t border-gray-200/80 flex flex-wrap justify-center items-center gap-6 text-xs font-semibold text-gray-600">
+            <!-- Tautan Navigasi Cepat AdSense & Legalitas -->
+            <div class="mt-14 pt-8 border-t border-slate-200/90 flex flex-wrap justify-center items-center gap-6 text-xs font-semibold text-slate-600">
                 <a href="{{ route('about') }}" class="hover:text-blue-600 transition">Tentang Kami (About Us)</a>
                 <span>•</span>
-                <a href="{{ route('contact') }}" class="hover:text-blue-600 transition">Hubungi Kami (Contact)</a>
+                <a href="{{ route('contact') }}" class="hover:text-blue-600 transition">Hubungi Pengelola (Contact)</a>
                 <span>•</span>
                 <a href="{{ route('privacy') }}" class="hover:text-blue-600 transition">Kebijakan Privasi (Privacy Policy)</a>
                 <span>•</span>
                 <a href="{{ route('terms') }}" class="hover:text-blue-600 transition">Syarat & Ketentuan (Terms)</a>
                 <span>•</span>
-                <a href="{{ route('ads.txt') }}" target="_blank" class="hover:text-blue-600 transition">File ads.txt</a>
+                <a href="{{ route('ads.txt') }}" target="_blank" class="hover:text-blue-600 transition">File ads.txt Resmi</a>
             </div>
 
-        </div>
+        </section>
+
     </main>
 
     <!-- Banner AdSense di Halaman Utama (Jika Aktif) -->
     @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
-        <div class="max-w-4xl mx-auto px-4 my-4 text-center">
+        <div class="max-w-5xl mx-auto px-4 my-6 text-center">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ $settings['adsense_client_id'] }}"
@@ -214,29 +432,33 @@
         </div>
     @endif
 
-    <!-- Footer Lengkap Pendukung AdSense -->
-    <footer class="bg-gray-900 text-gray-400 text-xs py-10 mt-auto border-t border-gray-800">
+    <!-- Footer Lengkap Pendukung AdSense & Konteks NTT -->
+    <footer class="bg-slate-950 text-slate-400 text-xs py-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 
                 <!-- Kolom 1 -->
                 <div>
-                    <div class="flex items-center gap-2 text-white font-bold text-sm mb-3">
-                        <span class="w-6 h-6 bg-blue-600 rounded flex items-center justify-center font-bold">Vx</span>
+                    <div class="flex items-center gap-2.5 text-white font-bold text-sm mb-3">
+                        <span class="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center font-black text-xs text-white">Vx</span>
                         <span>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
                     </div>
-                    <p class="text-gray-400 leading-relaxed">
-                        Platform edukasi koding dan kecerdasan buatan interaktif. Membangun keahlian teknologi praktis untuk generasi masa depan.
+                    <p class="text-slate-400 leading-relaxed text-xs">
+                        Platform edukasi koding dan kecerdasan buatan interaktif. Membangun keahlian rekayasa perangkat lunak generasi masa depan dari Nusa Tenggara Timur untuk Indonesia dan dunia.
                     </p>
+                    <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/80 border border-blue-800/60 text-blue-300 text-[11px] font-semibold">
+                        <span>🏝️</span>
+                        <span>Bumi Flobamorata - NTT</span>
+                    </div>
                 </div>
 
                 <!-- Kolom 2: Akses Belajar -->
                 <div>
                     <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Akses Pembelajaran</h4>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('public.playground') }}" class="hover:text-white transition">⚡ Live Code Editor</a></li>
-                        <li><a href="{{ route('public.tutorials') }}" class="hover:text-white transition">📖 Panduan HTML, CSS & JS</a></li>
-                        <li><a href="{{ route('login') }}" class="hover:text-white transition">🎒 Portal Siswa & Guru</a></li>
+                        <li><a href="{{ route('public.playground') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>⚡</span> Live Code Playground</a></li>
+                        <li><a href="{{ route('public.tutorials') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📖</span> Panduan HTML, CSS & JS</a></li>
+                        <li><a href="{{ route('login') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>🎒</span> Portal Siswa & Pengajar</a></li>
                     </ul>
                 </div>
 
@@ -244,28 +466,28 @@
                 <div>
                     <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Kepatuhan & Legalitas</h4>
                     <ul class="space-y-2">
-                        <li><a href="{{ route('privacy') }}" class="hover:text-white transition">Kebijakan Privasi (Privacy Policy)</a></li>
-                        <li><a href="{{ route('terms') }}" class="hover:text-white transition">Syarat & Ketentuan Layanan</a></li>
-                        <li><a href="{{ route('about') }}" class="hover:text-white transition">Tentang Platform (About Us)</a></li>
-                        <li><a href="{{ route('contact') }}" class="hover:text-white transition">Hubungi Pengelola (Contact)</a></li>
-                        <li><a href="{{ route('ads.txt') }}" target="_blank" class="hover:text-white transition">Verifikasi ads.txt</a></li>
+                        <li><a href="{{ route('privacy') }}" class="hover:text-blue-400 transition">Kebijakan Privasi (Privacy Policy)</a></li>
+                        <li><a href="{{ route('terms') }}" class="hover:text-blue-400 transition">Syarat & Ketentuan Layanan</a></li>
+                        <li><a href="{{ route('about') }}" class="hover:text-blue-400 transition">Tentang Platform (About Us)</a></li>
+                        <li><a href="{{ route('contact') }}" class="hover:text-blue-400 transition">Hubungi Pengelola (Contact)</a></li>
+                        <li><a href="{{ route('ads.txt') }}" target="_blank" class="hover:text-blue-400 transition">Verifikasi ads.txt</a></li>
                     </ul>
                 </div>
 
                 <!-- Kolom 4: Kontak -->
                 <div>
                     <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Kontak Resmi</h4>
-                    <p class="mb-2">Pertanyaan kurikulum, kerjasama institusi, atau periklanan:</p>
-                    <a href="mailto:{{ $settings['contact_email'] ?? 'admin@vxai.online' }}" class="text-blue-400 font-bold hover:underline">
+                    <p class="mb-2 leading-relaxed">Pertanyaan kurikulum, kerjasama institusi sekolah, atau kemitraan periklanan:</p>
+                    <a href="mailto:{{ $settings['contact_email'] ?? 'admin@vxai.online' }}" class="text-blue-400 font-bold hover:underline break-all">
                         {{ $settings['contact_email'] ?? 'admin@vxai.online' }}
                     </a>
                 </div>
 
             </div>
 
-            <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center text-gray-500">
+            <div class="border-t border-slate-800/80 pt-6 flex flex-col md:flex-row justify-between items-center text-slate-500 gap-2">
                 <p>&copy; {{ date('Y') }} {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}. Hak Cipta Dilindungi Undang-Undang.</p>
-                <p class="mt-2 md:mt-0">Dirancang untuk SMKN 1 Kupang Barat & Akses Terbuka Seluruh Indonesia.</p>
+                <p>Dikembangkan untuk SMKN 1 Kupang Barat & Akses Terbuka Pembelajar Seluruh Indonesia.</p>
             </div>
         </div>
     </footer>
