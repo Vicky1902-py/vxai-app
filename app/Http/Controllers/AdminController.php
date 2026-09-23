@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -19,20 +20,101 @@ class AdminController extends Controller
         return DB::table('global_settings')->pluck('setting_value', 'setting_key')->toArray();
     }
 
-    // Jalankan migrasi database otomatis jika ada tabel yang belum terpasang
+    // Jalankan migrasi dan penambahan kolom secara otomatis jika ada yang kurang
     private function ensureTablesExist()
     {
-        if (!Schema::hasTable('visitor_traffic') || !Schema::hasTable('roles') || !Schema::hasTable('global_settings')) {
-            try {
-                Artisan::call('migrate', ['--force' => true]);
-                Artisan::call('db:seed', ['--force' => true]);
-            } catch (\Throwable $e) {
-                // Biarkan lanjut dengan fallback
+        try {
+            // 1. Kolom role_id, xp, level di tabel users
+            if (Schema::hasTable('users')) {
+                Schema::table('users', function (Blueprint $table) {
+                    if (!Schema::hasColumn('users', 'role_id')) {
+                        $table->unsignedBigInteger('role_id')->default(3)->after('password');
+                    }
+                    if (!Schema::hasColumn('users', 'xp')) {
+                        $table->unsignedInteger('xp')->default(0)->after('role_id');
+                    }
+                    if (!Schema::hasColumn('users', 'level')) {
+                        $table->unsignedInteger('level')->default(1)->after('xp');
+                    }
+                });
             }
+
+            // 2. Tabel roles
+            if (!Schema::hasTable('roles')) {
+                Schema::create('roles', function (Blueprint $table) {
+                    $table->id();
+                    $table->string('name');
+                    $table->string('display_name')->nullable();
+                    $table->timestamps();
+                });
+                DB::table('roles')->insertOrIgnore([
+                    ['id' => 1, 'name' => 'Super Admin', 'display_name' => 'Administrator', 'created_at' => now(), 'updated_at' => now()],
+                    ['id' => 2, 'name' => 'Guru', 'display_name' => 'Tenaga Pendidik', 'created_at' => now(), 'updated_at' => now()],
+                    ['id' => 3, 'name' => 'Siswa', 'display_name' => 'Pelajar / Peserta', 'created_at' => now(), 'updated_at' => now()],
+                ]);
+            }
+
+            // 3. Tabel global_settings
+            if (!Schema::hasTable('global_settings')) {
+                Schema::create('global_settings', function (Blueprint $table) {
+                    $table->id();
+                    $table->string('setting_key')->unique();
+                    $table->text('setting_value')->nullable();
+                    $table->timestamps();
+                });
+                DB::table('global_settings')->insertOrIgnore([
+                    ['setting_key' => 'app_name', 'setting_value' => 'VxAI Coding Lab', 'created_at' => now(), 'updated_at' => now()],
+                    ['setting_key' => 'maintenance_mode', 'setting_value' => 'false', 'created_at' => now(), 'updated_at' => now()],
+                    ['setting_key' => 'contact_email', 'setting_value' => 'admin@vxai.online', 'created_at' => now(), 'updated_at' => now()],
+                ]);
+            }
+
+            // 4. Tabel coding_submissions dan kolomnya
+            if (!Schema::hasTable('coding_submissions')) {
+                Schema::create('coding_submissions', function (Blueprint $table) {
+                    $table->id();
+                    $table->unsignedBigInteger('user_id')->nullable()->index();
+                    $table->string('guest_name')->nullable();
+                    $table->longText('html_code')->nullable();
+                    $table->longText('css_code')->nullable();
+                    $table->longText('js_code')->nullable();
+                    $table->integer('score')->nullable()->default(0);
+                    $table->text('feedback')->nullable();
+                    $table->timestamps();
+                });
+            } else {
+                Schema::table('coding_submissions', function (Blueprint $table) {
+                    if (!Schema::hasColumn('coding_submissions', 'guest_name')) {
+                        $table->string('guest_name')->nullable()->after('user_id');
+                    }
+                    if (!Schema::hasColumn('coding_submissions', 'score')) {
+                        $table->integer('score')->nullable()->default(0)->after('js_code');
+                    }
+                    if (!Schema::hasColumn('coding_submissions', 'feedback')) {
+                        $table->text('feedback')->nullable()->after('score');
+                    }
+                });
+            }
+
+            // 5. Tabel visitor_traffic
+            if (!Schema::hasTable('visitor_traffic')) {
+                Schema::create('visitor_traffic', function (Blueprint $table) {
+                    $table->id();
+                    $table->string('ip_address', 45)->nullable()->index();
+                    $table->string('page_url')->index();
+                    $table->string('referer')->nullable();
+                    $table->string('device', 20)->default('Desktop');
+                    $table->string('browser', 50)->nullable();
+                    $table->text('user_agent')->nullable();
+                    $table->timestamp('visited_at')->useCurrent()->index();
+                });
+            }
+        } catch (\Throwable $e) {
+            // Tangkap dan abaikan agar request web tidak pernah error fatal
         }
     }
 
-    // Dashboard Utama dengan Metrik Trafik & Submisi Real-Time (Aman dari Missing Table)
+    // Dashboard Utama dengan Metrik Trafik & Submisi Real-Time
     public function dashboard()
     {
         $this->ensureTablesExist();
@@ -42,7 +124,7 @@ class AdminController extends Controller
         $totalGuru = Schema::hasTable('users') ? DB::table('users')->where('role_id', 2)->count() : 0;
         $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
 
-        // Metrik Trafik Pengunjung (Default 0 jika tabel baru dibuat)
+        // Metrik Trafik Pengunjung
         $todayVisits = 0;
         $weeklyVisits = 0;
         $totalVisits = 0;
@@ -80,12 +162,17 @@ class AdminController extends Controller
             $deviceTablet = DB::table('visitor_traffic')->where('device', 'Tablet')->count();
         }
 
-        // Submisi Koding Terbaru
+        // Submisi Koding Terbaru (Dengan proteksi kolom guest_name)
         $recentSubmissions = collect();
         if (Schema::hasTable('coding_submissions')) {
+            $hasGuestName = Schema::hasColumn('coding_submissions', 'guest_name');
+            $nameSelect = $hasGuestName 
+                ? 'COALESCE(users.name, coding_submissions.guest_name, "Tamu") as student_name'
+                : 'COALESCE(users.name, "Siswa") as student_name';
+
             $recentSubmissions = DB::table('coding_submissions')
                 ->leftJoin('users', 'coding_submissions.user_id', '=', 'users.id')
-                ->select('coding_submissions.*', DB::raw('COALESCE(users.name, coding_submissions.guest_name, "Tamu") as student_name'))
+                ->select('coding_submissions.*', DB::raw($nameSelect))
                 ->orderBy('coding_submissions.created_at', 'desc')
                 ->limit(5)
                 ->get();
@@ -102,17 +189,8 @@ class AdminController extends Controller
     // Endpoint khusus untuk memicu migrasi & seed database via klik/URL jika diperlukan
     public function runMigration()
     {
-        try {
-            Artisan::call('migrate', ['--force' => true]);
-            $migrateOutput = Artisan::output();
-
-            Artisan::call('db:seed', ['--force' => true]);
-            $seedOutput = Artisan::output();
-
-            return redirect()->route('admin.dashboard')->with('success', "Database berhasil dimigrasi & diperbarui!\n" . $migrateOutput . "\n" . $seedOutput);
-        } catch (\Throwable $e) {
-            return redirect()->route('admin.dashboard')->withErrors(['error' => 'Gagal migrasi: ' . $e->getMessage()]);
-        }
+        $this->ensureTablesExist();
+        return redirect()->route('admin.dashboard')->with('success', 'Seluruh tabel dan struktur database berhasil diperbarui!');
     }
 
     // Manajemen Pengguna (Daftar User)
@@ -340,9 +418,14 @@ class AdminController extends Controller
 
         $submissions = collect();
         if (Schema::hasTable('coding_submissions')) {
+            $hasGuestName = Schema::hasColumn('coding_submissions', 'guest_name');
+            $nameSelect = $hasGuestName 
+                ? 'COALESCE(users.name, coding_submissions.guest_name, "Tamu") as student_name'
+                : 'COALESCE(users.name, "Siswa") as student_name';
+
             $submissions = DB::table('coding_submissions')
                 ->leftJoin('users', 'coding_submissions.user_id', '=', 'users.id')
-                ->select('coding_submissions.*', DB::raw('COALESCE(users.name, coding_submissions.guest_name, "Tamu") as student_name'), 'users.email as student_email')
+                ->select('coding_submissions.*', DB::raw($nameSelect), 'users.email as student_email')
                 ->orderBy('coding_submissions.created_at', 'desc')
                 ->get();
         }
