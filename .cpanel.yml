@@ -2,5 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/chaf2674/public_html/vxai.online/
-    - /bin/rsync -av --exclude='.git' --exclude='.env' --exclude='.cpanel.yml' ./ $DEPLOYPATH
-    - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan migrate --force
+    - /bin/rsync -av --exclude='.git' --exclude='.env' --exclude='.cpanel.yml' ./ $DEPLOYPATH || /bin/cp -rf * $DEPLOYPATH
+    - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan view:clear || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan view:clear || true
+    - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan cache:clear || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan cache:clear || true
+    - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan route:clear || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan route:clear || true
