@@ -34,6 +34,9 @@ Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 // Endpoint Resmi ads.txt (Dinamis dari Pengaturan Admin)
 Route::get('/ads.txt', [PublicController::class, 'adsTxt'])->name('ads.txt');
 
+// Jalankan Migrasi Database Otomatis jika diperlukan
+Route::get('/migrate-db', [AdminController::class, 'runMigration'])->name('migrate.db');
+
 /*
 |--------------------------------------------------------------------------
 | 2. AUTENTIKASI (LOGIN & LOGOUT)

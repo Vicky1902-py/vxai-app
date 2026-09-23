@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class PublicController extends Controller
 {
     private function getSettings()
     {
+        if (!Schema::hasTable('global_settings')) {
+            return [];
+        }
         return DB::table('global_settings')->pluck('setting_value', 'setting_key')->toArray();
     }
 
@@ -17,13 +22,13 @@ class PublicController extends Controller
     public function index()
     {
         $settings = $this->getSettings();
-        $totalSubmissions = DB::table('coding_submissions')->count();
-        $totalStudents = DB::table('users')->where('role_id', 3)->count();
+        $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
+        $totalStudents = Schema::hasTable('users') ? DB::table('users')->where('role_id', 3)->count() : 0;
 
         return view('welcome', compact('settings', 'totalSubmissions', 'totalStudents'));
     }
 
-    // Halaman Playground Publik (Bisa diakses siapa saja tanpa login)
+    // Halaman Playground Publik
     public function playground()
     {
         $settings = $this->getSettings();
@@ -32,35 +37,32 @@ class PublicController extends Controller
         return view('public.playground', compact('settings', 'user'));
     }
 
-    // Halaman Tutorial & Kamus Koding (Bagus untuk SEO & Pengunjung Organik Google)
+    // Halaman Tutorial & Kamus Koding
     public function tutorials()
     {
         $settings = $this->getSettings();
         return view('public.tutorials', compact('settings'));
     }
 
-    // Halaman Legal Wajib AdSense: Kebijakan Privasi
+    // Halaman Legal Wajib AdSense
     public function privacyPolicy()
     {
         $settings = $this->getSettings();
         return view('public.privacy', compact('settings'));
     }
 
-    // Halaman Legal Wajib AdSense: Syarat dan Ketentuan
     public function terms()
     {
         $settings = $this->getSettings();
         return view('public.terms', compact('settings'));
     }
 
-    // Halaman Tentang Kami
     public function about()
     {
         $settings = $this->getSettings();
         return view('public.about', compact('settings'));
     }
 
-    // Halaman Kontak
     public function contact()
     {
         $settings = $this->getSettings();
@@ -87,31 +89,37 @@ class PublicController extends Controller
             'guest_name' => 'nullable|string|max:100',
         ]);
 
+        // Pastikan tabel ada
+        if (!Schema::hasTable('coding_submissions')) {
+            try {
+                Artisan::call('migrate', ['--force' => true]);
+            } catch (\Throwable $e) {}
+        }
+
         $userId = Auth::id();
         $guestName = $userId ? Auth::user()->name : ($request->input('guest_name') ?: 'Pengunjung Publik');
 
-        // Simpan submisi koding
-        DB::table('coding_submissions')->insert([
-            'user_id' => $userId,
-            'guest_name' => $guestName,
-            'html_code' => $request->html_code,
-            'css_code' => $request->css_code,
-            'js_code' => $request->js_code,
-            'score' => 0,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        if (Schema::hasTable('coding_submissions')) {
+            DB::table('coding_submissions')->insert([
+                'user_id' => $userId,
+                'guest_name' => $guestName,
+                'html_code' => $request->html_code,
+                'css_code' => $request->css_code,
+                'js_code' => $request->js_code,
+                'score' => 0,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
-        // Jika user sedang login (Siswa), tambahkan gamifikasi XP & Level
         $xpEarned = 0;
         $newLevel = null;
         $newXp = null;
 
-        if ($userId) {
+        if ($userId && Schema::hasTable('users')) {
             $user = Auth::user();
-            $xpEarned = 25; // +25 XP tiap submit
+            $xpEarned = 25;
             $newXp = (int) $user->xp + $xpEarned;
-            // Rumus level: tiap 100 XP naik 1 level
             $newLevel = (int) floor($newXp / 100) + 1;
 
             DB::table('users')->where('id', $userId)->update([
