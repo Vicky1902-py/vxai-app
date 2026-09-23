@@ -60,50 +60,62 @@
 
 </div>
 
-<!-- BARIS 1: 4 KARTU METRIK UTAMA -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+<!-- BARIS 1: 5 KARTU METRIK UTAMA -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
     
     <!-- Kunjungan Hari Ini -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
         <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Kunjungan Hari Ini</span>
-            <span class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold">📈</span>
+            <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xs font-bold">📈</span>
         </div>
-        <div class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{{ number_format($todayVisits) }}</div>
-        <div class="text-[11px] text-emerald-600 font-bold mt-2 flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($todayVisits) }}</div>
+        <div class="text-[10px] text-emerald-600 font-bold mt-1.5 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Tercatat Otomatis</span>
         </div>
     </div>
 
     <!-- Trafik 7 Hari -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
         <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Trafik 7 Hari Terakhir</span>
-            <span class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">🗓️</span>
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Trafik 7 Hari</span>
+            <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold">🗓️</span>
         </div>
-        <div class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{{ number_format($weeklyVisits) }}</div>
-        <div class="text-[11px] text-slate-400 font-medium mt-2">Akumulasi Kunjungan Pengunjung</div>
+        <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($weeklyVisits) }}</div>
+        <div class="text-[10px] text-slate-400 font-medium mt-1.5">Kunjungan Akumulasi</div>
     </div>
 
     <!-- Total Submisi Koding -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
         <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Submisi Koding</span>
-            <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold">⚡</span>
+            <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs font-bold">⚡</span>
         </div>
-        <div class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{{ number_format($totalSubmissions) }}</div>
-        <div class="text-[11px] text-slate-400 font-medium mt-2">Dari Siswa & Pengunjung Publik</div>
+        <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($totalSubmissions) }}</div>
+        <div class="text-[10px] text-slate-400 font-medium mt-1.5">Siswa & Tamu Publik</div>
+    </div>
+
+    <!-- Total Artikel Berita -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Artikel Berita</span>
+            <span class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-bold">📰</span>
+        </div>
+        <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($totalArticles ?? 0) }}</div>
+        <div class="text-[10px] text-blue-600 font-bold mt-1.5">
+            <a href="{{ route('admin.articles') }}" class="hover:underline">Kelola Artikel ➔</a>
+        </div>
     </div>
 
     <!-- Pengguna Terdaftar -->
-    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
         <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Akun Terdaftar</span>
-            <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold">👥</span>
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Akun</span>
+            <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xs font-bold">👥</span>
         </div>
-        <div class="text-3xl font-extrabold text-slate-900 mt-3 tracking-tight">{{ number_format($totalSiswa + $totalGuru) }}</div>
-        <div class="text-[11px] text-slate-500 font-medium mt-2">{{ $totalSiswa }} Siswa • {{ $totalGuru }} Guru</div>
+        <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($totalSiswa + $totalGuru) }}</div>
+        <div class="text-[10px] text-slate-500 font-medium mt-1.5">{{ $totalSiswa }} Siswa • {{ $totalGuru }} Guru</div>
     </div>
 
 </div>

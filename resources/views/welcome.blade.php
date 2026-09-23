@@ -77,6 +77,10 @@
                         <span>📖</span>
                         <span>Panduan Koding</span>
                     </a>
+                    <a href="{{ route('public.news') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
+                        <span>📰</span>
+                        <span>Berita & Tips</span>
+                    </a>
                     <a href="{{ route('about') }}" class="hover:text-blue-600 transition">Tentang Kami</a>
                     <a href="{{ route('contact') }}" class="hover:text-blue-600 transition">Kontak</a>
                 </div>
@@ -327,6 +331,70 @@
         </section>
 
         <!-- ======================================================== -->
+        <!-- SECTION: Warta & Tips Teknologi Terkini (Coding, AI, Komputer, Android) -->
+        <!-- ======================================================== -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-slate-200/80">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
+                <div>
+                    <span class="text-blue-600 font-extrabold text-xs uppercase tracking-wider block mb-2">📰 Warta & Edukasi Terkini</span>
+                    <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                        Wawasan Koding, Tips AI & Teknologi
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl">
+                        Pelajari artikel terbaru yang dirancang untuk mempercepat penguasaan teknologi Anda, dari dasar pemrograman hingga tren kecerdasan buatan.
+                    </p>
+                </div>
+                <a href="{{ route('public.news') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-5 py-3 rounded-2xl border border-blue-200 transition flex items-center gap-1.5 shrink-0">
+                    <span>Lihat Semua Berita & Tips</span>
+                    <span>➔</span>
+                </a>
+            </div>
+
+            @if(isset($latestArticles) && $latestArticles->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    @foreach($latestArticles as $art)
+                        <article class="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
+                            <div>
+                                <div class="relative h-48 overflow-hidden bg-slate-100">
+                                    <img src="{{ $art->safe_thumbnail }}" alt="{{ $art->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                    <div class="absolute top-3 left-3">
+                                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border backdrop-blur-md bg-white/95 shadow-sm {{ $art->category_badge_classes }}">
+                                            {{ $art->category_icon }} {{ $art->category_label }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-2">
+                                        <span>{{ $art->published_at ? $art->published_at->format('d M Y') : $art->created_at->format('d M Y') }}</span>
+                                        <span>•</span>
+                                        <span>{{ $art->reading_time }}</span>
+                                    </div>
+                                    <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition leading-snug line-clamp-2">
+                                        <a href="{{ route('public.news.detail', $art->slug) }}">
+                                            {{ $art->title }}
+                                        </a>
+                                    </h3>
+                                    <p class="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-2">
+                                        {{ $art->summary ?? strip_tags($art->content) }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-6 pb-5 pt-1 flex items-center justify-between border-t border-slate-50">
+                                <span class="text-[11px] font-semibold text-slate-500">
+                                    {{ $art->author_name }}
+                                </span>
+                                <a href="{{ route('public.news.detail', $art->slug) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition flex items-center gap-1">
+                                    <span>Baca</span>
+                                    <span>➔</span>
+                                </a>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @endif
+        </section>
+
+        <!-- ======================================================== -->
         <!-- SECTION 3: Fitur Utama Platform Belajar -->
         <!-- ======================================================== -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
@@ -452,12 +520,13 @@
                     </div>
                 </div>
 
-                <!-- Kolom 2: Akses Belajar -->
+                <!-- Kolom 2: Akses Belajar & Berita -->
                 <div>
-                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Akses Pembelajaran</h4>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Akses & Warta</h4>
                     <ul class="space-y-2">
                         <li><a href="{{ route('public.playground') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>⚡</span> Live Code Playground</a></li>
                         <li><a href="{{ route('public.tutorials') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📖</span> Panduan HTML, CSS & JS</a></li>
+                        <li><a href="{{ route('public.news') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📰</span> Warta & Tips Teknologi</a></li>
                         <li><a href="{{ route('login') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>🎒</span> Portal Siswa & Pengajar</a></li>
                     </ul>
                 </div>

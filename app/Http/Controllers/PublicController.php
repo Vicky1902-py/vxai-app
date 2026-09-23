@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -24,8 +25,17 @@ class PublicController extends Controller
         $settings = $this->getSettings();
         $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
         $totalStudents = Schema::hasTable('users') ? DB::table('users')->where('role_id', 3)->count() : 0;
+        
+        $latestArticles = collect();
+        if (Schema::hasTable('articles')) {
+            $latestArticles = Article::published()
+                ->orderBy('is_featured', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->limit(3)
+                ->get();
+        }
 
-        return view('welcome', compact('settings', 'totalSubmissions', 'totalStudents'));
+        return view('welcome', compact('settings', 'totalSubmissions', 'totalStudents', 'latestArticles'));
     }
 
     // Halaman Playground Publik
@@ -139,5 +149,91 @@ class PublicController extends Controller
             'total_xp' => $newXp,
             'level' => $newLevel,
         ]);
+    }
+
+    // ========================================================
+    // PORTAL BERITA & TIPS TEKNOLOGI PUBLIK
+    // ========================================================
+
+    // Halaman Index Berita & Artikel
+    public function newsIndex(Request $request)
+    {
+        $settings = $this->getSettings();
+        
+        $query = Article::published();
+
+        // Filter Kategori
+        $activeCategory = $request->query('kategori');
+        if ($activeCategory && in_array($activeCategory, ['coding', 'ai', 'teknologi', 'komputer', 'android'])) {
+            $query->where('category', $activeCategory);
+        }
+
+        // Pencarian Kata Kunci
+        $searchQuery = $request->query('q');
+        if ($searchQuery) {
+            $query->where(function($q) use ($searchQuery) {
+                $q->where('title', 'like', "%{$searchQuery}%")
+                  ->orWhere('summary', 'like', "%{$searchQuery}%")
+                  ->orWhere('content', 'like', "%{$searchQuery}%");
+            });
+        }
+
+        // Artikel Sorotan / Featured Hero (Hanya tampil di halaman 1 tanpa filter pencarian)
+        $featuredArticle = null;
+        if (!$searchQuery && (!$activeCategory || $activeCategory === 'all') && $request->query('page', 1) == 1) {
+            $featuredArticle = Article::published()->featured()->latest('published_at')->first();
+            if ($featuredArticle) {
+                $query->where('id', '!=', $featuredArticle->id);
+            }
+        }
+
+        $articles = $query->orderBy('published_at', 'desc')->paginate(9)->withQueryString();
+
+        // Hitung Jumlah per Kategori untuk Pills
+        $categoryCounts = [
+            'all' => Article::published()->count(),
+            'coding' => Article::published()->where('category', 'coding')->count(),
+            'ai' => Article::published()->where('category', 'ai')->count(),
+            'teknologi' => Article::published()->where('category', 'teknologi')->count(),
+            'komputer' => Article::published()->where('category', 'komputer')->count(),
+            'android' => Article::published()->where('category', 'android')->count(),
+        ];
+
+        return view('public.news_index', compact('settings', 'articles', 'featuredArticle', 'activeCategory', 'searchQuery', 'categoryCounts'));
+    }
+
+    // Halaman Detail Baca Artikel
+    public function newsDetail($slug)
+    {
+        $settings = $this->getSettings();
+
+        // Cari artikel (Super Admin bisa melihat draft jika sedang login)
+        $article = Article::where('slug', $slug)->firstOrFail();
+        if ($article->status !== 'published') {
+            if (!Auth::check() || Auth::user()->role_id !== 1) {
+                abort(404);
+            }
+        }
+
+        // Tambah tayangan (views count) secara aman
+        $article->increment('views_count');
+
+        // Artikel Terkait di kategori yang sama
+        $relatedArticles = Article::published()
+            ->where('id', '!=', $article->id)
+            ->where('category', $article->category)
+            ->limit(3)
+            ->get();
+
+        if ($relatedArticles->count() < 3) {
+            $extraArticles = Article::published()
+                ->where('id', '!=', $article->id)
+                ->whereNotIn('id', $relatedArticles->pluck('id'))
+                ->limit(3 - $relatedArticles->count())
+                ->get();
+            $relatedArticles = $relatedArticles->merge($extraArticles);
+        }
+
+        return view('public.news_detail', compact('settings', 'article', 'relatedArticles'));
     }
 }

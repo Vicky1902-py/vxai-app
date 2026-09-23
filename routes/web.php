@@ -25,6 +25,10 @@ Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name
 // Panduan & Tutorial Koding Interaktif
 Route::get('/panduan', [PublicController::class, 'tutorials'])->name('public.tutorials');
 
+// Portal Berita & Tips Koding, AI, Komputer, Android
+Route::get('/berita', [PublicController::class, 'newsIndex'])->name('public.news');
+Route::get('/berita/{slug}', [PublicController::class, 'newsDetail'])->name('public.news.detail');
+
 // Halaman Legalitas Wajib Google AdSense
 Route::get('/privacy-policy', [PublicController::class, 'privacyPolicy'])->name('privacy');
 Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
@@ -69,6 +73,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Monitoring Hasil Koding Siswa & Tamu
     Route::get('/submissions', [AdminController::class, 'submissions'])->name('admin.submissions');
     Route::post('/submissions/{id}/grade', [AdminController::class, 'gradeSubmission'])->name('admin.submissions.grade');
+
+    // Manajemen Berita & Artikel Teknologi (CRUD)
+    Route::get('/articles', [AdminController::class, 'articles'])->name('admin.articles');
+    Route::get('/articles/create', [AdminController::class, 'createArticle'])->name('admin.articles.create');
+    Route::post('/articles', [AdminController::class, 'storeArticle'])->name('admin.articles.store');
+    Route::get('/articles/{id}/edit', [AdminController::class, 'editArticle'])->name('admin.articles.edit');
+    Route::put('/articles/{id}', [AdminController::class, 'updateArticle'])->name('admin.articles.update');
+    Route::delete('/articles/{id}', [AdminController::class, 'deleteArticle'])->name('admin.articles.delete');
     
     // Global Settings & Google AdSense Configuration
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');

@@ -73,6 +73,10 @@
                         <span>📖</span>
                         <span>Panduan Koding</span>
                     </a>
+                    <a href="{{ route('public.news') }}" class="{{ request()->is('berita*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition flex items-center gap-1.5">
+                        <span>📰</span>
+                        <span>Berita & Tips</span>
+                    </a>
                     <a href="{{ route('about') }}" class="{{ request()->is('about*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition">Tentang Kami</a>
                     <a href="{{ route('contact') }}" class="{{ request()->is('contact*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition">Kontak</a>
                 </div>
@@ -143,12 +147,13 @@
                     </div>
                 </div>
 
-                <!-- Kolom 2: Akses Belajar -->
+                <!-- Kolom 2: Akses Belajar & Berita -->
                 <div>
-                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Akses Pembelajaran</h4>
+                    <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Akses & Warta</h4>
                     <ul class="space-y-2">
                         <li><a href="{{ route('public.playground') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>⚡</span> Live Code Playground</a></li>
                         <li><a href="{{ route('public.tutorials') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📖</span> Panduan HTML, CSS & JS</a></li>
+                        <li><a href="{{ route('public.news') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📰</span> Warta & Tips Teknologi</a></li>
                         <li><a href="{{ route('login') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>🎒</span> Portal Siswa & Pengajar</a></li>
                     </ul>
                 </div>
