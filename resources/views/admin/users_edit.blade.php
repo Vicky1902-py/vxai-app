@@ -4,37 +4,48 @@
 @section('header_title', 'Edit Data Pengguna')
 
 @section('header_action')
-<a href="{{ route('admin.users') }}" class="text-sm font-semibold text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl transition">
-    ← Kembali
+<a href="{{ route('admin.users') }}" class="text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-4 py-2.5 rounded-xl transition">
+    ← Kembali ke Daftar
 </a>
 @endsection
 
 @section('content')
-<div class="bg-white rounded-2xl border border-gray-200 shadow-sm max-w-2xl overflow-hidden">
-    <div class="p-6 border-b border-gray-100">
-        <h3 class="font-bold text-gray-900 text-base">Perbarui Data Akun: {{ $user->name }}</h3>
+<div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm max-w-2xl overflow-hidden">
+    <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+        <h3 class="font-extrabold text-slate-900 text-base">Perbarui Data Akun: {{ $user->name }}</h3>
+        <p class="text-xs text-slate-500 mt-0.5">Ubah nama, email/NISN, hak akses, atau setel ulang kata sandi.</p>
     </div>
 
-    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="p-6 space-y-5">
+    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="p-8 space-y-6">
         @csrf
         @method('PUT')
 
+        @if ($errors->any())
+            <div class="bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl text-xs font-semibold">
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <!-- Nama -->
         <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Nama Lengkap</label>
-            <input type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full px-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nama Lengkap</label>
+            <input type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
         </div>
 
         <!-- Email / NISN -->
         <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Email / NISN</label>
-            <input type="text" name="email" value="{{ old('email', $user->email) }}" class="w-full px-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email / NISN</label>
+            <input type="text" name="email" value="{{ old('email', $user->email) }}" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none" required>
         </div>
 
         <!-- Role -->
         <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase mb-2">Peran (Role)</label>
-            <select name="role_id" class="w-full px-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Peran Pengguna (Role)</label>
+            <select name="role_id" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white">
                 @foreach($roles as $role)
                     <option value="{{ $role->id }}" {{ $user->role_id == $role->id ? 'selected' : '' }}>
                         {{ $role->name }} ({{ $role->display_name ?? 'Akses' }})
@@ -44,20 +55,21 @@
         </div>
 
         <!-- Reset Password (Opsional) -->
-        <div class="pt-4 border-t border-gray-100">
-            <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Ganti Password (Opsional)</label>
-            <p class="text-xs text-gray-400 mb-2">Biarkan kosong jika tidak ingin mengubah password lama pengguna.</p>
-            <input type="password" name="password" placeholder="Masukkan password baru (minimal 6 karakter)" class="w-full px-4 py-2.5 border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <div class="pt-4 border-t border-slate-100">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ganti Password (Opsional)</label>
+            <p class="text-xs text-slate-400 mb-2">Biarkan kosong jika tidak ingin mengubah password lama pengguna.</p>
+            <input type="password" name="password" placeholder="Masukkan password baru (minimal 6 karakter)" class="w-full px-4 py-3 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
         </div>
 
-        <div class="pt-4 flex justify-end gap-3">
-            <a href="{{ route('admin.users') }}" class="px-5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition">
+        <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+            <a href="{{ route('admin.users') }}" class="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition">
                 Batal
             </a>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm shadow transition">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-2.5 rounded-xl text-xs shadow-md shadow-blue-500/20 transition duration-150">
                 Simpan Perubahan
             </button>
         </div>
     </form>
 </div>
 @endsection
+

@@ -12,6 +12,9 @@
     @endif
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Google AdSense Script (Otomatis Aktif jika Dikonfigurasi di Admin) -->
     @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
@@ -20,6 +23,8 @@
     @endif
 
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
         /* Motif Garis Ikonik Argentina (#74ACDF dan #FFFFFF) */
         .bg-argentina {
             background: repeating-linear-gradient(

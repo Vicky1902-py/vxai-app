@@ -4,8 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ruang Belajar - {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</title>
+    
+    <!-- Favicon -->
+    @if(!empty($settings['app_favicon']))
+        <link rel="icon" href="{{ asset($settings['app_favicon']) }}">
+    @endif
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         /* Sembunyikan scrollbar untuk kesan aplikasi native di HP */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -21,16 +32,19 @@
         
         <!-- Sidebar Desktop -->
         <aside class="w-64 border-r border-gray-800 flex flex-col">
-            <div class="h-16 flex items-center px-6 border-b border-gray-800">
-                <span class="font-bold text-xl text-blue-400">VxAI Workspace</span>
+            <div class="h-20 flex items-center px-6 border-b border-gray-800 justify-between">
+                <a href="{{ route('home') }}" class="font-bold text-lg text-blue-400 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-sm">Vx</span>
+                    <span>Workspace</span>
+                </a>
             </div>
-            <nav class="flex-1 px-4 py-6 space-y-2">
+            <nav class="flex-1 px-4 py-6 space-y-2 text-xs font-semibold">
                 <!-- Tautan Beranda Aktif -->
-                <a href="{{ route('siswa.dashboard') }}" class="block px-4 py-2 bg-blue-600 rounded-lg">🏠 Beranda</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-800 rounded-lg">📚 Modul Belajar</a>
+                <a href="{{ route('siswa.dashboard') }}" class="block px-4 py-2.5 bg-blue-600 rounded-xl text-white">🏠 Beranda Siswa</a>
                 <!-- Tautan Coding Lab Aktif -->
-                <a href="{{ route('siswa.playground') }}" class="block px-4 py-2 hover:bg-gray-800 rounded-lg">🧪 Coding Lab</a>
-                <a href="#" class="block px-4 py-2 hover:bg-gray-800 rounded-lg">🏆 Papan Peringkat</a>
+                <a href="{{ route('public.playground') }}" class="block px-4 py-2.5 hover:bg-gray-800 text-gray-300 hover:text-white rounded-xl transition">🧪 Live Coding Lab</a>
+                <a href="{{ route('public.tutorials') }}" class="block px-4 py-2.5 hover:bg-gray-800 text-gray-300 hover:text-white rounded-xl transition">📖 Panduan Koding</a>
+                <a href="{{ route('home') }}" class="block px-4 py-2.5 hover:bg-gray-800 text-gray-300 hover:text-white rounded-xl transition">🌐 Halaman Utama</a>
             </nav>
             <div class="p-4 border-t border-gray-800">
                 <div class="flex items-center gap-3 mb-4">

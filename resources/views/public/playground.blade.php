@@ -6,7 +6,15 @@
     <title>Live Code Playground - {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</title>
     <meta name="description" content="Editor HTML, CSS, dan JavaScript interaktif dengan pratinjau langsung. Terbuka gratis untuk publik dan pelajar.">
     
+    <!-- Favicon -->
+    @if(!empty($settings['app_favicon']))
+        <link rel="icon" href="{{ asset($settings['app_favicon']) }}">
+    @endif
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
@@ -19,7 +27,9 @@
     @endif
 
     <style>
-        .CodeMirror { height: 100%; position: absolute; top: 0; bottom: 0; left: 0; right: 0; font-family: 'Fira Code', monospace; font-size: 14px; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        code, pre, .font-mono, .CodeMirror { font-family: 'JetBrains Mono', monospace !important; font-size: 13.5px; }
+        .CodeMirror { height: 100%; position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
         @media (max-width: 767px) {
             .mobile-hidden { display: none !important; }
             .mobile-flex { display: flex !important; }
@@ -31,7 +41,7 @@
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans antialiased h-screen flex flex-col overflow-hidden relative">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased h-screen flex flex-col overflow-hidden relative">
 
     <!-- Header Navigation -->
     <header class="h-16 shrink-0 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4 md:px-6">
