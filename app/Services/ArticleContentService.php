@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Schema;
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_09_24_koding_ai_html_real_views_v3';
+    public const VERSION = '2026_09_24_guru_vxai_online_deep_learning_v1';
 
     /**
-     * Dapatkan daftar 6 artikel edukasi berkualitas tinggi tentang:
+     * Dapatkan daftar artikel edukasi & inovasi teknologi berkualitas tinggi:
+     * - Sistem Perangkat Ajar SMK 2026 Deep Learning (guru.vxai.online)
      * - Dasar-dasar Koding
      * - Dasar-dasar AI
      * - Belajar HTML
@@ -22,6 +23,173 @@ class ArticleContentService
         $now = now();
 
         return [
+            // ARTIKEL UTAMA / HERO: SISTEM PERANGKAT AJAR SMK 2026 GURU.VXAI.ONLINE
+            [
+                'title' => 'Mengenal Sistem Perangkat Ajar SMK 2026: Inovasi Kurikulum Merdeka Berbasis Deep Learning & Expert System',
+                'slug' => 'sistem-perangkat-ajar-smk-2026-deep-learning-panduan-lengkap',
+                'category' => 'ai',
+                'summary' => 'Ulasan komprehensif dan panduan lengkap Sistem Perangkat Ajar SMK 2026 (guru.vxai.online) karya Vicky Koroh. Menghadirkan pendekatan Pembelajaran Mendalam (Deep Learning 3M), arsitektur Pure Expert System tanpa biaya API token, kepatuhan penuh regulasi BSKAP 046/2025 & Permendikdasmen 13/2025, fitur Smart Soal & Kisi-kisi resmi, serta panduan langkah demi langkah cara akses gratis dan penggunaannya.',
+                'content' => '<p>Dunia pendidikan kejuruan di Indonesia memasuki babak sejarah baru. Di tengah bergulirnya Kurikulum Merdeka yang menuntut pembelajaran yang berpusat pada murid, para guru Sekolah Menengah Kejuruan (SMK) dihadapkan pada tantangan nyata: bagaimana menyelaraskan materi pembelajaran dengan standar industri terkini, sekaligus merumuskan dokumen perencanaan ajar yang sesuai dengan regulasi kementerian terbaru tanpa harus terkuras energinya oleh beban administrasi.</p>
+<p>Kini, sebuah inovasi teknologi karya anak bangsa hadir menjawab keresahan tersebut: <strong>Sistem Perangkat Ajar SMK 2026</strong> yang beralamat di <a href="https://guru.vxai.online/" target="_blank" rel="noopener noreferrer"><strong>https://guru.vxai.online/</strong></a>. Dirancang dan dibangun secara mandiri oleh <strong>Vicky Koroh</strong>, platform ini mengusung perpaduan revolusioner antara <em>Pendekatan Pembelajaran Mendalam (Deep Learning)</em> dan arsitektur <em>Knowledge-Based Expert System (Sistem Pakar Berbasis Pengetahuan)</em> murni yang dapat diakses secara gratis oleh seluruh guru vokasi di Nusantara.</p>
+
+<img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1100&q=80" alt="Suasana ruang kelas digital dan guru pendidik profesional di Indonesia" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Apa Itu Sistem Perangkat Ajar SMK 2026 (guru.vxai.online)?</h2>
+<p><strong>guru.vxai.online</strong> adalah platform web inovatif yang mengotomatisasi penyusunan seluruh ekosistem perangkat pembelajaran bagi guru SMK—mulai dari Fase E (Kelas X) hingga Fase F (Kelas XI dan XII)—untuk berbagai bidang dan program keahlian kejuruan.</p>
+<p>Berbeda dari sekadar alat pembuat teks otomatis biasa, sistem ini bertindak layaknya konsultan kurikulum profesional digital yang memahami hierarki taksonomi pembelajaran, karakteristik pendidikan vokasi, serta format dokumen resmi instansi pendidikan.</p>
+
+<h3>Landasan Regulasi Resmi Kurikulum Terkini</h3>
+<p>Kekuatan utama dari platform ini terletak pada kepatuhan mutlak terhadap payung hukum pendidikan nasional terbaru yang sah di tahun 2026, antara lain:</p>
+<ul>
+    <li><strong>Keputusan Kepala BSKAP No. 046/H/KR/2025:</strong> Standar resmi Capaian Pembelajaran (CP) pada PAUD, Pendidikan Dasar, dan Pendidikan Menengah pada Kurikulum Merdeka.</li>
+    <li><strong>Permendikdasmen No. 13/2025:</strong> Regulasi penyelenggaraan kurikulum, beban kerja pendidik, dan fleksibilitas pembelajaran vokasi terstandar.</li>
+</ul>
+<p>Dengan integrasi regulasi resmi ini, setiap dokumen yang dihasilkan memiliki validitas legal formal yang siap diajukan untuk verifikasi Pengawas Sekolah, Kepala Sekolah, maupun akreditasi Badan Akreditasi Nasional (BAN-PDM).</p>
+
+<img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1100&q=80" alt="Arsitektur data cerdas dan jaringan saraf buatan sistem pakar" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>2. Filosofi Pendekatan Pembelajaran Mendalam (Deep Learning 3M)</h2>
+<p>Platform guru.vxai.online mengintegrasikan paradigma <strong>Deep Learning (Pembelajaran Mendalam)</strong> yang berakar pada tiga pilar utama (3M):</p>
+<ol>
+    <li>
+        <strong>Mindful Learning (Pembelajaran Berkesadaran):</strong>
+        <p>Siswa dan guru menyadari penuh tujuan dari setiap materi yang dipelajari. Siswa SMK tidak lagi hanya sekadar menghafal instruksi kerja seperti robot, melainkan memahami prinsip ilmiah, keselamatan kerja (K3LH), dan alasan fundamental di balik setiap prosedur teknis.</p>
+    </li>
+    <li>
+        <strong>Meaningful Learning (Pembelajaran Bermakna):</strong>
+        <p>Setiap konsep teori dihubungkan langsung dengan dunia kerja nyata (DUDI / Dunia Usaha dan Dunia Industri). Siswa diajak memecahkan masalah kontekstual yang benar-benar dihadapi oleh para teknisi, programmer, dan profesional di lapangan.</p>
+    </li>
+    <li>
+        <strong>Joyful Learning (Pembelajaran Menyenangkan &amp; Menggembirakan):</strong>
+        <p>Menghadirkan suasana belajar yang interaktif, menantang, dan bebas dari kelelahan birokrasi monoton. Eksplorasi praktikum dirancang agar memantik rasa ingin tahu dan kepuasan menciptakan karya nyata.</p>
+    </li>
+</ol>
+
+<blockquote>"Pendidikan vokasi yang unggul tidak lahir dari tumpukan kertas administrasi yang melelahkan guru, melainkan dari waktu berkualitas yang dicurahkan guru untuk membimbing dan menginspirasi siswa di bengkel kerja." — Vicky Koroh, Pengembang Sistem</blockquote>
+
+<img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1100&q=80" alt="Platform teknologi edukasi di layar komputer modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Keunggulan Radikal Dibandingkan Solusi Lain</h2>
+<p>Mengapa ribuan pendidik vokasi beralih ke guru.vxai.online? Berikut adalah keunggulan teknis dan pedagogis yang membuatnya jauh melampaui generator dokumen lainnya:</p>
+
+<h3>1. Murni Knowledge-Based Expert System (100% Bebas Biaya Token API)</h3>
+<p>Sebagian besar aplikasi "AI Generator" di pasaran hanyalah pembungkus (wrapper) API pihak ketiga seperti OpenAI atau Anthropic yang membutuhkan biaya kredit token bulanan mahal, sering mengalami pembatasan kuota mendadak (rate limit), dan rentan server down. Sebaliknya, <strong>guru.vxai.online dibangun menggunakan mesin inferensi Sistem Pakar lokal</strong>. Seluruh proses komputasi berlangsung deterministik di server sendiri, tanpa biaya langganan API eksternal, dan menjamin <strong>Kedaulatan Data Pendidikan Nasional</strong>.</p>
+
+<h3>2. Nol Halusinasi (Zero Hallucination Guarantee)</h3>
+<p>Masalah terbesar AI generatif publik adalah kecenderungan "berhalusinasi" — mengarang kode CP, memanipulasi taksonomi Bloom, atau membuat materi fiktif yang melanggar silabus resmi. Pada guru.vxai.online, setiap elemen Capaian Pembelajaran ditarik langsung dari pangkalan data aturan terverifikasi standar BSKAP 046/2025. Hasilnya akurat, valid, dan dapat dipertanggungjawabkan 100%.</p>
+
+<h3>3. Fitur Andalan: Smart Soal &amp; Kisi-Kisi Resmi BSKAP 8 Kolom</h3>
+<p>Salah satu fitur yang paling disambut antusias oleh para pendidik adalah generator <strong>Smart Soal &amp; Kisi-Kisi Resmi by Vicky Koroh</strong>:</p>
+<ul>
+    <li><strong>Format Matriks 8 Kolom Standar BSKAP:</strong> Memuat Nomor Urut, Capaian Pembelajaran (CP), Tujuan Pembelajaran (TP), Materi Pokok, Indikator Soal, Level Kognitif (C1–C6 Taksonomi Bloom Terkini), Bentuk Soal, dan Nomor Soal.</li>
+    <li><strong>Soal Pilihan Ganda (PG) Berkualitas Tinggi:</strong> Menghasilkan 4 opsi jawaban homogen yang dirancang secara saintifik, menghindari pilihan jebakan yang tidak adil atau pengecoh (distractor) yang terlalu mudah ditebak.</li>
+    <li><strong>Soal Isian Singkat &amp; Uraian Pemecahan Masalah:</strong> Soal studi kasus industri yang menuntut analisis berpikir kritis tingkat tinggi (HOTS) lengkap dengan rubrik penskoran terbobot.</li>
+    <li><strong>Dual Output Dokumen Sekaligus:</strong> Sistem otomatis mencetak dua versi file terpisah: <em>Naskah Ujian Siswa</em> (rapi dan bersih tanpa kunci jawaban) serta <em>Naskah Pegangan Guru</em> (dilengkapi kunci jawaban terurai, rubrik penilaian, dan pembobotan nilai).</li>
+</ul>
+
+<h3>4. Sintaks Pedagogik Berbasis Alur PEDATTI</h3>
+<p>Modul ajar yang disusun menerapkan sintaks pembelajaran modern <strong>PEDATTI</strong>:</p>
+<ul>
+    <li><strong>Pelajari:</strong> Siswa mengamati stimulus awal, video tutorial, atau studi kasus pengantar.</li>
+    <li><strong>Dalami:</strong> Diskusi kelompok terarah untuk mengupas prinsip teoritis dan logika kerja.</li>
+    <li><strong>Terapkan:</strong> Praktik langsung di laboratorium/bengkel menggunakan peralatan nyata.</li>
+    <li><strong>Evaluasi:</strong> Refleksi hasil kerja, pengujian fungsi alat/karya, dan asesmen formatif.</li>
+</ul>
+
+<h3>5. Ekspor Dokumen Resmi Siap Cetak Ber-Kop Sekolah</h3>
+<p>Dokumen yang di-generate tidak perlu diedit ulang secara melelahkan di Microsoft Word. Sistem secara cerdas menyematkan <strong>Kop Surat Resmi Sekolah</strong>, logo instansi, NIP Kepala Sekolah, NIP Guru Pengampu, serta lembar pengesahan resmi dalam format <strong>Word (.docx)</strong> dan <strong>PDF Siap Cetak</strong>.</p>
+
+<h3>6. Paket Dokumen 7-in-1 Lengkap</h3>
+<p>Dalam satu sesi kerja, guru dapat memproduksi paket administrasi utuh:</p>
+<ol>
+    <li>Tujuan Pembelajaran (TP) terukur</li>
+    <li>Alur Tujuan Pembelajaran (ATP) logis berfase</li>
+    <li>Modul Ajar Harian (RPP Kurikulum Merdeka)</li>
+    <li>LKPD (Lembar Kerja Peserta Didik) Interaktif</li>
+    <li>Program Tahunan (Prota)</li>
+    <li>Program Semester (Promes)</li>
+    <li>Asesmen Diagnostik, Formatif, dan Sumatif</li>
+</ol>
+
+<img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1100&q=80" alt="Guru dan instruktur berdiskusi dalam workshop pembelajaran vokasi modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>4. Akses &amp; Cara Masuk ke Platform</h2>
+<p>Platform dirancang dengan prinsip keterbukaan dan kemudahan akses bagi guru di seluruh pelosok Indonesia:</p>
+
+<h3>A. Uji Coba Gratis Tanpa Perlu Login (Trial 2x)</h3>
+<p>Bagi guru yang ingin membuktikan kecepatannya secara langsung tanpa repot membuat akun terlebih dahulu, Anda dapat langsung menggunakan fasilitas <strong>Coba Gratis 2 Kali</strong>:</p>
+<ul>
+    <li>Tautan Langsung: <a href="https://guru.vxai.online/generator" target="_blank" rel="noopener noreferrer"><strong>https://guru.vxai.online/generator</strong></a></li>
+    <li>Tanpa perlu login akun, tanpa kartu kredit, dan langsung bisa menghasilkan perangkat ajar lengkap.</li>
+</ul>
+
+<h3>B. Pendaftaran Akun Guru Resmi</h3>
+<p>Untuk menyimpan riwayat modul yang pernah dibuat dan menikmati akses tanpa batas:</p>
+<ul>
+    <li>Kunjungi: <a href="https://guru.vxai.online/register" target="_blank" rel="noopener noreferrer"><strong>https://guru.vxai.online/register</strong></a></li>
+    <li>Isi nama lengkap, alamat email aktif, kata sandi, dan instansi sekolah Anda.</li>
+</ul>
+
+<h3>C. Masuk ke Ruang Kerja (Login)</h3>
+<p>Setelah memiliki akun, masuk ke dashboard pengelolaan melalui:</p>
+<ul>
+    <li>Kunjungi: <a href="https://guru.vxai.online/login" target="_blank" rel="noopener noreferrer"><strong>https://guru.vxai.online/login</strong></a></li>
+    <li>Akses arsip dokumen, bank soal, dan pembaruan kurikulum berkala.</li>
+</ul>
+
+<img src="https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1100&q=80" alt="Siswa SMK sedang melakukan praktik teknis di laboratorium kejuruan" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>5. Panduan Praktis Langkah demi Langkah Menggunakan Sistem</h2>
+<p>Berikut adalah panduan praktis untuk menghasilkan dokumen perangkat ajar lengkap dalam waktu kurang dari 5 menit:</p>
+
+<h3>Langkah 1: Buka Generator</h3>
+<p>Buka browser favorit Anda (Chrome, Edge, atau Firefox) lalu akses <a href="https://guru.vxai.online/generator" target="_blank" rel="noopener noreferrer"><strong>guru.vxai.online/generator</strong></a>.</p>
+
+<h3>Langkah 2: Lengkapi Identitas Administrasi</h3>
+<p>Isi formulir administrasi sekolah pada panel yang tersedia:</p>
+<ul>
+    <li><strong>Nama Sekolah:</strong> (Contoh: SMK Negeri 2 Kupang / SMK Negeri 1 Jakarta)</li>
+    <li><strong>Mata Pelajaran &amp; Program Keahlian:</strong> Pilih konsentrasi kejuruan yang sesuai (Teknik Komputer &amp; Jaringan, Rekayasa Perangkat Lunak, Otomotif, Kelistrikan, Manajemen Bisnis, dll).</li>
+    <li><strong>Fase &amp; Kelas:</strong> Pilih Fase E untuk Kelas X, atau Fase F untuk Kelas XI &amp; XII.</li>
+    <li><strong>Identitas Guru:</strong> Masukkan Nama Lengkap dan NIP Guru serta Kepala Sekolah untuk pencetakan kop otomatis.</li>
+</ul>
+
+<h3>Langkah 3: Pilih Elemen &amp; Capaian Pembelajaran (CP)</h3>
+<p>Pilih Elemen CP resmi yang tersedia di katalog BSKAP 046/2025. Sistem pakar akan langsung menampilkan deskripsi kompetensi resmi tanpa Anda perlu mengetik ulang dari dokumen PDF tebal kementerian.</p>
+
+<h3>Langkah 4: Tentukan Model Pembelajaran &amp; Karakteristik Siswa</h3>
+<p>Pilih model pembelajaran yang sesuai dengan sarana sekolah Anda: <strong>Sintaks PEDATTI</strong>, <em>Project-Based Learning (PJBL)</em>, <em>Problem-Based Learning (PBL)</em>, atau <em>Teaching Factory (TEFA)</em>. Anda juga dapat menentukan preferensi diferensiasi belajar (auditori, visual, kinestetik).</p>
+
+<h3>Langkah 5: Klik "Generate Perangkat Ajar"</h3>
+<p>Tekan tombol generate. Mesin inferensi sistem pakar akan bekerja dalam 3 hingga 5 detik merajut TP, ATP, skenario langkah pembelajaran, LKPD, rubrik penilaian, dan kisi-kisi soal.</p>
+
+<h3>Langkah 6: Pratinjau &amp; Unduh Dokumen Resmi</h3>
+<p>Periksa pratinjau hasil pada layar. Jika sudah sesuai, klik tombol unduh dokumen dalam format <strong>Microsoft Word (.docx)</strong> untuk fleksibilitas edit lanjutan, atau format <strong>PDF</strong> untuk langsung dicetak dan ditandatangani.</p>
+
+<h2>Dampak Nyata bagi Pendidikan Vokasi Indonesia</h2>
+<p>Uji coba di sejumlah sekolah menengah kejuruan membuktikan bahwa platform <strong>guru.vxai.online</strong> mampu memangkas waktu kerja administratif guru hingga <strong>85%</strong>. Guru yang sebelumnya menghabiskan waktu berminggu-minggu pada awal tahun ajaran baru kini dapat menyelesaikan seluruh perangkat pembelajarannya dalam satu hari kerja santai.</p>
+<p>Yang paling bernilai, energi dan antusiasme guru kini dapat kembali seutuhnya ke tempat yang semestinya: <strong>mendampingi siswa bereksplorasi di bengkel praktik, mengasah keterampilan logika koding, membimbing sertifikasi kompetensi kejuruan, dan menanamkan nilai-nilai karakter luhur</strong>.</p>
+
+<h2>Kesimpulan &amp; Tautan Resmi Platform</h2>
+<p>Sistem Perangkat Ajar SMK 2026 berbasis Deep Learning dan Expert System di <a href="https://guru.vxai.online/" target="_blank" rel="noopener noreferrer"><strong>guru.vxai.online</strong></a> adalah bukti nyata bahwa teknologi cerdas anak bangsa dapat menjadi mitra terbaik bagi dunia pendidikan Indonesia. Bukan menggantikan guru, melainkan memerdekakan guru dari belenggu birokrasi kertas.</p>
+<p>Bagi rekan-rekan guru vokasi di seluruh Indonesia, mari rasakan sendiri kemudahan menyusun perangkat ajar berstandar BSKAP 046/2025 melalui tautan resmi berikut:</p>
+<ul>
+    <li>🌐 <strong>Portal Utama:</strong> <a href="https://guru.vxai.online/" target="_blank" rel="noopener noreferrer">https://guru.vxai.online/</a></li>
+    <li>⚡ <strong>Coba Gratis 2x Tanpa Login:</strong> <a href="https://guru.vxai.online/generator" target="_blank" rel="noopener noreferrer">https://guru.vxai.online/generator</a></li>
+    <li>📝 <strong>Pendaftaran Akun Guru:</strong> <a href="https://guru.vxai.online/register" target="_blank" rel="noopener noreferrer">https://guru.vxai.online/register</a></li>
+    <li>🔑 <strong>Masuk ke Ruang Kerja:</strong> <a href="https://guru.vxai.online/login" target="_blank" rel="noopener noreferrer">https://guru.vxai.online/login</a></li>
+</ul>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => true,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
             // ARTIKEL 1: BELAJAR HTML DARI NOL
             [
                 'title' => 'Belajar HTML dari Nol: Panduan Langkah demi Langkah untuk Pemula',
@@ -130,7 +298,7 @@ class ArticleContentService
                 'author_name' => 'Tim Pengajar VxAI',
                 'views_count' => 0,
                 'status' => 'published',
-                'is_featured' => true,
+                'is_featured' => false,
                 'published_at' => $now->copy()->subDays(1),
                 'created_at' => $now->copy()->subDays(1),
                 'updated_at' => $now->copy()->subDays(1),
@@ -196,7 +364,7 @@ SELAIN ITU:
                 'author_name' => 'Tim Pengajar VxAI',
                 'views_count' => 0,
                 'status' => 'published',
-                'is_featured' => true,
+                'is_featured' => false,
                 'published_at' => $now->copy()->subDays(2),
                 'created_at' => $now->copy()->subDays(2),
                 'updated_at' => $now->copy()->subDays(2),
@@ -259,7 +427,7 @@ SELAIN ITU:
                 'author_name' => 'Tim Riset AI VxAI',
                 'views_count' => 0,
                 'status' => 'published',
-                'is_featured' => true,
+                'is_featured' => false,
                 'published_at' => $now->copy()->subDays(3),
                 'created_at' => $now->copy()->subDays(3),
                 'updated_at' => $now->copy()->subDays(3),
@@ -632,9 +800,12 @@ semantik industri, dan lebih cepat dimuat di browser."</code></pre>
                     ->value('setting_value');
             }
 
-            // Jika versi sama dan ada artikel, tidak perlu proses ulang (hemat performa 0ms)
+            // Dapatkan artikel terstandar baru
+            $defaultArticles = self::getDefaultArticles();
+
+            // Jika versi sama dan jumlah artikel lengkap, tidak perlu proses ulang (hemat performa 0ms)
             $articlesCount = DB::table('articles')->count();
-            if (!$force && $currentVersion === self::VERSION && $articlesCount >= 6) {
+            if (!$force && $currentVersion === self::VERSION && $articlesCount >= count($defaultArticles)) {
                 return false;
             }
 
@@ -658,9 +829,6 @@ semantik industri, dan lebih cepat dimuat di browser."</code></pre>
 
             // Hapus artikel lama yang ada dalam daftar legacy
             DB::table('articles')->whereIn('slug', $legacySlugs)->delete();
-
-            // Dapatkan artikel terstandar baru
-            $defaultArticles = self::getDefaultArticles();
 
             foreach ($defaultArticles as $item) {
                 $existing = DB::table('articles')->where('slug', $item['slug'])->first();
