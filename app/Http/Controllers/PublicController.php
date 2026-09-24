@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Services\ArticleContentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class PublicController extends Controller
     // Halaman Beranda Publik
     public function index()
     {
+        ArticleContentService::syncDefaultArticles();
         $settings = $this->getSettings();
         $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
         $totalStudents = Schema::hasTable('users') ? DB::table('users')->where('role_id', 3)->count() : 0;
@@ -158,6 +160,7 @@ class PublicController extends Controller
     // Halaman Index Berita & Artikel
     public function newsIndex(Request $request)
     {
+        ArticleContentService::syncDefaultArticles();
         $settings = $this->getSettings();
         
         $query = Article::published();
@@ -205,6 +208,7 @@ class PublicController extends Controller
     // Halaman Detail Baca Artikel
     public function newsDetail($slug)
     {
+        ArticleContentService::syncDefaultArticles();
         $settings = $this->getSettings();
 
         // Cari artikel (Super Admin bisa melihat draft jika sedang login)

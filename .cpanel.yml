@@ -6,3 +6,5 @@ deployment:
     - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan view:clear || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan view:clear || true
     - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan cache:clear || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan cache:clear || true
     - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan route:clear || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan route:clear || true
+    - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan migrate --force || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan migrate --force || true
+    - /usr/local/bin/php /home/chaf2674/public_html/vxai.online/artisan articles:sync --force || /usr/bin/php /home/chaf2674/public_html/vxai.online/artisan articles:sync --force || true

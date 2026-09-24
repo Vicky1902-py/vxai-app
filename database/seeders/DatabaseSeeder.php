@@ -69,5 +69,8 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
+
+        // 4. Seed & Sync Curated Tutorial Articles (Dasar Koding, Dasar AI, Belajar HTML)
+        \App\Services\ArticleContentService::syncDefaultArticles(true);
     }
 }
