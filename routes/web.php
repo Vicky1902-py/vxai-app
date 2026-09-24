@@ -81,6 +81,16 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/articles/{id}/edit', [AdminController::class, 'editArticle'])->name('admin.articles.edit');
     Route::put('/articles/{id}', [AdminController::class, 'updateArticle'])->name('admin.articles.update');
     Route::delete('/articles/{id}', [AdminController::class, 'deleteArticle'])->name('admin.articles.delete');
+
+    // Manajemen Modul Playground & Tantangan Koding (CRUD)
+    Route::get('/playground', [AdminController::class, 'playgroundChallenges'])->name('admin.playground');
+    Route::get('/playground/create', [AdminController::class, 'createPlaygroundChallenge'])->name('admin.playground.create');
+    Route::post('/playground', [AdminController::class, 'storePlaygroundChallenge'])->name('admin.playground.store');
+    Route::get('/playground/{id}/edit', [AdminController::class, 'editPlaygroundChallenge'])->name('admin.playground.edit');
+    Route::put('/playground/{id}', [AdminController::class, 'updatePlaygroundChallenge'])->name('admin.playground.update');
+    Route::delete('/playground/{id}', [AdminController::class, 'deletePlaygroundChallenge'])->name('admin.playground.delete');
+    Route::post('/playground/{id}/toggle', [AdminController::class, 'togglePlaygroundChallenge'])->name('admin.playground.toggle');
+    Route::post('/playground/reset-defaults', [AdminController::class, 'resetDefaultPlaygroundChallenges'])->name('admin.playground.reset');
     
     // Global Settings & Google AdSense Configuration
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');

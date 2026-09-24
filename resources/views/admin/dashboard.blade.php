@@ -60,8 +60,8 @@
 
 </div>
 
-<!-- BARIS 1: 5 KARTU METRIK UTAMA -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+<!-- BARIS 1: 6 KARTU METRIK UTAMA -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
     
     <!-- Kunjungan Hari Ini -->
     <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
@@ -94,6 +94,18 @@
         </div>
         <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($totalSubmissions) }}</div>
         <div class="text-[10px] text-slate-400 font-medium mt-1.5">Siswa & Tamu Publik</div>
+    </div>
+
+    <!-- Modul Playground -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition">
+        <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Modul Playground</span>
+            <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xs font-bold">🎮</span>
+        </div>
+        <div class="text-2xl font-extrabold text-slate-900 mt-2 tracking-tight">{{ number_format($totalChallenges ?? 0) }}</div>
+        <div class="text-[10px] text-purple-600 font-bold mt-1.5">
+            <a href="{{ route('admin.playground') }}" class="hover:underline">Kelola Modul ➔</a>
+        </div>
     </div>
 
     <!-- Total Artikel Berita -->

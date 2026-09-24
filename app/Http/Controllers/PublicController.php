@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Services\ArticleContentService;
+use App\Services\PlaygroundChallengeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -45,8 +46,9 @@ class PublicController extends Controller
     {
         $settings = $this->getSettings();
         $user = Auth::user();
+        $challenges = PlaygroundChallengeService::getActiveChallenges();
 
-        return view('public.playground', compact('settings', 'user'));
+        return view('public.playground', compact('settings', 'user', 'challenges'));
     }
 
     // Halaman Tutorial & Kamus Koding

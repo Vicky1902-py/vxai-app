@@ -63,6 +63,11 @@
                 <span class="text-base">📰</span> <span>Berita & Artikel</span>
             </a>
 
+            <!-- Kelola Modul Playground -->
+            <a href="{{ route('admin.playground') }}" class="{{ request()->is('admin/playground*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }} flex items-center gap-3 px-3.5 py-3 rounded-xl transition duration-150">
+                <span class="text-base">🎮</span> <span>Modul Playground</span>
+            </a>
+
             <!-- Manajemen User -->
             <a href="{{ route('admin.users') }}" class="{{ request()->is('admin/users*') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-300 hover:bg-slate-800/80 hover:text-white' }} flex items-center gap-3 px-3.5 py-3 rounded-xl transition duration-150">
                 <span class="text-base">👥</span> <span>Manajemen Pengguna</span>

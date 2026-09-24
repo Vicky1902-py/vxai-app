@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\PlaygroundChallenge;
+use App\Services\PlaygroundChallengeService;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -135,6 +137,30 @@ class AdminController extends Controller
             if (Schema::hasTable('articles')) {
                 \App\Services\ArticleContentService::syncDefaultArticles();
             }
+
+            // 7. Tabel playground_challenges (Modul Tantangan Koding Berjenjang)
+            if (!Schema::hasTable('playground_challenges')) {
+                Schema::create('playground_challenges', function (Blueprint $table) {
+                    $table->id();
+                    $table->string('slug')->unique()->index();
+                    $table->string('title');
+                    $table->string('level', 30)->default('pemula')->index();
+                    $table->string('level_badge')->default('🟢 Pemula (HTML5)');
+                    $table->string('category', 50)->default('html')->index();
+                    $table->text('desc')->nullable();
+                    $table->longText('instructions')->nullable();
+                    $table->longText('html_code')->nullable();
+                    $table->longText('css_code')->nullable();
+                    $table->longText('js_code')->nullable();
+                    $table->integer('order_num')->default(1)->index();
+                    $table->boolean('is_active')->default(true)->index();
+                    $table->timestamps();
+                });
+            }
+
+            if (Schema::hasTable('playground_challenges')) {
+                PlaygroundChallengeService::syncDefaultChallenges();
+            }
         } catch (\Throwable $e) {
             // Tangkap dan abaikan agar request web tidak pernah error fatal
         }
@@ -150,6 +176,7 @@ class AdminController extends Controller
         $totalGuru = Schema::hasTable('users') ? DB::table('users')->where('role_id', 2)->count() : 0;
         $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
         $totalArticles = Schema::hasTable('articles') ? DB::table('articles')->count() : 0;
+        $totalChallenges = Schema::hasTable('playground_challenges') ? DB::table('playground_challenges')->count() : 0;
 
         // Metrik Trafik Pengunjung
         $todayVisits = 0;
@@ -206,7 +233,7 @@ class AdminController extends Controller
         }
 
         return view('admin.dashboard', compact(
-            'totalSiswa', 'totalGuru', 'totalSubmissions', 'totalArticles', 'settings',
+            'totalSiswa', 'totalGuru', 'totalSubmissions', 'totalArticles', 'totalChallenges', 'settings',
             'todayVisits', 'weeklyVisits', 'totalVisits', 'recentTraffic',
             'topPages', 'deviceDesktop', 'deviceMobile', 'deviceTablet',
             'recentSubmissions'
@@ -218,12 +245,13 @@ class AdminController extends Controller
     {
         $this->ensureTablesExist();
         \App\Services\ArticleContentService::syncDefaultArticles(true);
+        PlaygroundChallengeService::syncDefaultChallenges(true);
 
         if (Auth::check() && Auth::user()->role_id === 1) {
-            return redirect()->route('admin.dashboard')->with('success', 'Seluruh tabel dan struktur database serta artikel tutorial koding/AI/HTML berhasil diperbarui!');
+            return redirect()->route('admin.dashboard')->with('success', 'Seluruh tabel, struktur database, artikel tutorial, dan modul playground berhasil diperbarui!');
         }
 
-        return response('<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>Update Berhasil</title><style>body{font-family:sans-serif;padding:60px 20px;text-align:center;background:#f8fafc;color:#0f172a}h1{color:#16a34a;margin-bottom:12px}p{color:#475569;margin-bottom:24px}a{color:#2563eb;font-weight:bold;text-decoration:none;margin:0 12px;padding:8px 16px;background:#e0e7ff;border-radius:8px}</style></head><body><h1>✅ Sukses! Database & 6 Artikel Koding/AI/HTML Berhasil Disinkronisasi!</h1><p>Seluruh materi tutorial terbaru kini telah aktif dan tersimpan rapi di database.</p><p><a href="/">Kembali ke Beranda</a><a href="/berita">Buka Portal Berita</a><a href="/admin">Masuk ke Admin</a></p></body></html>', 200, ['Content-Type' => 'text/html; charset=utf-8']);
+        return response('<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>Update Berhasil</title><style>body{font-family:sans-serif;padding:60px 20px;text-align:center;background:#f8fafc;color:#0f172a}h1{color:#16a34a;margin-bottom:12px}p{color:#475569;margin-bottom:24px}a{color:#2563eb;font-weight:bold;text-decoration:none;margin:0 12px;padding:8px 16px;background:#e0e7ff;border-radius:8px}</style></head><body><h1>✅ Sukses! Database, Artikel, & 10 Modul Tantangan Playground Berhasil Disinkronisasi!</h1><p>Seluruh sistem terbaru kini telah aktif dan tersimpan rapi di database.</p><p><a href="/">Kembali ke Beranda</a><a href="/playground">Buka Live Playground</a><a href="/admin">Masuk ke Admin</a></p></body></html>', 200, ['Content-Type' => 'text/html; charset=utf-8']);
     }
 
     // Manajemen Pengguna (Daftar User)
@@ -631,5 +659,228 @@ class AdminController extends Controller
     private function seedInitialArticles()
     {
         \App\Services\ArticleContentService::syncDefaultArticles(true);
+    }
+
+    // ========================================================
+    // MANAJEMEN MODUL PLAYGROUND & TANTANGAN KODING (CRUD)
+    // ========================================================
+
+    // Daftar Modul Tantangan Koding
+    public function playgroundChallenges(Request $request)
+    {
+        $this->ensureTablesExist();
+
+        $query = PlaygroundChallenge::query();
+
+        // Filter Level
+        if ($request->filled('level') && $request->level !== 'all') {
+            $query->where('level', $request->level);
+        }
+
+        // Filter Kategori
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->where('category', $request->category);
+        }
+
+        // Pencarian Judul
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $challenges = $query->orderBy('order_num', 'asc')->orderBy('id', 'asc')->paginate(15);
+        $settings = $this->getSettings();
+        
+        $counts = [
+            'total' => PlaygroundChallenge::count(),
+            'pemula' => PlaygroundChallenge::where('level', 'pemula')->count(),
+            'menengah' => PlaygroundChallenge::where('level', 'menengah')->count(),
+            'mahir' => PlaygroundChallenge::where('level', 'mahir')->count(),
+            'active' => PlaygroundChallenge::where('is_active', true)->count(),
+        ];
+
+        return view('admin.playground.index', compact('challenges', 'settings', 'counts'));
+    }
+
+    // Formulir Tambah Modul Tantangan Koding
+    public function createPlaygroundChallenge()
+    {
+        $this->ensureTablesExist();
+        $settings = $this->getSettings();
+        $templates = PlaygroundChallengeService::getStarterTemplates();
+        $challenge = null;
+        $nextOrder = (PlaygroundChallenge::max('order_num') ?? 0) + 1;
+
+        return view('admin.playground.form', compact('settings', 'templates', 'challenge', 'nextOrder'));
+    }
+
+    // Simpan Modul Tantangan Koding Baru
+    public function storePlaygroundChallenge(Request $request)
+    {
+        $this->ensureTablesExist();
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'level' => 'required|in:pemula,menengah,mahir',
+            'category' => 'required|string|max:50',
+            'level_badge' => 'nullable|string|max:100',
+            'desc' => 'nullable|string|max:1000',
+            'instructions' => 'nullable|string',
+            'html_code' => 'nullable|string',
+            'css_code' => 'nullable|string',
+            'js_code' => 'nullable|string',
+            'order_num' => 'nullable|integer|min:1',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        // Buat slug unik
+        $baseSlug = Str::slug($request->title, '_');
+        $slug = $baseSlug ?: 'latihan_' . time();
+        $counter = 1;
+        while (PlaygroundChallenge::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '_' . $counter++;
+        }
+
+        // Tentukan level_badge otomatis jika kosong
+        $levelBadge = $request->level_badge;
+        if (empty($levelBadge)) {
+            $levelBadge = match ($request->level) {
+                'pemula' => '🟢 Pemula (' . strtoupper($request->category) . ')',
+                'menengah' => '🔵 Menengah (' . strtoupper($request->category) . ')',
+                'mahir' => '🟣 Mahir (' . strtoupper($request->category) . ')',
+                default => '⚪ ' . ucfirst($request->level),
+            };
+        }
+
+        // Parsing instruksi baris per baris menjadi array
+        $instructions = [];
+        if ($request->filled('instructions')) {
+            $lines = explode("\n", str_replace("\r", "", $request->instructions));
+            foreach ($lines as $line) {
+                $trimmed = trim($line);
+                if (!empty($trimmed)) {
+                    $instructions[] = $trimmed;
+                }
+            }
+        }
+
+        $challenge = new PlaygroundChallenge();
+        $challenge->slug = $slug;
+        $challenge->title = $request->title;
+        $challenge->level = $request->level;
+        $challenge->level_badge = $levelBadge;
+        $challenge->category = $request->category;
+        $challenge->desc = $request->desc;
+        $challenge->instructions = $instructions;
+        $challenge->html_code = $request->html_code ?? '';
+        $challenge->css_code = $request->css_code ?? '';
+        $challenge->js_code = $request->js_code ?? '';
+        $challenge->order_num = $request->order_num ?? ((PlaygroundChallenge::max('order_num') ?? 0) + 1);
+        $challenge->is_active = $request->boolean('is_active', true);
+        $challenge->save();
+
+        return redirect()->route('admin.playground')->with('success', "Modul latihan '{$challenge->title}' berhasil ditambahkan ke Playground!");
+    }
+
+    // Formulir Edit Modul Tantangan Koding
+    public function editPlaygroundChallenge($id)
+    {
+        $this->ensureTablesExist();
+        $challenge = PlaygroundChallenge::findOrFail($id);
+        $settings = $this->getSettings();
+        $templates = PlaygroundChallengeService::getStarterTemplates();
+        $nextOrder = $challenge->order_num;
+
+        return view('admin.playground.form', compact('settings', 'templates', 'challenge', 'nextOrder'));
+    }
+
+    // Update Modul Tantangan Koding
+    public function updatePlaygroundChallenge(Request $request, $id)
+    {
+        $this->ensureTablesExist();
+        $challenge = PlaygroundChallenge::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'level' => 'required|in:pemula,menengah,mahir',
+            'category' => 'required|string|max:50',
+            'level_badge' => 'nullable|string|max:100',
+            'desc' => 'nullable|string|max:1000',
+            'instructions' => 'nullable|string',
+            'html_code' => 'nullable|string',
+            'css_code' => 'nullable|string',
+            'js_code' => 'nullable|string',
+            'order_num' => 'nullable|integer|min:1',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        // Tentukan level_badge jika kosong
+        $levelBadge = $request->level_badge;
+        if (empty($levelBadge)) {
+            $levelBadge = match ($request->level) {
+                'pemula' => '🟢 Pemula (' . strtoupper($request->category) . ')',
+                'menengah' => '🔵 Menengah (' . strtoupper($request->category) . ')',
+                'mahir' => '🟣 Mahir (' . strtoupper($request->category) . ')',
+                default => '⚪ ' . ucfirst($request->level),
+            };
+        }
+
+        // Parsing instruksi baris per baris menjadi array
+        $instructions = [];
+        if ($request->filled('instructions')) {
+            $lines = explode("\n", str_replace("\r", "", $request->instructions));
+            foreach ($lines as $line) {
+                $trimmed = trim($line);
+                if (!empty($trimmed)) {
+                    $instructions[] = $trimmed;
+                }
+            }
+        }
+
+        $challenge->title = $request->title;
+        $challenge->level = $request->level;
+        $challenge->level_badge = $levelBadge;
+        $challenge->category = $request->category;
+        $challenge->desc = $request->desc;
+        $challenge->instructions = $instructions;
+        $challenge->html_code = $request->html_code ?? '';
+        $challenge->css_code = $request->css_code ?? '';
+        $challenge->js_code = $request->js_code ?? '';
+        $challenge->order_num = $request->order_num ?? $challenge->order_num;
+        $challenge->is_active = $request->boolean('is_active');
+        $challenge->save();
+
+        return redirect()->route('admin.playground')->with('success', "Modul latihan '{$challenge->title}' berhasil diperbarui!");
+    }
+
+    // Hapus Modul Tantangan
+    public function deletePlaygroundChallenge($id)
+    {
+        $this->ensureTablesExist();
+        $challenge = PlaygroundChallenge::findOrFail($id);
+        $title = $challenge->title;
+        $challenge->delete();
+
+        return redirect()->route('admin.playground')->with('success', "Modul latihan '{$title}' berhasil dihapus!");
+    }
+
+    // Toggle Status Aktif / Nonaktif
+    public function togglePlaygroundChallenge($id)
+    {
+        $this->ensureTablesExist();
+        $challenge = PlaygroundChallenge::findOrFail($id);
+        $challenge->is_active = !$challenge->is_active;
+        $challenge->save();
+
+        $status = $challenge->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        return redirect()->back()->with('success', "Modul latihan '{$challenge->title}' berhasil {$status}!");
+    }
+
+    // Reset ke 10 Tantangan Bawaan Default
+    public function resetDefaultPlaygroundChallenges()
+    {
+        $this->ensureTablesExist();
+        PlaygroundChallengeService::syncDefaultChallenges(true);
+
+        return redirect()->route('admin.playground')->with('success', 'Berhasil mereset seluruh modul latihan ke 10 tantangan bawaan lengkap!');
     }
 }
