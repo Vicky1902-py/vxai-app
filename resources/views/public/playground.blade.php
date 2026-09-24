@@ -20,6 +20,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
     
+    <!-- URL Kanonikal SEO -->
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Google Search Console & Webmaster Verification -->
+    @if(!empty($settings['google_site_verification']))
+        @if(\Illuminate\Support\Str::startsWith(trim($settings['google_site_verification']), '<meta'))
+            {!! $settings['google_site_verification'] !!}
+        @else
+            <meta name="google-site-verification" content="{{ trim($settings['google_site_verification']) }}">
+        @endif
+    @endif
+
+    @if(!empty($settings['custom_meta_tags']))
+        {!! $settings['custom_meta_tags'] !!}
+    @endif
+
     <!-- Google AdSense Script (Otomatis Aktif jika Dikonfigurasi) -->
     @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ $settings['adsense_client_id'] }}"

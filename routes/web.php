@@ -35,8 +35,13 @@ Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 
-// Endpoint Resmi ads.txt (Dinamis dari Pengaturan Admin)
+// Endpoint Resmi ads.txt (Dinamis dari Pengaturan Admin - Google AdSense)
 Route::get('/ads.txt', [PublicController::class, 'adsTxt'])->name('ads.txt');
+
+// Endpoint SEO & Google Search Console
+Route::get('/sitemap.xml', [PublicController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [PublicController::class, 'robotsTxt'])->name('robots.txt');
+Route::get('/google{code}.html', [PublicController::class, 'googleVerificationHtml'])->where('code', '[a-zA-Z0-9_-]+')->name('google.verify.html');
 
 // Jalankan Migrasi Database Otomatis jika diperlukan
 Route::get('/migrate-db', [AdminController::class, 'runMigration'])->name('migrate.db');

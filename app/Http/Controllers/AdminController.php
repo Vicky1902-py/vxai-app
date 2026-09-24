@@ -70,6 +70,7 @@ class AdminController extends Controller
                     ['setting_key' => 'app_name', 'setting_value' => 'VxAI Coding Lab', 'created_at' => now(), 'updated_at' => now()],
                     ['setting_key' => 'maintenance_mode', 'setting_value' => 'false', 'created_at' => now(), 'updated_at' => now()],
                     ['setting_key' => 'contact_email', 'setting_value' => 'admin@vxai.online', 'created_at' => now(), 'updated_at' => now()],
+                    ['setting_key' => 'robots_txt_content', 'setting_value' => "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /login\nDisallow: /guru\nDisallow: /siswa\nDisallow: /migrate-db\n\nUser-agent: Mediapartners-Google\nAllow: /\n\nSitemap: https://vxai.online/sitemap.xml", 'created_at' => now(), 'updated_at' => now()],
                 ]);
             }
 

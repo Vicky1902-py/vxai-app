@@ -83,14 +83,52 @@ class PublicController extends Controller
         return view('public.contact', compact('settings'));
     }
 
-    // Endpoint ads.txt dinamis
+    // Endpoint ads.txt dinamis (Google AdSense)
     public function adsTxt()
     {
         $settings = $this->getSettings();
         $content = $settings['ads_txt_content'] ?? "# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0";
         
         return response($content, 200)
-            ->header('Content-Type', 'text/plain');
+            ->header('Content-Type', 'text/plain; charset=utf-8');
+    }
+
+    // Endpoint sitemap.xml publik untuk Google Search Console & Mesin Pencari
+    public function sitemap()
+    {
+        $articles = [];
+        if (Schema::hasTable('articles')) {
+            $articles = Article::published()->orderBy('updated_at', 'desc')->get();
+        }
+
+        $now = now()->toAtomString();
+        $xml = view('public.sitemap', compact('articles', 'now'))->render();
+
+        return response($xml, 200)
+            ->header('Content-Type', 'application/xml; charset=utf-8');
+    }
+
+    // Endpoint robots.txt dinamis (Dengan izin eksplisit untuk crawler AdSense & Googlebot)
+    public function robotsTxt()
+    {
+        $settings = $this->getSettings();
+        $defaultRobots = "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /login\nDisallow: /guru\nDisallow: /siswa\nDisallow: /migrate-db\n\nUser-agent: Mediapartners-Google\nAllow: /\n\nSitemap: " . url('/sitemap.xml');
+
+        $content = !empty($settings['robots_txt_content']) ? $settings['robots_txt_content'] : $defaultRobots;
+
+        if (!str_contains($content, 'Sitemap:')) {
+            $content = rtrim($content) . "\n\nSitemap: " . url('/sitemap.xml');
+        }
+
+        return response($content, 200)
+            ->header('Content-Type', 'text/plain; charset=utf-8');
+    }
+
+    // Verifikasi kepemilikan Google Search Console via file HTML (google{code}.html)
+    public function googleVerificationHtml($code)
+    {
+        return response("google-site-verification: google{$code}.html", 200)
+            ->header('Content-Type', 'text/html; charset=utf-8');
     }
 
     // Submit Kode dari Playground (Mendukung Siswa Login & Pengunjung Tamu)

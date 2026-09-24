@@ -16,6 +16,22 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- URL Kanonikal SEO -->
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Google Search Console & Webmaster Verification -->
+    @if(!empty($settings['google_site_verification']))
+        @if(\Illuminate\Support\Str::startsWith(trim($settings['google_site_verification']), '<meta'))
+            {!! $settings['google_site_verification'] !!}
+        @else
+            <meta name="google-site-verification" content="{{ trim($settings['google_site_verification']) }}">
+        @endif
+    @endif
+
+    @if(!empty($settings['custom_meta_tags']))
+        {!! $settings['custom_meta_tags'] !!}
+    @endif
+
     <!-- Google AdSense Script (Otomatis Aktif jika Dikonfigurasi di Admin) -->
     @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ $settings['adsense_client_id'] }}"
