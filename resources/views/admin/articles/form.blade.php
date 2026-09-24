@@ -198,7 +198,7 @@
                         <select name="category" id="category" class="w-full px-4 py-3 rounded-2xl border border-slate-300 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 bg-white">
                             <option value="coding" {{ old('category', $article->category) === 'coding' ? 'selected' : '' }}>💻 Coding & Web Development</option>
                             <option value="ai" {{ old('category', $article->category) === 'ai' ? 'selected' : '' }}>🤖 Tips & Trik AI (Kecerdasan Artifisial)</option>
-                            <option value="teknologi" {{ old('category', $article->category) === 'teknologi' ? 'selected' : '' }}>🌐 Tren Teknologi & NTT Digital</option>
+                            <option value="teknologi" {{ old('category', $article->category) === 'teknologi' ? 'selected' : '' }}>🌐 Tren Teknologi & Inovasi Digital</option>
                             <option value="komputer" {{ old('category', $article->category) === 'komputer' ? 'selected' : '' }}>🖥️ Komputer, Hardware & PC</option>
                             <option value="android" {{ old('category', $article->category) === 'android' ? 'selected' : '' }}>📱 Tips & Trik Android</option>
                         </select>
@@ -225,7 +225,7 @@
                             <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
                                 💻 Coding Matrix
                             </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
                                 🤖 AI Futuristic
                             </button>
                             <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
@@ -237,8 +237,8 @@
                             <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
                                 📱 Android Smartphone
                             </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1548784741-0e7f108d7755?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                🏝️ Pulau Padar NTT
+                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                🔒 Cloud & Cyber Tech
                             </button>
                         </div>
                     </div>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', ($settings['app_name'] ?? 'VxAI Coding Lab') . ' - Platform Belajar Koding & AI')</title>
-    <meta name="description" content="@yield('meta_description', 'Platform belajar koding, HTML, CSS, JavaScript gratis dan interaktif untuk talenta digital masa depan dari Nusa Tenggara Timur.')">
+    <meta name="description" content="@yield('meta_description', 'Platform belajar koding, HTML, CSS, JavaScript gratis dan interaktif untuk talenta digital masa depan.')">
     
     <!-- Favicon -->
     @if(!empty($settings['app_favicon']))
@@ -58,7 +58,7 @@
                     @endif
                     <div>
                         <span class="font-extrabold text-lg tracking-tight text-slate-900 group-hover:text-blue-600 transition block leading-tight">{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
-                        <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider block">NTT Digital Academy</span>
+                        <span class="text-[10px] text-blue-600 font-bold uppercase tracking-wider block">Modern Coding & AI Lab</span>
                     </div>
                 </a>
 
@@ -127,7 +127,7 @@
         </div>
     @endif
 
-    <!-- Footer Publik (Wajib AdSense & Konteks NTT) -->
+    <!-- Footer Publik (Wajib AdSense & Legalitas) -->
     <footer class="bg-slate-950 text-slate-400 text-xs py-12 mt-16 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -139,11 +139,11 @@
                         <span>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
                     </div>
                     <p class="text-slate-400 leading-relaxed text-xs">
-                        Platform edukasi koding dan kecerdasan buatan interaktif. Membangun keahlian rekayasa perangkat lunak generasi masa depan dari Nusa Tenggara Timur untuk Indonesia dan dunia.
+                        Platform edukasi koding dan kecerdasan buatan interaktif. Membangun keahlian rekayasa perangkat lunak generasi masa depan untuk Indonesia dan dunia.
                     </p>
                     <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/80 border border-blue-800/60 text-blue-300 text-[11px] font-semibold">
-                        <span>🏝️</span>
-                        <span>Bumi Flobamorata - NTT</span>
+                        <span>⚡</span>
+                        <span>Inovasi Koding & AI Terbuka</span>
                     </div>
                 </div>
 
@@ -183,7 +183,7 @@
 
             <div class="border-t border-slate-800/80 pt-6 flex flex-col md:flex-row justify-between items-center text-slate-500 gap-2">
                 <p>&copy; {{ date('Y') }} {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}. Hak Cipta Dilindungi Undang-Undang.</p>
-                <p>Dikembangkan untuk SMKN 1 Kupang Barat & Akses Terbuka Pembelajar Seluruh Indonesia.</p>
+                <p>Platform Edukasi Koding & Akses Terbuka Pembelajar Seluruh Indonesia.</p>
             </div>
         </div>
     </footer>

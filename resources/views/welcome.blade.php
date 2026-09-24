@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }} - Platform Belajar Koding & AI dari NTT</title>
-    <meta name="description" content="Platform pembelajaran interaktif koding HTML, CSS, JavaScript dan Kecerdasan Artifisial langsung dari browser. Dikembangkan untuk SMKN 1 Kupang Barat dan talenta digital Nusa Tenggara Timur.">
+    <title>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }} - Platform Belajar Koding, AI & Inovasi Teknologi</title>
+    <meta name="description" content="Platform pembelajaran interaktif koding HTML, CSS, JavaScript dan Kecerdasan Artifisial langsung dari browser untuk talenta digital masa depan.">
 
     <!-- Favicon -->
     @if(!empty($settings['app_favicon']))
@@ -62,7 +62,7 @@
                     @endif
                     <div>
                         <span class="font-black text-lg tracking-tight text-slate-900 group-hover:text-blue-600 transition block leading-tight">{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
-                        <span class="text-[10px] text-blue-600 font-extrabold uppercase tracking-wider block">NTT Digital Academy</span>
+                        <span class="text-[10px] text-blue-600 font-extrabold uppercase tracking-wider block">Modern Coding & AI Lab</span>
                     </div>
                 </a>
 
@@ -114,19 +114,19 @@
     </nav>
 
     <!-- ======================================================== -->
-    <!-- HERO SECTION: Kuasai Koding & Inspirasi NTT -->
+    <!-- HERO SECTION: Kuasai Koding & Inovasi AI Modern -->
     <!-- ======================================================== -->
     <main class="flex-grow pt-24">
         
         <!-- Hero Header -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12 sm:pb-16 text-center">
             
-            <!-- Badge Asal & Pembinaan NTT -->
+            <!-- Badge Platform Koding & AI -->
             <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-blue-100/90 border border-blue-200 text-blue-800 text-xs font-bold mb-6 shadow-sm">
                 <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-                <span>🏝️ Dari Nusa Tenggara Timur untuk Talenta Digital Indonesia</span>
+                <span>🚀 Laboratorium Koding & AI Interaktif Generasi Masa Depan</span>
                 <span class="text-blue-400">•</span>
-                <span class="text-blue-900 font-extrabold">SMKN 1 Kupang Barat</span>
+                <span class="text-blue-900 font-extrabold">VxAI Tech Portal</span>
             </div>
 
             <!-- Judul Utama (High Contrast & Clear Typography) -->
@@ -137,7 +137,7 @@
 
             <!-- Deskripsi Jelas & Nyaman Terbaca -->
             <p class="text-base sm:text-lg md:text-xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed font-normal">
-                Platform laboratorium koding interaktif nomor satu di Nusa Tenggara Timur. Tulis HTML5, tata letak CSS3, logika JavaScript, dan jelajahi asisten AI modern tanpa hambatan instalasi.
+                Platform laboratorium koding dan teknologi komprehensif. Tulis HTML5, tata letak CSS3, logika JavaScript, dan jelajahi asisten AI modern tanpa hambatan instalasi.
             </p>
             
             <!-- Tombol Navigasi Utama -->
@@ -152,38 +152,38 @@
             </div>
 
             <!-- ======================================================== -->
-            <!-- HERO SHOWCASE: Foto Spektakuler Pulau Padar - NTT -->
+            <!-- HERO SHOWCASE: Visual Modern Developer Workspace & AI Coding -->
             <!-- ======================================================== -->
             <div class="relative max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-slate-900 group">
-                <!-- Gambar Utama Padar Island NTT -->
-                <img src="https://images.unsplash.com/photo-1548784741-0e7f108d7755?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=1600" 
-                     alt="Keindahan Pulau Padar Labuan Bajo NTT" 
+                <!-- Gambar Utama Modern Coding & Tech Workspace -->
+                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1600&q=80" 
+                     alt="Modern Developer Coding Workspace & AI Sandbox" 
                      class="w-full h-72 sm:h-96 md:h-[440px] object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-95">
                 
-                <!-- Overlay Gradien Biru Lembut -->
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+                <!-- Overlay Gradien Biru Gelap Modern -->
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent"></div>
 
                 <!-- Floating Badges di Sudut Atas -->
                 <div class="absolute top-4 left-4 sm:top-6 sm:left-6 flex flex-wrap gap-2 z-10">
                     <div class="bg-slate-900/80 backdrop-blur-md border border-white/20 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg">
-                        <span class="text-sky-400">📍</span>
-                        <span>Pulau Padar, Labuan Bajo - NTT</span>
+                        <span class="text-sky-400">⚡</span>
+                        <span>Full-Stack Web & AI Sandbox</span>
                     </div>
                     <div class="hidden sm:inline-flex bg-blue-600/90 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl text-xs font-bold items-center gap-1.5 shadow-lg">
-                        <span>✨</span>
-                        <span>Inspirasi Flobamorata</span>
+                        <span>🤖</span>
+                        <span>AI-Powered Interactive Tutor</span>
                     </div>
                 </div>
 
                 <!-- Content Banner di Bawah Gambar -->
                 <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-8 sm:right-8 text-left text-white z-10">
                     <div class="max-w-2xl">
-                        <span class="text-sky-300 text-xs font-extrabold uppercase tracking-wider block mb-1">Semangat Keunggulan Digital</span>
+                        <span class="text-sky-300 text-xs font-extrabold uppercase tracking-wider block mb-1">Akselerasi Penguasaan Teknologi</span>
                         <h3 class="text-lg sm:text-2xl font-black text-white leading-snug drop-shadow-md">
-                            "Membakar Semangat Juang Talenta Nusa Tenggara Timur Menuju Panggung Teknologi Dunia"
+                            "Membangun Kemandirian Rekayasa Perangkat Lunak & Kecerdasan Artifisial Modern"
                         </h3>
                         <p class="text-xs sm:text-sm text-slate-200 mt-2 font-normal hidden sm:block leading-relaxed opacity-95">
-                            Dari pesona alam megah Labuan Bajo hingga Kupang Barat, kami percaya anak-anak NTT mampu menciptakan karya perangkat lunak berkelas global.
+                            Eksplorasi kode interaktif real-time, arsitektur modern web, neural network, dan inovasi teknologi terkini langsung dari browser Anda tanpa instalasi rumit.
                         </p>
                     </div>
                 </div>
@@ -212,115 +212,115 @@
         </section>
 
         <!-- ======================================================== -->
-        <!-- SECTION 2: Galeri Pesona NTT & Semangat Inovasi Digital -->
+        <!-- SECTION 2: 4 Pilar Utama Teknologi & Kecerdasan Artifisial Modern -->
         <!-- ======================================================== -->
         <section class="bg-gradient-to-b from-blue-900 via-slate-900 to-blue-950 text-white py-16 sm:py-24 border-y border-blue-950">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                <!-- Header Section NTT -->
+                <!-- Header Section 4 Pilar -->
                 <div class="text-center max-w-3xl mx-auto mb-14">
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-sky-300 text-xs font-bold mb-4">
-                        <span>🏝️ Pesona Alam & Kebudayaan Flobamorata</span>
+                        <span>🚀 Ekosistem Pembelajaran Masa Depan</span>
                     </div>
                     <h2 class="text-2xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-                        Dari Bumi Nusa Tenggara Timur untuk Kemajuan Teknologi Bangsa
+                        4 Pilar Utama Teknologi, Koding & Kecerdasan Artifisial
                     </h2>
                     <p class="text-sm sm:text-base text-slate-300 mt-4 leading-relaxed">
-                        Keindahan alam, kekayaan budaya, dan ketangguhan maritim NTT menjadi landasan filosofis kami dalam membangun wadah belajar koding yang inspiratif dan berakar pada kearifan lokal.
+                        Dirancang untuk mempercepat penguasaan teknologi Anda melalui perpaduan teori terstruktur, simulasi langsung di browser, dan wawasan perkembangan industri terkini.
                     </p>
                 </div>
 
-                <!-- 4 Bento Cards Destinasi & Nilai NTT -->
+                <!-- 4 Bento Cards Pilar Teknologi -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     
-                    <!-- Card 1: Pulau Padar / Labuan Bajo -->
+                    <!-- Card 1: AI & Deep Learning -->
                     <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-sky-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
                         <div class="relative h-48 overflow-hidden bg-slate-900">
-                            <img src="https://images.unsplash.com/photo-1548784741-0e7f108d7755?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
-                                 alt="Pulau Padar Labuan Bajo" 
+                            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Kecerdasan Artifisial & AI Generatif" 
                                  class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                             <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-sky-300 border border-white/10">
-                                Manggarai Barat
+                                Artificial Intelligence
                             </div>
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-sky-300 transition">Pulau Padar & Labuan Bajo</h3>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-sky-300 transition">Kecerdasan Artifisial & AI Generatif</h3>
                                 <p class="text-xs text-slate-300 leading-relaxed">
-                                    Simbol keberanian menjelajah batas dunia. Menginspirasi siswa untuk memiliki wawasan teknologi luas dan berdaya saing global.
+                                    Memahami prinsip Large Language Models (LLM), otomasi cerdas, neural networks, dan integrasi prompt engineering untuk rekayasa perangkat lunak modern.
                                 </p>
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-sky-400 flex items-center gap-1">
-                                <span>Visi Global Talenta Muda</span> ➔
+                                <span>Eksplorasi AI & Deep Learning</span> ➔
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 2: Danau Tiga Warna Kelimutu -->
+                    <!-- Card 2: Web & Full-Stack Engineering -->
                     <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-emerald-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
                         <div class="relative h-48 overflow-hidden bg-slate-900">
-                            <img src="https://images.unsplash.com/photo-1786101781735-56794d377e31?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
-                                 alt="Danau Kelimutu Flores" 
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Pemrograman Web & Clean Code" 
                                  class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                             <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-emerald-300 border border-white/10">
-                                Ende - Flores
+                                Software Engineering
                             </div>
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-emerald-300 transition">Danau Kawah Kelimutu</h3>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-emerald-300 transition">Rekayasa Web & Clean Code</h3>
                                 <p class="text-xs text-slate-300 leading-relaxed">
-                                    Harmoni tiga kawah yang bertransformasi warna secara menakjubkan. Seperti perpaduan HTML (fondasi), CSS (seni), dan JS (logika).
+                                    Fondasi kokoh struktur HTML5 semantik, tata letak modern CSS Grid & Flexbox, serta reaktivitas JavaScript DOM untuk aplikasi web tangguh dan berkinerja tinggi.
                                 </p>
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-emerald-400 flex items-center gap-1">
-                                <span>Kreativitas & Estetika Web</span> ➔
+                                <span>Kuasai Full-Stack Web</span> ➔
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 3: Bahari Kepulauan Komodo -->
+                    <!-- Card 3: Cloud & Cyber Security -->
                     <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-blue-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
                         <div class="relative h-48 overflow-hidden bg-slate-900">
-                            <img src="https://images.unsplash.com/photo-1738432323553-b9471e2239b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
-                                 alt="Bahari Labuan Bajo NTT" 
+                            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Cloud Infrastructure & Cyber Security" 
                                  class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                             <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-blue-300 border border-white/10">
-                                Bahari NTT
+                                Cloud & Security
                             </div>
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-blue-300 transition">Bahari & Pinisi Flobamorata</h3>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-blue-300 transition">Infrastruktur Cloud & Keamanan Siber</h3>
                                 <p class="text-xs text-slate-300 leading-relaxed">
-                                    Ketangguhan para pelaut mengarungi samudra menjadi teladan ketekunan menyelesaikan error dan bug pemrograman tingkat lanjut.
+                                    Menyelami arsitektur microservices, komputasi awan skalabel, enkripsi data, dan proteksi sistem digital dari ancaman kerentanan keamanan siber terkini.
                                 </p>
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-blue-400 flex items-center gap-1">
-                                <span>Ketangguhan Problem Solving</span> ➔
+                                <span>Pelajari Cloud & Security</span> ➔
                             </div>
                         </div>
                     </div>
 
-                    <!-- Card 4: SMKN 1 Kupang Barat -->
+                    <!-- Card 4: Mobile & Hardware Innovation -->
                     <div class="bg-slate-800/80 rounded-2xl overflow-hidden border border-slate-700/80 hover:border-indigo-400/60 transition-all duration-300 hover:-translate-y-1.5 group flex flex-col">
                         <div class="relative h-48 overflow-hidden bg-slate-900">
-                            <img src="https://images.unsplash.com/photo-1607427225127-a4ae1d4b050c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
-                                 alt="SMKN 1 Kupang Barat NTT" 
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80" 
+                                 alt="Ekosistem Mobile & Komputasi Cerdas" 
                                  class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                             <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] font-bold text-indigo-300 border border-white/10">
-                                Kupang Barat - Timor
+                                Hardware & Mobile
                             </div>
                         </div>
                         <div class="p-5 flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-indigo-300 transition">SMKN 1 Kupang Barat</h3>
+                                <h3 class="font-bold text-base text-white mb-2 group-hover:text-indigo-300 transition">Ekosistem Mobile & Komputasi Cerdas</h3>
                                 <p class="text-xs text-slate-300 leading-relaxed">
-                                    Rumah pembinaan vokasi kejuruan tempat platform VxAI ini diuji dan diterapkan langsung dalam kegiatan belajar mengajar sehari-hari.
+                                    Pengembangan aplikasi Android responsif, optimalisasi kinerja perangkat keras, integrasi IoT, dan inovasi arsitektur microchip prosesor modern.
                                 </p>
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-700/70 text-[11px] font-semibold text-indigo-400 flex items-center gap-1">
-                                <span>Pusat Inovasi Vokasi</span> ➔
+                                <span>Jelajahi Mobile & Hardware</span> ➔
                             </div>
                         </div>
                     </div>
@@ -500,7 +500,7 @@
         </div>
     @endif
 
-    <!-- Footer Lengkap Pendukung AdSense & Konteks NTT -->
+    <!-- Footer Lengkap Pendukung AdSense -->
     <footer class="bg-slate-950 text-slate-400 text-xs py-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -512,11 +512,11 @@
                         <span>{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}</span>
                     </div>
                     <p class="text-slate-400 leading-relaxed text-xs">
-                        Platform edukasi koding dan kecerdasan buatan interaktif. Membangun keahlian rekayasa perangkat lunak generasi masa depan dari Nusa Tenggara Timur untuk Indonesia dan dunia.
+                        Platform edukasi koding dan kecerdasan buatan interaktif. Membangun keahlian rekayasa perangkat lunak generasi masa depan untuk Indonesia dan dunia.
                     </p>
                     <div class="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/80 border border-blue-800/60 text-blue-300 text-[11px] font-semibold">
-                        <span>🏝️</span>
-                        <span>Bumi Flobamorata - NTT</span>
+                        <span>⚡</span>
+                        <span>Inovasi Koding & AI Terbuka</span>
                     </div>
                 </div>
 
@@ -556,7 +556,7 @@
 
             <div class="border-t border-slate-800/80 pt-6 flex flex-col md:flex-row justify-between items-center text-slate-500 gap-2">
                 <p>&copy; {{ date('Y') }} {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}. Hak Cipta Dilindungi Undang-Undang.</p>
-                <p>Dikembangkan untuk SMKN 1 Kupang Barat & Akses Terbuka Pembelajar Seluruh Indonesia.</p>
+                <p>Platform Edukasi Koding & Akses Terbuka Pembelajar Seluruh Indonesia.</p>
             </div>
         </div>
     </footer>

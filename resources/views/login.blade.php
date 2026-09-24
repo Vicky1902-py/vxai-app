@@ -30,12 +30,12 @@
     <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200/90 flex flex-col md:flex-row relative">
         
         <!-- ============================================== -->
-        <!-- SISI KIRI: Visual Lanskap NTT & Brand Showcase -->
+        <!-- SISI KIRI: Visual Lanskap Koding & Brand Showcase -->
         <!-- ============================================== -->
         <div class="relative md:w-5/12 bg-slate-900 hidden md:flex flex-col justify-between p-8 text-white overflow-hidden">
-            <!-- Background Foto NTT Labuan Bajo/Padar -->
-            <img src="https://images.unsplash.com/photo-1548784741-0e7f108d7755?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=85&w=800" 
-                 alt="NTT Padar Island" 
+            <!-- Background Foto Koding & Cyber Technology -->
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80" 
+                 alt="Coding & Cyber Technology" 
                  class="absolute inset-0 w-full h-full object-cover brightness-75">
             
             <!-- Deep Blue Gradient Overlay -->
@@ -54,19 +54,19 @@
                         {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}
                     </h3>
                     <p class="text-xs text-sky-200 font-bold uppercase tracking-wider mt-1">
-                        Gerbang Literasi Koding NTT
+                        Portal Akses Koding & AI Terpadu
                     </p>
                 </div>
             </div>
 
-            <!-- Footer Kiri (Konteks NTT) -->
+            <!-- Footer Kiri -->
             <div class="relative z-10 pt-8 border-t border-white/10">
                 <p class="text-xs text-slate-200 leading-relaxed font-normal">
-                    "Mencetak generasi unggul rekayasa perangkat lunak dan AI dari SMKN 1 Kupang Barat untuk Indonesia dan dunia."
+                    "Membuka wawasan teknologi generasi masa depan melalui eksplorasi koding mandiri, kecerdasan buatan, dan inovasi komputasi modern."
                 </p>
                 <div class="mt-3 flex items-center gap-2 text-[11px] text-sky-300 font-semibold">
-                    <span>🏝️</span>
-                    <span>Labuan Bajo • Kupang • Flobamorata</span>
+                    <span>💻</span>
+                    <span>Coding • 🤖 AI • 🌐 Future Tech</span>
                 </div>
             </div>
         </div>
@@ -81,7 +81,7 @@
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-blue-600 transition bg-slate-100 px-3 py-1.5 rounded-full">
                     <span>←</span> <span>Beranda</span>
                 </a>
-                <span class="text-xs font-bold text-blue-600">SMKN 1 Kupang Barat</span>
+                <span class="text-xs font-bold text-blue-600">Portal Koding & AI</span>
             </div>
 
             <div>
@@ -143,10 +143,10 @@
                 </form>
             </div>
 
-            <!-- Footer Hak Cipta & NTT Context -->
+            <!-- Footer Hak Cipta -->
             <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
                 &copy; {{ date('Y') }} {{ $settings['app_name'] ?? 'VxAI Coding Lab' }}.<br>
-                SMKN 1 Kupang Barat • Nusa Tenggara Timur.
+                Akses Terpadu Pembelajar, Pengajar & Administrator.
             </div>
 
         </div>
