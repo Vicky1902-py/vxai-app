@@ -259,8 +259,12 @@ class PublicController extends Controller
             }
         }
 
-        // Tambah tayangan (views count) secara aman
-        $article->increment('views_count');
+        // Tambah tayangan (views count) secara real time per sesi pengunjung (murni tanpa rekayasa data dummy)
+        $sessionKey = 'viewed_article_' . $article->id;
+        if (!session()->has($sessionKey)) {
+            $article->increment('views_count');
+            session()->put($sessionKey, now()->timestamp);
+        }
 
         // Artikel Terkait di kategori yang sama
         $relatedArticles = Article::published()

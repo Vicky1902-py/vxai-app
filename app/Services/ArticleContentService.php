@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_09_24_koding_ai_html_v2';
+    public const VERSION = '2026_09_24_koding_ai_html_real_views_v3';
 
     /**
      * Dapatkan daftar 6 artikel edukasi berkualitas tinggi tentang:
@@ -128,7 +128,7 @@ class ArticleContentService
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=1200&q=80',
                 'author_id' => 1,
                 'author_name' => 'Tim Pengajar VxAI',
-                'views_count' => 420,
+                'views_count' => 0,
                 'status' => 'published',
                 'is_featured' => true,
                 'published_at' => $now->copy()->subDays(1),
@@ -194,7 +194,7 @@ SELAIN ITU:
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80',
                 'author_id' => 1,
                 'author_name' => 'Tim Pengajar VxAI',
-                'views_count' => 580,
+                'views_count' => 0,
                 'status' => 'published',
                 'is_featured' => true,
                 'published_at' => $now->copy()->subDays(2),
@@ -257,7 +257,7 @@ SELAIN ITU:
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80',
                 'author_id' => 1,
                 'author_name' => 'Tim Riset AI VxAI',
-                'views_count' => 610,
+                'views_count' => 0,
                 'status' => 'published',
                 'is_featured' => true,
                 'published_at' => $now->copy()->subDays(3),
@@ -365,7 +365,7 @@ SELAIN ITU:
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80',
                 'author_id' => 1,
                 'author_name' => 'Tim Riset Rekayasa Web',
-                'views_count' => 380,
+                'views_count' => 0,
                 'status' => 'published',
                 'is_featured' => false,
                 'published_at' => $now->copy()->subDays(4),
@@ -435,7 +435,7 @@ semantik industri, dan lebih cepat dimuat di browser."</code></pre>
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80',
                 'author_id' => 1,
                 'author_name' => 'Tim Riset AI VxAI',
-                'views_count' => 495,
+                'views_count' => 0,
                 'status' => 'published',
                 'is_featured' => false,
                 'published_at' => $now->copy()->subDays(5),
@@ -603,7 +603,7 @@ semantik industri, dan lebih cepat dimuat di browser."</code></pre>
                 'thumbnail_url' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
                 'author_id' => 1,
                 'author_name' => 'Tim Pengajar VxAI',
-                'views_count' => 510,
+                'views_count' => 0,
                 'status' => 'published',
                 'is_featured' => false,
                 'published_at' => $now->copy()->subDays(6),
@@ -666,8 +666,7 @@ semantik industri, dan lebih cepat dimuat di browser."</code></pre>
                 $existing = DB::table('articles')->where('slug', $item['slug'])->first();
 
                 if ($existing) {
-                    // Update konten agar selalu sinkron dengan versi terbaru dari Git
-                    DB::table('articles')->where('slug', $item['slug'])->update([
+                    $updateData = [
                         'title' => $item['title'],
                         'category' => $item['category'],
                         'summary' => $item['summary'],
@@ -677,9 +676,17 @@ semantik industri, dan lebih cepat dimuat di browser."</code></pre>
                         'status' => $item['status'],
                         'is_featured' => $item['is_featured'],
                         'updated_at' => now(),
-                    ]);
+                    ];
+
+                    // Reset views jika masih memegang nilai dummy bawaan lama agar murni real-time
+                    if (in_array((int)$existing->views_count, [420, 580, 610, 380, 495, 510])) {
+                        $updateData['views_count'] = 0;
+                    }
+
+                    DB::table('articles')->where('slug', $item['slug'])->update($updateData);
                 } else {
-                    // Insert baru
+                    // Insert baru dengan views_count = 0
+                    $item['views_count'] = 0;
                     DB::table('articles')->insert($item);
                 }
             }

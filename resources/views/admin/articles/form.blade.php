@@ -78,7 +78,7 @@
     @endif
 
     <!-- Form Utama -->
-    <form id="article-form" action="{{ $article->exists ? route('admin.articles.update', $article->id) : route('admin.articles.store') }}" method="POST" class="space-y-6">
+    <form id="article-form" action="{{ $article->exists ? route('admin.articles.update', $article->id) : route('admin.articles.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @if($article->exists)
             @method('PUT')
@@ -207,46 +207,95 @@
 
                 <!-- Gambar Sampul (Thumbnail) -->
                 <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center gap-2">
-                        <span>🖼️</span> <span>Gambar Sampul (Thumbnail)</span>
-                    </h3>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5" for="thumbnail_url">URL Gambar</label>
-                        <input type="url" name="thumbnail_url" id="thumbnail_url" value="{{ old('thumbnail_url', $article->thumbnail_url) }}" 
-                               class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-xs text-slate-800 placeholder-slate-400" 
-                               placeholder="https://images.unsplash.com/..." oninput="updateThumbnailPreview(this.value)">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                            <span>🖼️</span> <span>Gambar Sampul (Thumbnail)</span>
+                        </h3>
+                        <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">Upload & URL</span>
                     </div>
 
-                    <!-- Preset Gambar Cepat Unsplash -->
-                    <div>
-                        <span class="block text-[11px] font-bold text-slate-500 mb-2">Pilih Preset Gambar Keren:</span>
-                        <div class="grid grid-cols-2 gap-2 text-[10px]">
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                💻 Coding Matrix
-                            </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                🤖 AI Futuristic
-                            </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                🌐 Teknologi Chip
-                            </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                🖥️ Hardware PC
-                            </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                📱 Android Smartphone
-                            </button>
-                            <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
-                                🔒 Cloud & Cyber Tech
+                    <!-- Tab / Pilihan Mode Input Sampul -->
+                    <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-2xl">
+                        <button type="button" id="tab-btn-upload" onclick="switchThumbTab('upload')" class="py-2 text-xs font-bold rounded-xl transition shadow-sm bg-white text-blue-600">
+                            📁 Unggah File
+                        </button>
+                        <button type="button" id="tab-btn-url" onclick="switchThumbTab('url')" class="py-2 text-xs font-bold rounded-xl transition text-slate-500 hover:text-slate-800">
+                            🔗 URL / Preset
+                        </button>
+                    </div>
+
+                    <!-- SECTION 1: UPLOAD DARI KOMPUTER / HP -->
+                    <div id="thumb-sec-upload" class="space-y-3">
+                        <div id="upload-zone" onclick="document.getElementById('thumbnail_file').click()" 
+                             ondragover="event.preventDefault(); this.classList.add('border-blue-600', 'bg-blue-50');"
+                             ondragleave="this.classList.remove('border-blue-600', 'bg-blue-50');"
+                             ondrop="handleDropFile(event)"
+                             class="border-2 border-dashed border-slate-300 hover:border-blue-500 bg-slate-50/70 hover:bg-blue-50/40 rounded-2xl p-5 text-center cursor-pointer transition group">
+                            <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-2 group-hover:scale-110 transition">
+                                ☁️
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 block">Klik atau Seret Gambar ke Sini</span>
+                            <span class="text-[10px] text-slate-400 block mt-1">Format: JPG, PNG, WEBP, GIF (Maks. 5 MB)</span>
+                            <input type="file" name="thumbnail_file" id="thumbnail_file" accept="image/jpeg,image/png,image/webp,image/gif" class="hidden" onchange="previewSelectedFile(this)">
+                        </div>
+
+                        <!-- Bar Informasi File Terpilih -->
+                        <div id="file-info-bar" class="hidden flex items-center justify-between bg-blue-50 border border-blue-200 p-3 rounded-2xl text-xs">
+                            <div class="flex items-center gap-2.5 truncate">
+                                <span class="text-lg">📸</span>
+                                <div class="truncate text-left">
+                                    <div id="file-info-name" class="font-bold text-slate-900 truncate"></div>
+                                    <div id="file-info-size" class="text-[10px] text-blue-600 font-semibold"></div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="clearSelectedFile()" class="text-rose-500 hover:text-rose-700 font-bold text-xs px-2.5 py-1 bg-white hover:bg-rose-50 rounded-xl border border-rose-200 transition">
+                                ✕ Batal
                             </button>
                         </div>
                     </div>
 
+                    <!-- SECTION 2: URL GAMBAR ATAU PRESET -->
+                    <div id="thumb-sec-url" class="hidden space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1.5" for="thumbnail_url">URL Tautan Gambar</label>
+                            <input type="url" name="thumbnail_url" id="thumbnail_url" value="{{ old('thumbnail_url', $article->thumbnail_url) }}" 
+                                   class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-xs text-slate-800 placeholder-slate-400" 
+                                   placeholder="https://images.unsplash.com/..." oninput="updateThumbnailPreview(this.value)">
+                        </div>
+
+                        <!-- Preset Gambar Cepat Unsplash -->
+                        <div>
+                            <span class="block text-[11px] font-bold text-slate-500 mb-2">Preset Gambar Teknologi Keren:</span>
+                            <div class="grid grid-cols-2 gap-2 text-[10px]">
+                                <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                    💻 Coding Matrix
+                                </button>
+                                <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                    🤖 AI Futuristic
+                                </button>
+                                <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                    🌐 Teknologi Chip
+                                </button>
+                                <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                    🖥️ Hardware PC
+                                </button>
+                                <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                    📱 Android Smartphone
+                                </button>
+                                <button type="button" onclick="setPresetThumbnail('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80')" class="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 text-left font-semibold truncate text-slate-700">
+                                    🔒 Cloud & Cyber Tech
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Pratinjau Gambar -->
-                    <div class="mt-3">
-                        <span class="block text-[11px] font-bold text-slate-500 mb-1.5">Pratinjau Sampul:</span>
-                        <div class="w-full h-36 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center relative">
+                    <div class="pt-2 border-t border-slate-100">
+                        <div class="flex justify-between items-center mb-1.5">
+                            <span class="text-[11px] font-bold text-slate-600">Pratinjau Sampul:</span>
+                            <span id="thumb-source-tag" class="text-[10px] text-slate-400 font-semibold">Tersimpan</span>
+                        </div>
+                        <div class="w-full h-40 rounded-2xl border border-slate-200 overflow-hidden bg-slate-100 flex items-center justify-center relative shadow-inner">
                             <img id="thumbnail-preview-img" src="{{ $article->safe_thumbnail }}" alt="Pratinjau" class="w-full h-full object-cover">
                         </div>
                     </div>
@@ -405,11 +454,93 @@
         }
     });
 
-    // Preview Thumbnail
+    // Pengaturan Tab Thumbnail (Upload vs URL/Preset)
+    function switchThumbTab(tab) {
+        var btnUpload = document.getElementById('tab-btn-upload');
+        var btnUrl = document.getElementById('tab-btn-url');
+        var secUpload = document.getElementById('thumb-sec-upload');
+        var secUrl = document.getElementById('thumb-sec-url');
+
+        if (tab === 'upload') {
+            btnUpload.className = 'py-2 text-xs font-bold rounded-xl transition shadow-sm bg-white text-blue-600';
+            btnUrl.className = 'py-2 text-xs font-bold rounded-xl transition text-slate-500 hover:text-slate-800';
+            secUpload.classList.remove('hidden');
+            secUrl.classList.add('hidden');
+        } else {
+            btnUrl.className = 'py-2 text-xs font-bold rounded-xl transition shadow-sm bg-white text-blue-600';
+            btnUpload.className = 'py-2 text-xs font-bold rounded-xl transition text-slate-500 hover:text-slate-800';
+            secUrl.classList.remove('hidden');
+            secUpload.classList.add('hidden');
+        }
+    }
+
+    // Pratinjau File Gambar yang Diunggah
+    function previewSelectedFile(input) {
+        if (input.files && input.files[0]) {
+            var file = input.files[0];
+            
+            // Validasi ukuran maks 5 MB
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Ukuran gambar terlalu besar! Maksimal 5 MB.');
+                input.value = '';
+                return;
+            }
+
+            document.getElementById('file-info-name').innerText = file.name;
+            document.getElementById('file-info-size').innerText = '(' + (file.size / 1024).toFixed(1) + ' KB)';
+            document.getElementById('file-info-bar').classList.remove('hidden');
+            document.getElementById('upload-zone').classList.add('hidden');
+
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('thumbnail-preview-img').src = e.target.result;
+                document.getElementById('thumb-source-tag').innerText = 'Unggahan Baru (Siap Simpan)';
+                document.getElementById('thumb-source-tag').className = 'text-[10px] text-emerald-600 font-bold';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Drag and Drop File Handlers
+    function handleDropFile(e) {
+        e.preventDefault();
+        var uploadZone = document.getElementById('upload-zone');
+        uploadZone.classList.remove('border-blue-600', 'bg-blue-50');
+        
+        var dt = e.dataTransfer;
+        if (dt.files && dt.files[0]) {
+            var input = document.getElementById('thumbnail_file');
+            input.files = dt.files;
+            previewSelectedFile(input);
+        }
+    }
+
+    // Batal / Hapus Pilihan File
+    function clearSelectedFile() {
+        var fileInput = document.getElementById('thumbnail_file');
+        fileInput.value = '';
+        document.getElementById('file-info-bar').classList.add('hidden');
+        document.getElementById('upload-zone').classList.remove('hidden');
+        
+        var urlVal = document.getElementById('thumbnail_url').value;
+        if (urlVal) {
+            document.getElementById('thumbnail-preview-img').src = urlVal;
+            document.getElementById('thumb-source-tag').innerText = 'Dari URL';
+            document.getElementById('thumb-source-tag').className = 'text-[10px] text-blue-600 font-semibold';
+        } else {
+            document.getElementById('thumbnail-preview-img').src = '{{ $article->safe_thumbnail }}';
+            document.getElementById('thumb-source-tag').innerText = 'Bawaan';
+            document.getElementById('thumb-source-tag').className = 'text-[10px] text-slate-400 font-semibold';
+        }
+    }
+
+    // Preview URL Gambar
     function updateThumbnailPreview(url) {
         var img = document.getElementById('thumbnail-preview-img');
         if (url) {
             img.src = url;
+            document.getElementById('thumb-source-tag').innerText = 'Dari URL';
+            document.getElementById('thumb-source-tag').className = 'text-[10px] text-blue-600 font-semibold';
         }
     }
 

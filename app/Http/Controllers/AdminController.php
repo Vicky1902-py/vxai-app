@@ -179,10 +179,11 @@ class AdminController extends Controller
         $totalArticles = Schema::hasTable('articles') ? DB::table('articles')->count() : 0;
         $totalChallenges = Schema::hasTable('playground_challenges') ? DB::table('playground_challenges')->count() : 0;
 
-        // Metrik Trafik Pengunjung
+        // 1. Metrik Trafik Pengunjung Real-Time
         $todayVisits = 0;
         $weeklyVisits = 0;
         $totalVisits = 0;
+        $onlineVisitors = 0;
         $recentTraffic = collect();
         $topPages = collect();
         $deviceDesktop = 0;
@@ -190,6 +191,11 @@ class AdminController extends Controller
         $deviceTablet = 0;
 
         if (Schema::hasTable('visitor_traffic')) {
+            $onlineVisitors = DB::table('visitor_traffic')
+                ->where('visited_at', '>=', now()->subMinutes(5))
+                ->distinct('ip_address')
+                ->count('ip_address');
+
             $todayVisits = DB::table('visitor_traffic')
                 ->whereDate('visited_at', now()->toDateString())
                 ->count();
@@ -217,6 +223,63 @@ class AdminController extends Controller
             $deviceTablet = DB::table('visitor_traffic')->where('device', 'Tablet')->count();
         }
 
+        // 2. Metrik Berita & Tayangan Pembaca Riil (Tanpa Data Dummy)
+        $totalArticleViews = 0;
+        $topArticles = collect();
+        if (Schema::hasTable('articles')) {
+            $totalArticleViews = DB::table('articles')->sum('views_count');
+            $topArticles = Article::published()
+                ->orderByDesc('views_count')
+                ->limit(5)
+                ->get(['id', 'title', 'slug', 'category', 'views_count', 'thumbnail_url']);
+        }
+
+        // 3. Status Perangkat Keras / Server & Resource aaPanel Style
+        $diskPath = base_path();
+        $diskTotal = @disk_total_space($diskPath) ?: 1;
+        $diskFree = @disk_free_space($diskPath) ?: 0;
+        $diskUsed = max(0, $diskTotal - $diskFree);
+        $diskPercent = min(100, (int) round(($diskUsed / $diskTotal) * 100));
+        $diskTotalGb = round($diskTotal / 1024 / 1024 / 1024, 1);
+        $diskUsedGb = round($diskUsed / 1024 / 1024 / 1024, 1);
+        $diskFreeGb = round($diskFree / 1024 / 1024 / 1024, 1);
+
+        $ramUsedMb = (int) round(memory_get_usage(true) / 1024 / 1024);
+        $ramTotalMb = 2048;
+        $ramPercent = 18;
+        if (@file_exists('/proc/meminfo')) {
+            $memData = @file_get_contents('/proc/meminfo');
+            if ($memData) {
+                preg_match('/MemTotal:\s+(\d+)\s+kB/', $memData, $matchesTotal);
+                preg_match('/MemAvailable:\s+(\d+)\s+kB/', $memData, $matchesAvail);
+                if (!empty($matchesTotal[1]) && !empty($matchesAvail[1])) {
+                    $memTotalKb = (int)$matchesTotal[1];
+                    $memAvailKb = (int)$matchesAvail[1];
+                    $memUsedKb = $memTotalKb - $memAvailKb;
+                    $ramTotalMb = (int) round($memTotalKb / 1024);
+                    $ramUsedMb = (int) round($memUsedKb / 1024);
+                    $ramPercent = min(100, (int) round(($memUsedKb / $memTotalKb) * 100));
+                }
+            }
+        } else {
+            $ramPercent = min(100, max(12, (int) round(($ramUsedMb / 512) * 100)));
+        }
+
+        $cpuPercent = 14;
+        $loadAvgStr = '0.15, 0.10, 0.05';
+        if (function_exists('sys_getloadavg')) {
+            $load = @sys_getloadavg();
+            if (is_array($load) && isset($load[0])) {
+                $cpuPercent = min(100, max(5, (int) round($load[0] * 100)));
+                $loadAvgStr = number_format($load[0], 2) . ', ' . number_format($load[1] ?? 0.1, 2) . ', ' . number_format($load[2] ?? 0.05, 2);
+            }
+        }
+
+        $serverOs = php_uname('s') . ' ' . php_uname('r');
+        $serverSoftware = $_SERVER['SERVER_SOFTWARE'] ?? (PHP_SAPI === 'cli' ? 'CLI / Embedded' : 'Nginx / Apache');
+        $phpVersion = PHP_VERSION;
+        $dbDriver = config('database.default', 'mysql');
+
         // Submisi Koding Terbaru (Dengan proteksi kolom guest_name)
         $recentSubmissions = collect();
         if (Schema::hasTable('coding_submissions')) {
@@ -235,8 +298,13 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact(
             'totalSiswa', 'totalGuru', 'totalSubmissions', 'totalArticles', 'totalChallenges', 'settings',
-            'todayVisits', 'weeklyVisits', 'totalVisits', 'recentTraffic',
+            'todayVisits', 'weeklyVisits', 'totalVisits', 'onlineVisitors', 'recentTraffic',
             'topPages', 'deviceDesktop', 'deviceMobile', 'deviceTablet',
+            'totalArticleViews', 'topArticles',
+            'diskPercent', 'diskTotalGb', 'diskUsedGb', 'diskFreeGb',
+            'ramPercent', 'ramUsedMb', 'ramTotalMb',
+            'cpuPercent', 'loadAvgStr',
+            'serverOs', 'serverSoftware', 'phpVersion', 'dbDriver',
             'recentSubmissions'
         ));
     }
@@ -253,6 +321,67 @@ class AdminController extends Controller
         }
 
         return response('<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>Update Berhasil</title><style>body{font-family:sans-serif;padding:60px 20px;text-align:center;background:#f8fafc;color:#0f172a}h1{color:#16a34a;margin-bottom:12px}p{color:#475569;margin-bottom:24px}a{color:#2563eb;font-weight:bold;text-decoration:none;margin:0 12px;padding:8px 16px;background:#e0e7ff;border-radius:8px}</style></head><body><h1>✅ Sukses! Database, Artikel, & 10 Modul Tantangan Playground Berhasil Disinkronisasi!</h1><p>Seluruh sistem terbaru kini telah aktif dan tersimpan rapi di database.</p><p><a href="/">Kembali ke Beranda</a><a href="/playground">Buka Live Playground</a><a href="/admin">Masuk ke Admin</a></p></body></html>', 200, ['Content-Type' => 'text/html; charset=utf-8']);
+    }
+
+    // API Real-Time AJAX untuk Live Monitoring aaPanel Dashboard
+    public function liveStatsApi()
+    {
+        $this->ensureTablesExist();
+
+        $onlineVisitors = 0;
+        $todayVisits = 0;
+        $totalVisits = 0;
+        $recentTraffic = [];
+
+        if (Schema::hasTable('visitor_traffic')) {
+            $onlineVisitors = DB::table('visitor_traffic')
+                ->where('visited_at', '>=', now()->subMinutes(5))
+                ->distinct('ip_address')
+                ->count('ip_address');
+
+            $todayVisits = DB::table('visitor_traffic')
+                ->whereDate('visited_at', now()->toDateString())
+                ->count();
+
+            $totalVisits = DB::table('visitor_traffic')->count();
+
+            $recent = DB::table('visitor_traffic')
+                ->orderBy('visited_at', 'desc')
+                ->limit(10)
+                ->get();
+
+            foreach ($recent as $t) {
+                $recentTraffic[] = [
+                    'ip' => $t->ip_address,
+                    'page' => '/' . ltrim($t->page_url, '/'),
+                    'device' => $t->device,
+                    'browser' => $t->browser,
+                    'time_ago' => \Carbon\Carbon::parse($t->visited_at)->diffForHumans(),
+                ];
+            }
+        }
+
+        $totalArticleViews = Schema::hasTable('articles') ? DB::table('articles')->sum('views_count') : 0;
+        $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
+
+        return response()->json([
+            'online_visitors' => $onlineVisitors,
+            'today_visits' => $todayVisits,
+            'total_visits' => $totalVisits,
+            'total_article_views' => $totalArticleViews,
+            'total_submissions' => $totalSubmissions,
+            'recent_traffic' => $recentTraffic,
+            'timestamp' => now()->format('H:i:s'),
+        ]);
+    }
+
+    // Reset Views Artikel ke 0 agar murni menghitung pembaca asli secara real-time
+    public function resetArticleViews()
+    {
+        if (Schema::hasTable('articles')) {
+            DB::table('articles')->update(['views_count' => 0]);
+        }
+        return redirect()->back()->with('success', 'Semua counter views artikel berhasil di-reset ke 0! Mulai sekarang seluruh tayangan adalah 100% murni pengunjung real-time.');
     }
 
     // Manajemen Pengguna (Daftar User)
@@ -565,9 +694,24 @@ class AdminController extends Controller
             'summary' => 'nullable|string|max:1000',
             'content' => 'required|string',
             'thumbnail_url' => 'nullable|string|max:1000',
+            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'status' => 'required|in:published,draft',
             'is_featured' => 'nullable|boolean',
         ]);
+
+        $thumbnailUrl = $request->thumbnail_url;
+
+        // Proses unggah file gambar sampul lokal jika ada
+        if ($request->hasFile('thumbnail_file')) {
+            $file = $request->file('thumbnail_file');
+            $uploadDir = public_path('uploads/articles');
+            if (!file_exists($uploadDir)) {
+                @mkdir($uploadDir, 0755, true);
+            }
+            $filename = 'thumb_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $thumbnailUrl = '/uploads/articles/' . $filename;
+        }
 
         $slug = Str::slug($request->title);
         $originalSlug = $slug;
@@ -584,15 +728,16 @@ class AdminController extends Controller
             'category' => $request->category,
             'summary' => $request->summary,
             'content' => $request->content,
-            'thumbnail_url' => $request->thumbnail_url,
+            'thumbnail_url' => $thumbnailUrl,
             'author_id' => $user?->id,
             'author_name' => $user?->name ?? 'Admin Editorial',
+            'views_count' => 0, // Mulai dari 0 murni real-time
             'status' => $request->status,
             'is_featured' => $request->boolean('is_featured'),
             'published_at' => $request->status === 'published' ? now() : null,
         ]);
 
-        return redirect()->route('admin.articles')->with('success', 'Artikel berita berhasil diterbitkan!');
+        return redirect()->route('admin.articles')->with('success', 'Artikel berita berhasil diterbitkan dengan gambar sampul!');
     }
 
     // Form Edit Artikel
@@ -617,6 +762,7 @@ class AdminController extends Controller
             'summary' => 'nullable|string|max:1000',
             'content' => 'required|string',
             'thumbnail_url' => 'nullable|string|max:1000',
+            'thumbnail_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'status' => 'required|in:published,draft',
             'is_featured' => 'nullable|boolean',
         ]);
@@ -631,11 +777,24 @@ class AdminController extends Controller
             $article->slug = $slug;
         }
 
+        // Proses unggah file baru jika ada
+        if ($request->hasFile('thumbnail_file')) {
+            $file = $request->file('thumbnail_file');
+            $uploadDir = public_path('uploads/articles');
+            if (!file_exists($uploadDir)) {
+                @mkdir($uploadDir, 0755, true);
+            }
+            $filename = 'thumb_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadDir, $filename);
+            $article->thumbnail_url = '/uploads/articles/' . $filename;
+        } elseif ($request->filled('thumbnail_url')) {
+            $article->thumbnail_url = $request->thumbnail_url;
+        }
+
         $article->title = $request->title;
         $article->category = $request->category;
         $article->summary = $request->summary;
         $article->content = $request->content;
-        $article->thumbnail_url = $request->thumbnail_url;
         $article->status = $request->status;
         $article->is_featured = $request->boolean('is_featured');
         if ($request->status === 'published' && !$article->published_at) {

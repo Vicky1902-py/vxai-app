@@ -86,6 +86,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/articles/{id}/edit', [AdminController::class, 'editArticle'])->name('admin.articles.edit');
     Route::put('/articles/{id}', [AdminController::class, 'updateArticle'])->name('admin.articles.update');
     Route::delete('/articles/{id}', [AdminController::class, 'deleteArticle'])->name('admin.articles.delete');
+    Route::post('/articles/reset-views', [AdminController::class, 'resetArticleViews'])->name('admin.articles.reset_views');
+
+    // Real-Time Live Traffic & Stats API (aaPanel Style Dashboard Live Stream)
+    Route::get('/api/live-stats', [AdminController::class, 'liveStatsApi'])->name('admin.api.live_stats');
 
     // Manajemen Modul Playground & Tantangan Koding (CRUD)
     Route::get('/playground', [AdminController::class, 'playgroundChallenges'])->name('admin.playground');

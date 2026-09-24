@@ -99,7 +99,10 @@ class Article extends Model
     public function getSafeThumbnailAttribute(): string
     {
         if (!empty($this->thumbnail_url)) {
-            return $this->thumbnail_url;
+            if (str_starts_with($this->thumbnail_url, 'http://') || str_starts_with($this->thumbnail_url, 'https://') || str_starts_with($this->thumbnail_url, '//')) {
+                return $this->thumbnail_url;
+            }
+            return asset(ltrim($this->thumbnail_url, '/'));
         }
 
         return match ($this->category) {

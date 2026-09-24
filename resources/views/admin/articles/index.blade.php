@@ -17,9 +17,17 @@
             </p>
         </div>
 
-        <a href="{{ route('admin.articles.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-3 rounded-2xl transition-all shadow-md shadow-blue-500/20 hover:scale-105 flex items-center gap-2">
-            <span>+ Tulis Artikel Baru</span>
-        </a>
+        <div class="flex flex-wrap items-center gap-2.5">
+            <form action="{{ route('admin.articles.reset_views') }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin me-reset seluruh angka views ke 0 agar perhitungan 100% murni real-time dari pengunjung asli?')">
+                @csrf
+                <button type="submit" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-3 rounded-2xl border border-slate-200 flex items-center gap-1.5 transition" title="Reset angka views ke 0">
+                    <span>🔄</span> <span>Reset Views Real-Time</span>
+                </button>
+            </form>
+            <a href="{{ route('admin.articles.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-3 rounded-2xl transition-all shadow-md shadow-blue-500/20 hover:scale-105 flex items-center gap-2">
+                <span>+ Tulis Artikel Baru</span>
+            </a>
+        </div>
     </div>
 
     <!-- Filter & Pencarian -->
@@ -67,7 +75,7 @@
                         <th class="py-4 px-6">Artikel & Judul</th>
                         <th class="py-4 px-4">Kategori</th>
                         <th class="py-4 px-4">Status</th>
-                        <th class="py-4 px-4 text-center">Tayangan (Views)</th>
+                        <th class="py-4 px-4 text-center">Tayangan Riil (Real-Time)</th>
                         <th class="py-4 px-4">Tanggal Terbit</th>
                         <th class="py-4 px-6 text-right">Aksi</th>
                     </tr>
