@@ -27,6 +27,7 @@ Route::get('/panduan', [PublicController::class, 'tutorials'])->name('public.tut
 
 // Portal Berita & Tips Koding, AI, Komputer, Android
 Route::get('/berita', [PublicController::class, 'newsIndex'])->name('public.news');
+Route::get('/berita/og-image/{slug}.jpg', [PublicController::class, 'articleOgImage'])->name('public.news.og-image');
 Route::get('/berita/{slug}', [PublicController::class, 'newsDetail'])->name('public.news.detail');
 
 // Halaman Legalitas Wajib Google AdSense

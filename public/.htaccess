@@ -1,3 +1,10 @@
+<IfModule mod_mime.c>
+    AddType image/jpeg .jfif .jpe .jpeg .jpg
+    AddType image/png .png
+    AddType image/webp .webp
+    AddType image/gif .gif
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes

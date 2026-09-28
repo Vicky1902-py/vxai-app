@@ -284,4 +284,98 @@ class PublicController extends Controller
 
         return view('public.news_detail', compact('settings', 'article', 'relatedArticles'));
     }
+
+    // Endpoint Pembuat Gambar Open Graph (WhatsApp, Facebook, Twitter) Berukuran Ideal & Kompresi Ringan (<250KB)
+    public function articleOgImage($slug)
+    {
+        $article = Article::where('slug', $slug)->firstOrFail();
+        $imageUrl = $article->safe_thumbnail;
+
+        // Direktori cache gambar Open Graph
+        $cacheDir = public_path('uploads/articles/cache');
+        if (!file_exists($cacheDir)) {
+            @mkdir($cacheDir, 0755, true);
+        }
+
+        $cacheFilename = 'og_' . md5($article->id . '_' . ($article->updated_at?->timestamp ?? 0) . '_' . $article->thumbnail_url) . '.jpg';
+        $cachePath = $cacheDir . '/' . $cacheFilename;
+
+        // Jika cache sudah ada dan ukurannya valid (< 280KB)
+        if (file_exists($cachePath) && filesize($cachePath) > 0 && filesize($cachePath) < 280 * 1024) {
+            return response()->file($cachePath, [
+                'Content-Type' => 'image/jpeg',
+                'Content-Length' => filesize($cachePath),
+                'Cache-Control' => 'public, max-age=604800, immutable',
+            ]);
+        }
+
+        // Ambil data gambar sumber
+        $imageContent = null;
+        if (str_starts_with($imageUrl, 'http://') || str_starts_with($imageUrl, 'https://')) {
+            $parsedUrl = parse_url($imageUrl);
+            // Jika merujuk ke domain sendiri, ambil langsung dari path lokal untuk kecepatan instan
+            if (isset($parsedUrl['path'])) {
+                $localRel = ltrim($parsedUrl['path'], '/');
+                if (file_exists(public_path($localRel))) {
+                    $imageContent = @file_get_contents(public_path($localRel));
+                }
+            }
+            if (!$imageContent) {
+                $ctx = stream_context_create(['http' => ['timeout' => 4]]);
+                $imageContent = @file_get_contents($imageUrl, false, $ctx);
+            }
+        } else {
+            $localPath = public_path(ltrim($imageUrl, '/'));
+            if (file_exists($localPath)) {
+                $imageContent = @file_get_contents($localPath);
+            }
+        }
+
+        // Proses dengan GD jika tersedia
+        if ($imageContent && extension_loaded('gd')) {
+            $srcImg = @imagecreatefromstring($imageContent);
+            if ($srcImg) {
+                $origW = imagesx($srcImg);
+                $origH = imagesy($srcImg);
+
+                // Standar rasio Open Graph WhatsApp & Facebook: 1200 x 630
+                $targetW = 1200;
+                $targetH = 630;
+
+                $srcRatio = $origW / $origH;
+                $targetRatio = $targetW / $targetH;
+
+                if ($srcRatio > $targetRatio) {
+                    $cropW = (int) round($origH * $targetRatio);
+                    $cropH = $origH;
+                    $srcX = (int) round(($origW - $cropW) / 2);
+                    $srcY = 0;
+                } else {
+                    $cropW = $origW;
+                    $cropH = (int) round($origW / $targetRatio);
+                    $srcX = 0;
+                    $srcY = (int) round(($origH - $cropH) / 2);
+                }
+
+                $dstImg = imagecreatetruecolor($targetW, $targetH);
+                imagecopyresampled($dstImg, $srcImg, 0, 0, $srcX, $srcY, $targetW, $targetH, $cropW, $cropH);
+
+                // Simpan kualitas 75 untuk menjamin ukuran selalu di kisaran 120KB - 200KB (aman di bawah limit 300KB WhatsApp)
+                imagejpeg($dstImg, $cachePath, 75);
+                imagedestroy($srcImg);
+                imagedestroy($dstImg);
+
+                if (file_exists($cachePath)) {
+                    return response()->file($cachePath, [
+                        'Content-Type' => 'image/jpeg',
+                        'Content-Length' => filesize($cachePath),
+                        'Cache-Control' => 'public, max-age=604800, immutable',
+                    ]);
+                }
+            }
+        }
+
+        // Fallback jika pemrosesan gagal: alihkan ke gambar thumbnail asli
+        return redirect($imageUrl);
+    }
 }

@@ -703,14 +703,7 @@ class AdminController extends Controller
 
         // Proses unggah file gambar sampul lokal jika ada
         if ($request->hasFile('thumbnail_file')) {
-            $file = $request->file('thumbnail_file');
-            $uploadDir = public_path('uploads/articles');
-            if (!file_exists($uploadDir)) {
-                @mkdir($uploadDir, 0755, true);
-            }
-            $filename = 'thumb_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-            $file->move($uploadDir, $filename);
-            $thumbnailUrl = '/uploads/articles/' . $filename;
+            $thumbnailUrl = $this->processUploadedThumbnail($request->file('thumbnail_file'));
         }
 
         // Fallback gambar sampul otomatis jika kosong agar kartu selalu tampil memikat
@@ -806,14 +799,7 @@ class AdminController extends Controller
 
         // Proses unggah file baru jika ada
         if ($request->hasFile('thumbnail_file')) {
-            $file = $request->file('thumbnail_file');
-            $uploadDir = public_path('uploads/articles');
-            if (!file_exists($uploadDir)) {
-                @mkdir($uploadDir, 0755, true);
-            }
-            $filename = 'thumb_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-            $file->move($uploadDir, $filename);
-            $article->thumbnail_url = '/uploads/articles/' . $filename;
+            $article->thumbnail_url = $this->processUploadedThumbnail($request->file('thumbnail_file'));
         } elseif ($request->filled('thumbnail_url')) {
             $article->thumbnail_url = $request->thumbnail_url;
         }
@@ -1078,5 +1064,50 @@ class AdminController extends Controller
         PlaygroundChallengeService::syncDefaultChallenges(true);
 
         return redirect()->route('admin.playground')->with('success', 'Berhasil mereset seluruh modul latihan ke 10 tantangan bawaan lengkap!');
+    }
+
+    // Helper penyimpanan dan optimasi gambar sampul artikel ke standard JPEG (<250KB)
+    private function processUploadedThumbnail($file): string
+    {
+        $uploadDir = public_path('uploads/articles');
+        if (!file_exists($uploadDir)) {
+            @mkdir($uploadDir, 0755, true);
+        }
+
+        $filename = 'thumb_' . time() . '_' . Str::random(8) . '.jpg';
+        $destPath = $uploadDir . '/' . $filename;
+        $saved = false;
+
+        if (extension_loaded('gd')) {
+            $raw = @file_get_contents($file->getPathname());
+            if ($raw) {
+                $src = @imagecreatefromstring($raw);
+                if ($src) {
+                    $w = imagesx($src);
+                    $h = imagesy($src);
+                    $maxW = 1200;
+                    if ($w > $maxW) {
+                        $newW = $maxW;
+                        $newH = (int) round($h * ($maxW / $w));
+                        $dst = imagecreatetruecolor($newW, $newH);
+                        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
+                        imagejpeg($dst, $destPath, 80);
+                        imagedestroy($dst);
+                    } else {
+                        imagejpeg($src, $destPath, 80);
+                    }
+                    imagedestroy($src);
+                    $saved = true;
+                }
+            }
+        }
+
+        if (!$saved) {
+            $fallbackExt = strtolower($file->getClientOriginalExtension());
+            $filename = 'thumb_' . time() . '_' . Str::random(8) . ($fallbackExt ? '.' . $fallbackExt : '.jpg');
+            $file->move($uploadDir, $filename);
+        }
+
+        return '/uploads/articles/' . $filename;
     }
 }

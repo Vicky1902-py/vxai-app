@@ -1,10 +1,7 @@
 @extends('layouts.public')
 
 @php
-    $ogThumb = $article->safe_thumbnail;
-    if (!str_starts_with($ogThumb, 'http://') && !str_starts_with($ogThumb, 'https://')) {
-        $ogThumb = url($ogThumb);
-    }
+    $ogThumb = route('public.news.og-image', $article->slug);
     $rawSummary = !empty($article->summary) ? $article->summary : strip_tags($article->content);
     $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($rawSummary)));
     $ogDesc = \Illuminate\Support\Str::limit($cleanDesc, 180);
@@ -20,6 +17,7 @@
 @section('og_title', $article->title)
 @section('og_description', $ogDesc)
 @section('og_image', $ogThumb)
+@section('og_image_type', 'image/jpeg')
 
 @section('extra_meta')
     @if($article->published_at)

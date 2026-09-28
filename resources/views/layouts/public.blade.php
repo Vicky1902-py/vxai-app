@@ -32,6 +32,7 @@
     @endphp
     <meta property="og:image" content="@yield('og_image', $defaultOgImage)">
     <meta property="og:image:secure_url" content="@yield('og_image', $defaultOgImage)">
+    <meta property="og:image:type" content="@yield('og_image_type', 'image/jpeg')">
     <meta property="og:image:width" content="@yield('og_image_width', '1200')">
     <meta property="og:image:height" content="@yield('og_image_height', '630')">
     <meta property="og:image:alt" content="@yield('og_title', $settings['app_name'] ?? 'VxAI')">
