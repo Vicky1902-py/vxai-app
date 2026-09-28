@@ -18,7 +18,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- URL Kanonikal SEO -->
-    <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="canonical" href="@yield('canonical_url', url()->current())">
+
+    <!-- Open Graph Protocol (WhatsApp, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:site_name" content="{{ $settings['app_name'] ?? 'VxAI Coding Lab' }}">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="@yield('canonical_url', url()->current())">
+    <meta property="og:title" content="@yield('og_title', ($settings['app_name'] ?? 'VxAI Coding Lab') . ' - Platform Belajar Koding & AI')">
+    <meta property="og:description" content="@yield('meta_description', 'Platform belajar koding, HTML, CSS, JavaScript gratis dan interaktif untuk talenta digital masa depan.')">
+    @php
+        $defaultOgImage = !empty($settings['app_logo']) ? asset($settings['app_logo']) : 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80';
+    @endphp
+    <meta property="og:image" content="@yield('og_image', $defaultOgImage)">
+    <meta property="og:image:secure_url" content="@yield('og_image', $defaultOgImage)">
+    <meta property="og:image:width" content="@yield('og_image_width', '1200')">
+    <meta property="og:image:height" content="@yield('og_image_height', '630')">
+    <meta property="og:image:alt" content="@yield('og_title', $settings['app_name'] ?? 'VxAI')">
+    <link rel="image_src" href="@yield('og_image', $defaultOgImage)">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="@yield('twitter_card', 'summary_large_image')">
+    <meta name="twitter:url" content="@yield('canonical_url', url()->current())">
+    <meta name="twitter:title" content="@yield('og_title', ($settings['app_name'] ?? 'VxAI Coding Lab') . ' - Platform Belajar Koding & AI')">
+    <meta name="twitter:description" content="@yield('meta_description', 'Platform belajar koding, HTML, CSS, JavaScript gratis dan interaktif untuk talenta digital masa depan.')">
+    <meta name="twitter:image" content="@yield('og_image', $defaultOgImage)">
+
+    @yield('extra_meta')
 
     <!-- Google Search Console & Webmaster Verification -->
     @if(!empty($settings['google_site_verification']))

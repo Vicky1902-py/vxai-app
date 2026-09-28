@@ -148,7 +148,7 @@
 
                     <!-- Quill Editor Container -->
                     <div id="editor-container" class="rounded-2xl overflow-hidden border border-slate-200">
-                        <div id="quill-editor">{!! old('content', $article->content ?? '<p>Tuliskan isi artikel Anda di sini...</p>') !!}</div>
+                        <div id="quill-editor">{!! old('content', $article->content ?? '') !!}</div>
                     </div>
 
                     <!-- Raw HTML Mode Textarea (Tersembunyi secara default, tanpa required agar tidak memblokir submit browser) -->
@@ -159,12 +159,18 @@
                 <div class="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-2 text-xs text-slate-500">
                         <span>💡</span>
-                        <span>Seluruh format teks dan gambar otomatis tersimpan rapi saat diterbitkan.</span>
+                        <span>Seluruh format teks, heading, gambar, dan sematan video otomatis tersimpan rapi.</span>
                     </div>
-                    <button type="submit" id="btn-submit-bottom" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.99] text-sm flex items-center justify-center gap-2">
-                        <span>💾</span>
-                        <span>{{ $article->exists ? 'Simpan Perubahan' : 'Terbitkan Artikel Sekarang' }}</span>
-                    </button>
+                    <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                        <button type="button" onclick="submitArticleWithStatus('draft')" class="btn-submit-action flex-1 sm:flex-initial bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 px-5 rounded-2xl transition text-xs flex items-center justify-center gap-2 border border-slate-200 shadow-sm active:scale-95">
+                            <span>📝</span>
+                            <span>Simpan Draft</span>
+                        </button>
+                        <button type="button" onclick="submitArticleWithStatus('published')" class="btn-submit-action flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-2xl transition shadow-lg shadow-blue-500/25 active:scale-[0.99] text-xs sm:text-sm flex items-center justify-center gap-2">
+                            <span>🚀</span>
+                            <span>{{ $article->exists ? 'Simpan & Tayangkan' : 'Terbitkan Sekarang' }}</span>
+                        </button>
+                    </div>
                 </div>
 
             </div>
@@ -205,10 +211,14 @@
                     </div>
 
                     <!-- Tombol Simpan Sidebar -->
-                    <div class="pt-3">
-                        <button type="submit" id="btn-submit-article" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.99] text-sm flex items-center justify-center gap-2">
-                            <span>💾</span>
-                            <span>{{ $article->exists ? 'Simpan Perubahan' : 'Terbitkan Artikel Sekarang' }}</span>
+                    <div class="pt-3 space-y-2.5">
+                        <button type="button" onclick="submitArticleWithStatus('published')" class="btn-submit-action w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.99] text-sm flex items-center justify-center gap-2">
+                            <span>🚀</span>
+                            <span>{{ $article->exists ? 'Simpan & Tayangkan' : 'Terbitkan Sekarang' }}</span>
+                        </button>
+                        <button type="button" onclick="submitArticleWithStatus('draft')" class="btn-submit-action w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-4 rounded-2xl transition text-xs flex items-center justify-center gap-2 border border-slate-200 shadow-sm active:scale-95">
+                            <span>📝</span>
+                            <span>Simpan sebagai Draft</span>
                         </button>
                     </div>
                 </div>
@@ -498,28 +508,40 @@
         closeVideoEmbedModal();
     }
 
-    // Fungsi Validasi & Submit Form yang Pasti Berjalan
-    function handleArticleFormSubmit(e) {
-        // 1. Sinkronisasi konten terbaru ke textarea
+    // Fungsi Validasi & Submit Form yang Pasti Berjalan Tanpa Perlu Toggle HTML Mentah
+    function submitArticleWithStatus(targetStatus) {
+        var form = document.getElementById('article-form');
+        if (!form) return false;
+
+        // 1. Tentukan status penerbitan jika ada tombol spesifik yang diklik
+        if (targetStatus) {
+            var statusRadio = document.querySelector('input[name="status"][value="' + targetStatus + '"]');
+            if (statusRadio) {
+                statusRadio.checked = true;
+            }
+        }
+
+        // 2. Sinkronisasi konten terbaru ke textarea secara instan
         if (!isRawMode && quill) {
             rawTextarea.value = quill.root.innerHTML;
         }
 
-        // 2. Validasi Judul
+        // 3. Validasi Judul
         var titleInput = document.getElementById('title');
         if (!titleInput || !titleInput.value.trim()) {
-            if (e) e.preventDefault();
             alert('Judul artikel wajib diisi!');
-            if (titleInput) titleInput.focus();
+            if (titleInput) {
+                titleInput.focus();
+                titleInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
             return false;
         }
 
-        // 3. Validasi Konten (bisa teks biasa, atau elemen gambar/video/iframe)
+        // 4. Validasi Konten (bisa teks biasa, atau elemen gambar/video/iframe)
         var contentValue = rawTextarea.value.trim();
         var textOnly = quill ? quill.getText().trim() : contentValue.replace(/<[^>]*>/g, '').trim();
 
         if (!textOnly && !contentValue.includes('<img') && !contentValue.includes('<iframe') && !contentValue.includes('<video')) {
-            if (e) e.preventDefault();
             alert('Konten artikel tidak boleh kosong! Silakan tuliskan isi artikel.');
             if (!isRawMode && quill) {
                 quill.focus();
@@ -529,22 +551,25 @@
             return false;
         }
 
-        // 4. Efek Visual Loading agar Pengguna Tahu Form Sedang Disimpan
-        var buttons = [document.getElementById('btn-submit-article'), document.getElementById('btn-submit-bottom')];
+        // 5. Efek Visual Loading agar Pengguna Tahu Form Sedang Disimpan
+        var buttons = document.querySelectorAll('.btn-submit-action');
         buttons.forEach(function(btn) {
-            if (btn) {
-                btn.innerHTML = '<span>⏳</span> <span>Memproses & Menyimpan...</span>';
-                btn.classList.add('opacity-75', 'cursor-wait');
-            }
+            btn.innerHTML = '<span>⏳</span> <span>Memproses & Menyimpan...</span>';
+            btn.classList.add('opacity-75', 'cursor-wait');
         });
 
+        // 6. Submit form langsung secara native
+        form.submit();
         return true;
     }
 
-    // Daftarkan listener pada form submit
+    // Daftarkan listener pada form submit (misal jika user tekan Enter di input judul)
     var articleForm = document.getElementById('article-form');
     if (articleForm) {
-        articleForm.addEventListener('submit', handleArticleFormSubmit);
+        articleForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitArticleWithStatus();
+        });
     }
 
     // Pengaturan Tab Thumbnail (Upload vs URL/Preset)

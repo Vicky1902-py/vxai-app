@@ -1,7 +1,33 @@
 @extends('layouts.public')
 
+@php
+    $ogThumb = $article->safe_thumbnail;
+    if (!str_starts_with($ogThumb, 'http://') && !str_starts_with($ogThumb, 'https://')) {
+        $ogThumb = url($ogThumb);
+    }
+    $rawSummary = !empty($article->summary) ? $article->summary : strip_tags($article->content);
+    $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($rawSummary)));
+    $ogDesc = \Illuminate\Support\Str::limit($cleanDesc, 180);
+    $canonicalUrl = route('public.news.detail', $article->slug);
+@endphp
+
 @section('title', $article->title . ' - ' . ($settings['app_name'] ?? 'VxAI Coding Lab'))
-@section('meta_description', Str::limit(strip_tags($article->summary ?? $article->content), 160))
+@section('meta_description', $ogDesc)
+@section('canonical_url', $canonicalUrl)
+
+@section('og_type', 'article')
+@section('og_url', $canonicalUrl)
+@section('og_title', $article->title)
+@section('og_description', $ogDesc)
+@section('og_image', $ogThumb)
+
+@section('extra_meta')
+    @if($article->published_at)
+        <meta property="article:published_time" content="{{ $article->published_at->toIso8601String() }}">
+    @endif
+    <meta property="article:author" content="{{ $article->author_name ?? 'Redaksi VxAI' }}">
+    <meta property="article:section" content="{{ $article->category_label }}">
+@endsection
 
 @push('styles')
 <style>
@@ -127,10 +153,10 @@
             <!-- Tombol Bagikan Cepat -->
             <div class="flex items-center gap-2">
                 <span class="text-[11px] font-bold text-slate-400 hidden sm:inline">Bagikan:</span>
-                <a href="https://api.whatsapp.com/send?text={{ urlencode($article->title . ' - ' . url()->current()) }}" target="_blank" class="w-8 h-8 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center transition" title="Kirim ke WhatsApp">
+                <a href="https://api.whatsapp.com/send?text={{ urlencode($article->title . ' - ' . $canonicalUrl) }}" target="_blank" class="w-8 h-8 rounded-full bg-emerald-100 hover:bg-emerald-200 text-emerald-700 flex items-center justify-center transition" title="Kirim ke WhatsApp">
                     💬
                 </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(url()->current()) }}" target="_blank" class="w-8 h-8 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 flex items-center justify-center transition" title="Bagikan ke Facebook">
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($canonicalUrl) }}" target="_blank" class="w-8 h-8 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-700 flex items-center justify-center transition" title="Bagikan ke Facebook">
                     📘
                 </a>
                 <button type="button" onclick="salinTautan()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition" title="Salin Tautan Artikel">
