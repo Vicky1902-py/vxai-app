@@ -713,31 +713,55 @@ class AdminController extends Controller
             $thumbnailUrl = '/uploads/articles/' . $filename;
         }
 
+        // Fallback gambar sampul otomatis jika kosong agar kartu selalu tampil memikat
+        if (empty($thumbnailUrl)) {
+            $thumbnailUrl = match ($request->category) {
+                'coding' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
+                'ai' => 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&q=80',
+                'teknologi' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+                'komputer' => 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80',
+                'android' => 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=1200&q=80',
+                default => 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80',
+            };
+        }
+
         $slug = Str::slug($request->title);
+        if (empty($slug)) {
+            $slug = 'artikel-' . time();
+        }
         $originalSlug = $slug;
         $counter = 1;
         while (Article::where('slug', $slug)->exists()) {
             $slug = $originalSlug . '-' . $counter++;
         }
 
+        $summary = $request->summary;
+        if (empty($summary) && !empty($request->content)) {
+            $summary = Str::limit(strip_tags($request->content), 160);
+        }
+
         $user = Auth::user();
 
-        Article::create([
-            'title' => $request->title,
-            'slug' => $slug,
-            'category' => $request->category,
-            'summary' => $request->summary,
-            'content' => $request->content,
-            'thumbnail_url' => $thumbnailUrl,
-            'author_id' => $user?->id,
-            'author_name' => $user?->name ?? 'Admin Editorial',
-            'views_count' => 0, // Mulai dari 0 murni real-time
-            'status' => $request->status,
-            'is_featured' => $request->boolean('is_featured'),
-            'published_at' => $request->status === 'published' ? now() : null,
-        ]);
+        try {
+            Article::create([
+                'title' => $request->title,
+                'slug' => $slug,
+                'category' => $request->category,
+                'summary' => $summary,
+                'content' => $request->content,
+                'thumbnail_url' => $thumbnailUrl,
+                'author_id' => $user?->id,
+                'author_name' => $user?->name ?? 'Admin Editorial',
+                'views_count' => 0, // Mulai dari 0 murni real-time
+                'status' => $request->status,
+                'is_featured' => $request->boolean('is_featured'),
+                'published_at' => $request->status === 'published' ? now() : null,
+            ]);
 
-        return redirect()->route('admin.articles')->with('success', 'Artikel berita berhasil diterbitkan dengan gambar sampul!');
+            return redirect()->route('admin.articles')->with('success', 'Artikel berita berhasil diterbitkan!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menerbitkan artikel: ' . $e->getMessage());
+        }
     }
 
     // Form Edit Artikel
@@ -769,6 +793,9 @@ class AdminController extends Controller
 
         if ($article->title !== $request->title) {
             $slug = Str::slug($request->title);
+            if (empty($slug)) {
+                $slug = 'artikel-' . time();
+            }
             $originalSlug = $slug;
             $counter = 1;
             while (Article::where('slug', $slug)->where('id', '!=', $article->id)->exists()) {
@@ -791,18 +818,27 @@ class AdminController extends Controller
             $article->thumbnail_url = $request->thumbnail_url;
         }
 
-        $article->title = $request->title;
-        $article->category = $request->category;
-        $article->summary = $request->summary;
-        $article->content = $request->content;
-        $article->status = $request->status;
-        $article->is_featured = $request->boolean('is_featured');
-        if ($request->status === 'published' && !$article->published_at) {
-            $article->published_at = now();
+        $summary = $request->summary;
+        if (empty($summary) && !empty($request->content)) {
+            $summary = Str::limit(strip_tags($request->content), 160);
         }
-        $article->save();
 
-        return redirect()->route('admin.articles')->with('success', 'Artikel berita berhasil diperbarui!');
+        try {
+            $article->title = $request->title;
+            $article->category = $request->category;
+            $article->summary = $summary;
+            $article->content = $request->content;
+            $article->status = $request->status;
+            $article->is_featured = $request->boolean('is_featured');
+            if ($request->status === 'published' && !$article->published_at) {
+                $article->published_at = now();
+            }
+            $article->save();
+
+            return redirect()->route('admin.articles')->with('success', 'Artikel berita berhasil diperbarui!');
+        } catch (\Throwable $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui artikel: ' . $e->getMessage());
+        }
     }
 
     // Hapus Artikel

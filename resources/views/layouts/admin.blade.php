@@ -146,7 +146,7 @@
                     </div>
                 @endif
 
-                @if($errors->any())
+                @if(isset($errors) && $errors->any())
                     <div class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-4 rounded-2xl text-xs font-semibold flex items-start gap-3 shadow-sm">
                         <span class="text-base text-rose-500">⚠️</span>
                         <div class="flex-1 leading-relaxed">{{ $errors->first() }}</div>

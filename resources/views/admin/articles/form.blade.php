@@ -63,8 +63,21 @@
         @endif
     </div>
 
+    <!-- Flash Message Sukses & Error -->
+    @if (session('success'))
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-5 py-4 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm">
+            <span class="text-base">✅</span> <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="bg-rose-50 border border-rose-200 text-rose-800 px-5 py-4 rounded-2xl text-xs font-bold flex items-center gap-2 shadow-sm">
+            <span class="text-base">❌</span> <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
     <!-- Alert Validasi Error -->
-    @if ($errors->any())
+    @if (isset($errors) && $errors->any())
         <div class="bg-rose-50 border border-rose-200 text-rose-700 px-5 py-4 rounded-2xl text-xs font-semibold space-y-1">
             <div class="font-bold flex items-center gap-2 text-rose-800">
                 <span>⚠️</span> <span>Mohon perbaiki kesalahan berikut:</span>
@@ -138,8 +151,20 @@
                         <div id="quill-editor">{!! old('content', $article->content ?? '<p>Tuliskan isi artikel Anda di sini...</p>') !!}</div>
                     </div>
 
-                    <!-- Raw HTML Mode Textarea (Tersembunyi secara default) -->
-                    <textarea name="content" id="content-textarea" class="hidden w-full h-96 p-4 font-mono text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500" required>{{ old('content', $article->content) }}</textarea>
+                    <!-- Raw HTML Mode Textarea (Tersembunyi secara default, tanpa required agar tidak memblokir submit browser) -->
+                    <textarea name="content" id="content-textarea" class="hidden w-full h-96 p-4 font-mono text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500">{{ old('content', $article->content) }}</textarea>
+                </div>
+
+                <!-- Action Bar Bawah (Tepat di Bawah Editor untuk Kenyamanan Artikel Panjang) -->
+                <div class="bg-white p-5 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <span>💡</span>
+                        <span>Seluruh format teks dan gambar otomatis tersimpan rapi saat diterbitkan.</span>
+                    </div>
+                    <button type="submit" id="btn-submit-bottom" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-6 rounded-2xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.99] text-sm flex items-center justify-center gap-2">
+                        <span>💾</span>
+                        <span>{{ $article->exists ? 'Simpan Perubahan' : 'Terbitkan Artikel Sekarang' }}</span>
+                    </button>
                 </div>
 
             </div>
@@ -179,9 +204,9 @@
                         </label>
                     </div>
 
-                    <!-- Tombol Simpan -->
+                    <!-- Tombol Simpan Sidebar -->
                     <div class="pt-3">
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.99] text-sm flex items-center justify-center gap-2">
+                        <button type="submit" id="btn-submit-article" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/25 active:scale-[0.99] text-sm flex items-center justify-center gap-2">
                             <span>💾</span>
                             <span>{{ $article->exists ? 'Simpan Perubahan' : 'Terbitkan Artikel Sekarang' }}</span>
                         </button>
@@ -258,7 +283,7 @@
                     <div id="thumb-sec-url" class="hidden space-y-3">
                         <div>
                             <label class="block text-xs font-semibold text-slate-600 mb-1.5" for="thumbnail_url">URL Tautan Gambar</label>
-                            <input type="url" name="thumbnail_url" id="thumbnail_url" value="{{ old('thumbnail_url', $article->thumbnail_url) }}" 
+                            <input type="text" name="thumbnail_url" id="thumbnail_url" value="{{ old('thumbnail_url', $article->thumbnail_url) }}" 
                                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-xs text-slate-800 placeholder-slate-400" 
                                    placeholder="https://images.unsplash.com/..." oninput="updateThumbnailPreview(this.value)">
                         </div>
@@ -353,41 +378,66 @@
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 
 <script>
-    // Inisialisasi Quill Editor dengan Toolbar Lengkap
-    var quill = new Quill('#quill-editor', {
-        theme: 'snow',
-        placeholder: 'Tuliskan konten artikel secara detail dan menarik...',
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
-                ['blockquote', 'code-block'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link', 'image', 'video'],
-                ['clean']
-            ]
-        }
-    });
-
     var isRawMode = false;
     var quillEditorContainer = document.getElementById('editor-container');
     var rawTextarea = document.getElementById('content-textarea');
+    var quill = null;
+
+    // Inisialisasi Quill Editor dengan Pengecekan Aman
+    if (typeof Quill !== 'undefined') {
+        quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            placeholder: 'Tuliskan konten artikel secara detail dan menarik...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            }
+        });
+
+        // Sinkronisasi real-time setiap kali isi editor berubah
+        quill.on('text-change', function() {
+            if (!isRawMode) {
+                rawTextarea.value = quill.root.innerHTML;
+            }
+        });
+
+        // Sinkronisasi nilai awal saat editor selesai dimuat
+        if (!isRawMode) {
+            rawTextarea.value = quill.root.innerHTML;
+        }
+    } else {
+        // Fallback jika CDN Quill bermasalah
+        console.warn('Quill editor tidak termuat, beralih ke editor teks langsung.');
+        if (quillEditorContainer) quillEditorContainer.classList.add('hidden');
+        if (rawTextarea) rawTextarea.classList.remove('hidden');
+        isRawMode = true;
+    }
 
     // Toggle Mode Edit HTML Mentah vs Visual Quill
     function toggleRawHtmlMode() {
         var btnText = document.getElementById('btn-toggle-raw-text');
         if (!isRawMode) {
             // Pindah ke mode HTML Mentah
-            rawTextarea.value = quill.root.innerHTML;
+            if (quill) {
+                rawTextarea.value = quill.root.innerHTML;
+            }
             quillEditorContainer.classList.add('hidden');
             rawTextarea.classList.remove('hidden');
             btnText.innerText = 'Mode Visual';
             isRawMode = true;
         } else {
             // Pindah kembali ke Quill Visual
-            quill.root.innerHTML = rawTextarea.value;
+            if (quill) {
+                quill.root.innerHTML = rawTextarea.value;
+            }
             rawTextarea.classList.add('hidden');
             quillEditorContainer.classList.remove('hidden');
             btnText.innerText = 'HTML Mentah';
@@ -435,11 +485,12 @@
             <p><br></p>
         `;
 
-        if (isRawMode) {
+        if (isRawMode || !quill) {
             rawTextarea.value += videoHtml;
         } else {
             var range = quill.getSelection(true);
-            quill.clipboard.dangerouslyPasteHTML(range.index, videoHtml);
+            var index = range ? range.index : quill.getLength();
+            quill.clipboard.dangerouslyPasteHTML(index, videoHtml);
         }
 
         document.getElementById('input-video-url').value = '';
@@ -447,12 +498,54 @@
         closeVideoEmbedModal();
     }
 
-    // Sinkronisasi Konten Quill ke Textarea saat Form disubmit
-    document.getElementById('article-form').addEventListener('submit', function(e) {
-        if (!isRawMode) {
+    // Fungsi Validasi & Submit Form yang Pasti Berjalan
+    function handleArticleFormSubmit(e) {
+        // 1. Sinkronisasi konten terbaru ke textarea
+        if (!isRawMode && quill) {
             rawTextarea.value = quill.root.innerHTML;
         }
-    });
+
+        // 2. Validasi Judul
+        var titleInput = document.getElementById('title');
+        if (!titleInput || !titleInput.value.trim()) {
+            if (e) e.preventDefault();
+            alert('Judul artikel wajib diisi!');
+            if (titleInput) titleInput.focus();
+            return false;
+        }
+
+        // 3. Validasi Konten (bisa teks biasa, atau elemen gambar/video/iframe)
+        var contentValue = rawTextarea.value.trim();
+        var textOnly = quill ? quill.getText().trim() : contentValue.replace(/<[^>]*>/g, '').trim();
+
+        if (!textOnly && !contentValue.includes('<img') && !contentValue.includes('<iframe') && !contentValue.includes('<video')) {
+            if (e) e.preventDefault();
+            alert('Konten artikel tidak boleh kosong! Silakan tuliskan isi artikel.');
+            if (!isRawMode && quill) {
+                quill.focus();
+            } else if (rawTextarea) {
+                rawTextarea.focus();
+            }
+            return false;
+        }
+
+        // 4. Efek Visual Loading agar Pengguna Tahu Form Sedang Disimpan
+        var buttons = [document.getElementById('btn-submit-article'), document.getElementById('btn-submit-bottom')];
+        buttons.forEach(function(btn) {
+            if (btn) {
+                btn.innerHTML = '<span>⏳</span> <span>Memproses & Menyimpan...</span>';
+                btn.classList.add('opacity-75', 'cursor-wait');
+            }
+        });
+
+        return true;
+    }
+
+    // Daftarkan listener pada form submit
+    var articleForm = document.getElementById('article-form');
+    if (articleForm) {
+        articleForm.addEventListener('submit', handleArticleFormSubmit);
+    }
 
     // Pengaturan Tab Thumbnail (Upload vs URL/Preset)
     function switchThumbTab(tab) {
