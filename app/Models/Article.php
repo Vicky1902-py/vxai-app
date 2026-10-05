@@ -52,7 +52,7 @@ class Article extends Model
     public function getCategoryLabelAttribute(): string
     {
         return match ($this->category) {
-            'coding' => 'Coding & Web',
+            'web', 'coding' => 'Coding & Web',
             'ai' => 'Tips & Trik AI',
             'teknologi' => 'Tren Teknologi',
             'komputer' => 'Komputer & PC',
@@ -65,7 +65,7 @@ class Article extends Model
     public function getCategoryIconAttribute(): string
     {
         return match ($this->category) {
-            'coding' => '💻',
+            'web', 'coding' => '💻',
             'ai' => '🤖',
             'teknologi' => '🌐',
             'komputer' => '🖥️',
@@ -78,7 +78,7 @@ class Article extends Model
     public function getCategoryBadgeClassesAttribute(): string
     {
         return match ($this->category) {
-            'coding' => 'bg-blue-100 text-blue-700 border-blue-200',
+            'web', 'coding' => 'bg-blue-100 text-blue-700 border-blue-200',
             'ai' => 'bg-indigo-100 text-indigo-700 border-indigo-200',
             'teknologi' => 'bg-sky-100 text-sky-700 border-sky-200',
             'komputer' => 'bg-emerald-100 text-emerald-700 border-emerald-200',

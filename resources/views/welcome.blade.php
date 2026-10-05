@@ -83,48 +83,84 @@
                 </a>
 
                 <!-- Navigasi Menu Lengkap Publik -->
-                <div class="hidden lg:flex items-center space-x-7 text-sm font-semibold text-slate-700">
+                <div class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-slate-700">
                     <a href="{{ route('home') }}" class="text-blue-600 font-bold transition">Beranda</a>
+                    
+                    <!-- Menu Utama: Pembelajaran Coding -->
+                    <a href="{{ route('public.learning') }}" class="hover:text-blue-600 hover:bg-blue-50/80 px-3 py-1.5 rounded-xl border border-transparent hover:border-blue-200 transition flex items-center gap-1.5 group">
+                        <span class="text-base group-hover:scale-110 transition">🎓</span>
+                        <span>Pembelajaran Coding</span>
+                        <span class="px-1.5 py-0.5 text-[10px] font-extrabold bg-blue-600 text-white rounded-full">Baru</span>
+                    </a>
+
                     <a href="{{ route('public.playground') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
                         <span class="text-blue-600">⚡</span>
                         <span>Live Playground</span>
                     </a>
-                    <a href="{{ route('public.tutorials') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
-                        <span>📖</span>
-                        <span>Panduan Koding</span>
-                    </a>
+                    
                     <a href="{{ route('public.news') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
                         <span>📰</span>
                         <span>Berita & Tips</span>
                     </a>
+                    
                     <a href="{{ route('about') }}" class="hover:text-blue-600 transition">Tentang Kami</a>
                     <a href="{{ route('contact') }}" class="hover:text-blue-600 transition">Kontak</a>
                 </div>
 
-                <!-- Tombol Masuk / Dashboard -->
+                <!-- Tombol Masuk / Dashboard + Mobile Menu Button -->
                 <div class="flex items-center gap-3">
                     @auth
                         @if(Auth::user()->role_id == 1)
-                            <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-500/20">
+                            <a href="{{ route('admin.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-500/20">
                                 Panel Admin 📊
                             </a>
                         @elseif(Auth::user()->role_id == 2)
-                            <a href="{{ route('guru.dashboard') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-emerald-500/20">
+                            <a href="{{ route('guru.dashboard') }}" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-emerald-500/20">
                                 Dashboard Guru 👨‍🏫
                             </a>
                         @else
-                            <a href="{{ route('siswa.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-500/20">
+                            <a href="{{ route('siswa.dashboard') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-500/20">
                                 Ruang Belajar 🎒
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 hover:scale-[1.02] flex items-center gap-1.5">
-                            <span>Masuk / Login</span>
+                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-5 py-2.5 rounded-xl font-bold text-xs transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 hover:scale-[1.02] flex items-center gap-1.5">
+                            <span>Masuk</span>
+                            <span class="hidden sm:inline">/ Login</span>
                             <span>→</span>
                         </a>
                     @endauth
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button type="button" onclick="document.getElementById('mobile-nav-welcome').classList.toggle('hidden')" class="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 border border-slate-200 focus:outline-none" aria-label="Buka Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                    </button>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-nav-welcome" class="hidden lg:hidden border-t border-slate-200/80 bg-white/95 backdrop-blur-md px-4 pt-3 pb-5 space-y-2 shadow-xl">
+            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-xl text-sm font-bold bg-blue-50 text-blue-600">
+                🏠 Beranda
+            </a>
+            <a href="{{ route('public.learning') }}" class="block px-3 py-2 rounded-xl text-sm font-bold text-blue-700 bg-blue-50/70 hover:bg-blue-100 flex items-center justify-between">
+                <span class="flex items-center gap-2">🎓 Pembelajaran Coding</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-blue-600 text-white">Lengkap</span>
+            </a>
+            <a href="{{ route('public.playground') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                ⚡ Live Playground Koding
+            </a>
+            <a href="{{ route('public.news') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                📰 Berita & Tips Teknologi
+            </a>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 px-3">
+                <a href="{{ route('about') }}" class="hover:text-blue-600">Tentang Kami</a>
+                <span>•</span>
+                <a href="{{ route('contact') }}" class="hover:text-blue-600">Kontak</a>
+                <span>•</span>
+                <a href="{{ route('privacy') }}" class="hover:text-blue-600">Privasi</a>
             </div>
         </div>
     </nav>
@@ -349,141 +385,293 @@
         <!-- ======================================================== -->
         <!-- SECTION: Warta & Tips Teknologi Terkini (Coding, AI, Komputer, Android) -->
         <!-- ======================================================== -->
+        <!-- ======================================================== -->
+        <!-- SECTION: Warta, Berita & Wawasan Teknologi Terkini -->
+        <!-- ======================================================== -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-slate-200/80">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-12">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
                 <div>
-                    <span class="text-blue-600 font-extrabold text-xs uppercase tracking-wider block mb-2">📰 Warta & Edukasi Terkini</span>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-extrabold uppercase tracking-wider mb-3 shadow-sm">
+                        <span>📰</span>
+                        <span>Warta Edukasi & Berita Teknologi</span>
+                    </div>
                     <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                        Wawasan Koding, Tips AI & Teknologi
+                        Wawasan Koding, Tips AI & Inovasi Digital
                     </h2>
-                    <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl">
-                        Pelajari artikel terbaru yang dirancang untuk mempercepat penguasaan teknologi Anda, dari dasar pemrograman hingga tren kecerdasan buatan.
+                    <p class="text-slate-600 text-sm sm:text-base mt-2 max-w-2xl leading-relaxed">
+                        Kumpulan ulasan teknologi mendalam, panduan praktis pemrograman, dan tips hardware dari para praktisi untuk mempercepat perjalanan belajar Anda.
                     </p>
                 </div>
-                <a href="{{ route('public.news') }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-5 py-3 rounded-2xl border border-blue-200 transition flex items-center gap-1.5 shrink-0">
-                    <span>Lihat Semua Berita & Tips</span>
-                    <span>➔</span>
+
+                <a href="{{ route('public.news') }}" class="text-xs font-bold text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-5 py-3 rounded-2xl border border-blue-200 hover:border-blue-600 shadow-sm transition-all duration-200 flex items-center gap-2 shrink-0 group">
+                    <span>Lihat Semua Artikel (20+ Topik)</span>
+                    <span class="group-hover:translate-x-1 transition">➔</span>
+                </a>
+            </div>
+
+            <!-- Category Filter Pills Bar -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-10 no-scrollbar text-xs">
+                <a href="{{ route('public.news') }}" class="px-4 py-2 rounded-xl font-bold bg-slate-900 text-white shadow-sm hover:bg-blue-600 transition shrink-0">
+                    Semua Warta
+                </a>
+                <a href="{{ route('public.news', ['kategori' => 'web']) }}" class="px-4 py-2 rounded-xl font-semibold bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span>💻</span> <span>Coding & Web</span>
+                </a>
+                <a href="{{ route('public.news', ['kategori' => 'ai']) }}" class="px-4 py-2 rounded-xl font-semibold bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 border border-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span>🤖</span> <span>AI & Deep Learning</span>
+                </a>
+                <a href="{{ route('public.news', ['kategori' => 'komputer']) }}" class="px-4 py-2 rounded-xl font-semibold bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 border border-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span>🖥️</span> <span>Komputer & Hardware</span>
+                </a>
+                <a href="{{ route('public.news', ['kategori' => 'android']) }}" class="px-4 py-2 rounded-xl font-semibold bg-white hover:bg-teal-50 text-slate-700 hover:text-teal-600 border border-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span>📱</span> <span>Android & Mobile</span>
+                </a>
+                <a href="{{ route('public.news', ['kategori' => 'teknologi']) }}" class="px-4 py-2 rounded-xl font-semibold bg-white hover:bg-sky-50 text-slate-700 hover:text-sky-600 border border-slate-200 transition shrink-0 flex items-center gap-1.5">
+                    <span>🌐</span> <span>Cloud & Keamanan</span>
                 </a>
             </div>
 
             @if(isset($latestArticles) && $latestArticles->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    @foreach($latestArticles as $art)
-                        <article class="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
-                            <div>
-                                <div class="relative h-48 overflow-hidden bg-slate-100">
-                                    <img src="{{ $art->safe_thumbnail }}" alt="{{ $art->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
-                                    <div class="absolute top-3 left-3">
-                                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border backdrop-blur-md bg-white/95 shadow-sm {{ $art->category_badge_classes }}">
-                                            {{ $art->category_icon }} {{ $art->category_label }}
-                                        </span>
-                                    </div>
+                @php
+                    $featuredArticle = $latestArticles->first();
+                    $gridArticles = $latestArticles->slice(1);
+                @endphp
+
+                <!-- 1. SPOTLIGHT HERO ARTICLE CARD (ARTIKEL PILIHAN UTAMA) -->
+                @if($featuredArticle)
+                    <div class="mb-12">
+                        <article class="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col lg:flex-row">
+                            <!-- Image Left -->
+                            <div class="lg:w-1/2 relative min-h-[260px] sm:min-h-[340px] overflow-hidden bg-slate-900">
+                                <img src="{{ $featuredArticle->safe_thumbnail }}" alt="{{ $featuredArticle->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent lg:hidden"></div>
+                                <div class="absolute top-4 left-4 flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-xl text-xs font-extrabold bg-blue-600 text-white shadow-md flex items-center gap-1">
+                                        <span>🔥</span> <span>Artikel Pilihan</span>
+                                    </span>
+                                    <span class="px-3 py-1 rounded-xl text-xs font-bold border backdrop-blur-md bg-white/95 text-slate-800 shadow-sm {{ $featuredArticle->category_badge_classes }}">
+                                        {{ $featuredArticle->category_icon }} {{ $featuredArticle->category_label }}
+                                    </span>
                                 </div>
-                                <div class="p-6">
-                                    <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-2">
-                                        <span>{{ $art->published_at ? $art->published_at->format('d M Y') : $art->created_at->format('d M Y') }}</span>
+                            </div>
+
+                            <!-- Content Right -->
+                            <div class="lg:w-1/2 p-6 sm:p-10 flex flex-col justify-between space-y-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-3 text-xs text-slate-400 font-medium">
+                                        <span>{{ $featuredArticle->published_at ? $featuredArticle->published_at->format('l, d F Y') : $featuredArticle->created_at->format('l, d F Y') }}</span>
                                         <span>•</span>
-                                        <span>{{ $art->reading_time }}</span>
+                                        <span>⏱️ {{ $featuredArticle->reading_time }}</span>
                                     </div>
-                                    <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition leading-snug line-clamp-2">
-                                        <a href="{{ route('public.news.detail', $art->slug) }}">
-                                            {{ $art->title }}
+
+                                    <h3 class="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 group-hover:text-blue-600 transition leading-snug tracking-tight">
+                                        <a href="{{ route('public.news.detail', $featuredArticle->slug) }}">
+                                            {{ $featuredArticle->title }}
                                         </a>
                                     </h3>
-                                    <p class="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-2">
-                                        {{ $art->summary ?? strip_tags($art->content) }}
+
+                                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed line-clamp-3">
+                                        {{ $featuredArticle->summary ?? strip_tags($featuredArticle->content) }}
                                     </p>
                                 </div>
-                            </div>
-                            <div class="px-6 pb-5 pt-1 flex items-center justify-between border-t border-slate-50">
-                                <span class="text-[11px] font-semibold text-slate-500">
-                                    {{ $art->author_name }}
-                                </span>
-                                <a href="{{ route('public.news.detail', $art->slug) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition flex items-center gap-1">
-                                    <span>Baca</span>
-                                    <span>➔</span>
-                                </a>
+
+                                <div class="pt-6 border-t border-slate-100 flex items-center justify-between flex-wrap gap-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-black text-sm shadow">
+                                            {{ substr($featuredArticle->author_name ?? 'V', 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-xs text-slate-900">{{ $featuredArticle->author_name }}</div>
+                                            <div class="text-[11px] text-slate-400">Kontributor Terverifikasi</div>
+                                        </div>
+                                    </div>
+
+                                    <a href="{{ route('public.news.detail', $featuredArticle->slug) }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 transition active:scale-95">
+                                        <span>Baca Ulasan Lengkap</span>
+                                        <span>➔</span>
+                                    </a>
+                                </div>
                             </div>
                         </article>
-                    @endforeach
-                </div>
+                    </div>
+                @endif
+
+                <!-- 2. GRID ARTIKEL TERBARU LAINNYA -->
+                @if($gridArticles->count() > 0)
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        @foreach($gridArticles as $art)
+                            <article class="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between overflow-hidden group">
+                                <div>
+                                    <div class="relative h-48 overflow-hidden bg-slate-100">
+                                        <img src="{{ $art->safe_thumbnail }}" alt="{{ $art->title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                        <div class="absolute top-3 left-3">
+                                            <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold border backdrop-blur-md bg-white/95 shadow-sm {{ $art->category_badge_classes }}">
+                                                {{ $art->category_icon }} {{ $art->category_label }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="p-6">
+                                        <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-2.5 font-medium">
+                                            <span>{{ $art->published_at ? $art->published_at->format('d M Y') : $art->created_at->format('d M Y') }}</span>
+                                            <span>•</span>
+                                            <span>⏱️ {{ $art->reading_time }}</span>
+                                        </div>
+                                        <h3 class="text-base font-bold text-slate-900 group-hover:text-blue-600 transition leading-snug line-clamp-2">
+                                            <a href="{{ route('public.news.detail', $art->slug) }}">
+                                                {{ $art->title }}
+                                            </a>
+                                        </h3>
+                                        <p class="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-2">
+                                            {{ $art->summary ?? strip_tags($art->content) }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="px-6 pb-5 pt-2 flex items-center justify-between border-t border-slate-50">
+                                    <span class="text-[11px] font-semibold text-slate-500">
+                                        ✍️ {{ $art->author_name }}
+                                    </span>
+                                    <a href="{{ route('public.news.detail', $art->slug) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition flex items-center gap-1 group-hover:translate-x-0.5">
+                                        <span>Baca</span>
+                                        <span>➔</span>
+                                    </a>
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+                @endif
+
             @endif
         </section>
 
         <!-- ======================================================== -->
-        <!-- SECTION 3: Fitur Utama Platform Belajar -->
+        <!-- SECTION: PUSAT PEMBELAJARAN CODING (INTERACTIVE LEARNING TRACK) -->
         <!-- ======================================================== -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-slate-200/80">
             <div class="text-center max-w-3xl mx-auto mb-14">
-                <span class="text-blue-600 font-extrabold text-xs uppercase tracking-wider block mb-2">Fitur Belajar Unggulan</span>
+                <span class="px-4 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-extrabold uppercase tracking-wider border border-blue-200 inline-block mb-3">
+                    🎓 Kurikulum Terstruktur & Interaktif
+                </span>
                 <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                    Segala Kebutuhan Koding Anda Tersedia Lengkap
+                    Pusat Pembelajaran Coding: Mulai dari Nol Sampai Mahir
                 </h2>
-                <p class="text-slate-600 text-sm sm:text-base mt-3">
-                    Dirancang dengan antarmuka yang bersih, mudah dipahami, dan menyenangkan untuk pemula maupun pembelajar tingkat lanjut.
+                <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
+                    Dirancang dengan kurikulum berjenjang dan praktis. Kuasai fondasi HTML5, tata letak modern CSS3, serta interaktivitas JavaScript dengan editor kode langsung di browser Anda.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Grid 4 Modul Pembelajaran Coding -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 
-                <!-- Fitur 1: Live Code Editor -->
-                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
+                <!-- Track 1: HTML5 Fondasi -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition">
-                            ⚡
+                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition shadow-sm">
+                            1
                         </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition">Live Code Playground</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6 font-normal">
-                            Ketik kode HTML, CSS, dan JavaScript secara terpisah. Pratinjau tampilan langsung diperbarui secara *real-time* tanpa perlu reload halaman atau instalasi compiler.
+                        <span class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider">Tingkat 1 • Struktur Web</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1 mb-2 group-hover:text-orange-600 transition">HTML5 Semantik</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Mempelajari kerangka dokumen standar, elemen semantik (header, nav, main, article), formulir input, tabel data, dan media multimedia.
                         </p>
                     </div>
-                    <a href="{{ route('public.playground') }}" class="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition">
-                        <span>Buka Live Playground</span>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <a href="{{ route('public.learning') }}#modul-html" class="text-xs font-bold text-orange-600 hover:text-orange-800 transition flex items-center gap-1">
+                            <span>Buka Modul</span> ➔
+                        </a>
+                        <a href="{{ route('public.playground') }}?challenge=html_struktur" class="text-[11px] font-semibold text-slate-500 hover:text-orange-600 transition">
+                            ⚡ Uji Kode
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Track 2: CSS3 Tata Letak & Desain -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition shadow-sm">
+                            2
+                        </div>
+                        <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-wider">Tingkat 2 • Desain Visual</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1 mb-2 group-hover:text-blue-600 transition">CSS3 Modern Layout</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Kuasai CSS Flexbox, Grid 2 Dimensi, warna gradien, tipografi responsif, Glassmorphism, dan transisi animasi halus di berbagai ukuran layar.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <a href="{{ route('public.learning') }}#modul-css" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition flex items-center gap-1">
+                            <span>Buka Modul</span> ➔
+                        </a>
+                        <a href="{{ route('public.playground') }}?challenge=css_flexbox" class="text-[11px] font-semibold text-slate-500 hover:text-blue-600 transition">
+                            ⚡ Uji Kode
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Track 3: JavaScript Interaktif -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition shadow-sm">
+                            3
+                        </div>
+                        <span class="text-[11px] font-extrabold text-amber-600 uppercase tracking-wider">Tingkat 3 • Logika & DOM</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1 mb-2 group-hover:text-amber-600 transition">JavaScript Interaktif</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Membangun logika aplikasi web, manipulasi elemen HTML via DOM, event listener klik & ketik, validasi form, dan pengambilan data API asinkron.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <a href="{{ route('public.learning') }}#modul-js" class="text-xs font-bold text-amber-600 hover:text-amber-800 transition flex items-center gap-1">
+                            <span>Buka Modul</span> ➔
+                        </a>
+                        <a href="{{ route('public.playground') }}?challenge=js_dom" class="text-[11px] font-semibold text-slate-500 hover:text-amber-600 transition">
+                            ⚡ Uji Kode
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Track 4: 10 Level Tantangan & Proyek -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center font-black text-xl mb-4 group-hover:scale-110 transition shadow-sm">
+                            4
+                        </div>
+                        <span class="text-[11px] font-extrabold text-purple-600 uppercase tracking-wider">Tingkat 4 • Proyek Mandiri</span>
+                        <h3 class="text-lg font-bold text-slate-900 mt-1 mb-2 group-hover:text-purple-600 transition">10 Level Tantangan</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Uji kemampuan koding dengan 10 level tantangan berjenjang: dari "Halo Dunia", Kartu Profil, Form Kontak, hingga Kalkulator Canggih & Mini Game.
+                        </p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <a href="{{ route('public.learning') }}#modul-proyek" class="text-xs font-bold text-purple-600 hover:text-purple-800 transition flex items-center gap-1">
+                            <span>Buka Modul</span> ➔
+                        </a>
+                        <a href="{{ route('public.playground') }}" class="text-[11px] font-semibold text-slate-500 hover:text-purple-600 transition">
+                            ⚡ Uji Kode
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Call to Action Banner Pembelajaran Coding -->
+            <div class="bg-gradient-to-br from-blue-700 via-indigo-700 to-slate-900 rounded-3xl p-8 sm:p-10 text-white shadow-xl flex flex-col lg:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center lg:text-left">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-sky-300">Siap Mulai Belajar?</span>
+                    <h3 class="text-2xl sm:text-3xl font-black">Mulai Perjalanan Koding Anda Hari Ini</h3>
+                    <p class="text-xs sm:text-sm text-blue-100 max-w-xl">
+                        Akses modul lengkap panduan pemrograman secara gratis tanpa registrasi yang rumit, atau langsung coba editor kode live interaktif.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0">
+                    <a href="{{ route('public.learning') }}" class="px-6 py-3.5 rounded-2xl bg-white text-blue-700 font-bold text-xs sm:text-sm hover:bg-blue-50 transition shadow-lg text-center flex items-center justify-center gap-2">
+                        <span>🎓 Masuk ke Pembelajaran Coding</span>
                         <span>➔</span>
                     </a>
-                </div>
-
-                <!-- Fitur 2: 10 Tingkatan & Panduan -->
-                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition">
-                            🎯
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition">10 Tingkatan Tantangan</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6 font-normal">
-                            Kurikulum berjenjang terstruktur dari Pemula (HTML dasar), Menengah (CSS Flexbox & Animasi), hingga Mahir (JavaScript DOM, To-Do List, dan Bot AI mini).
-                        </p>
-                    </div>
-                    <a href="{{ route('public.tutorials') }}" class="inline-flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-800 transition">
-                        <span>Pelajari Kurikulum Lengkap</span>
-                        <span>➔</span>
+                    <a href="{{ route('public.playground') }}" class="px-6 py-3.5 rounded-2xl bg-blue-600/80 hover:bg-blue-600 border border-white/20 text-white font-bold text-xs sm:text-sm transition text-center flex items-center justify-center gap-2">
+                        <span>⚡ Buka Live Playground</span>
                     </a>
                 </div>
-
-                <!-- Fitur 3: Gamifikasi & Evaluasi Guru -->
-                <div class="bg-white rounded-3xl p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-black mb-6 group-hover:scale-110 transition">
-                            🏆
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-emerald-600 transition">Gamifikasi & Evaluasi Guru</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed mb-6 font-normal">
-                            Siswa dapat mengumpulkan XP, lencana (Badge), dan menaikkan level. Guru dan Admin dapat mengevaluasi serta menguji pratinjau live karya koding siswa secara mudah.
-                        </p>
-                    </div>
-                    @auth
-                        <a href="{{ route('siswa.dashboard') }}" class="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-800 transition">
-                            <span>Masuk Ruang Belajar</span>
-                            <span>➔</span>
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-800 transition">
-                            <span>Masuk Akun Pengguna</span>
-                            <span>➔</span>
-                        </a>
-                    @endauth
                 </div>
-
             </div>
 
             <!-- Tautan Navigasi Cepat AdSense & Legalitas -->

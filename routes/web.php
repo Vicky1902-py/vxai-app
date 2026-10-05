@@ -22,7 +22,8 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/playground', [PublicController::class, 'playground'])->name('public.playground');
 Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name('public.playground.submit');
 
-// Panduan & Tutorial Koding Interaktif
+// Panduan & Pembelajaran Koding Interaktif
+Route::get('/belajar', [PublicController::class, 'tutorials'])->name('public.learning');
 Route::get('/panduan', [PublicController::class, 'tutorials'])->name('public.tutorials');
 
 // Portal Berita & Tips Koding, AI, Komputer, Android

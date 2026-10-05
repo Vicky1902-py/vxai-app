@@ -34,7 +34,7 @@ class PublicController extends Controller
             $latestArticles = Article::published()
                 ->orderBy('is_featured', 'desc')
                 ->orderBy('created_at', 'desc')
-                ->limit(6)
+                ->limit(7)
                 ->get();
         }
 

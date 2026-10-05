@@ -106,25 +106,31 @@
                 </a>
 
                 <!-- Navigasi Menu Tengah -->
-                <div class="hidden lg:flex items-center space-x-7 text-sm font-semibold text-slate-700">
+                <div class="hidden lg:flex items-center space-x-6 text-sm font-semibold text-slate-700">
                     <a href="{{ route('home') }}" class="{{ request()->is('/') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition">Beranda</a>
+                    
+                    <!-- Menu Utama: Pembelajaran Coding -->
+                    <a href="{{ route('public.learning') }}" class="{{ request()->is('belajar*') || request()->is('panduan*') ? 'text-blue-600 font-bold bg-blue-50/80 border-blue-200' : 'hover:text-blue-600 hover:bg-slate-50 border-transparent' }} px-3 py-1.5 rounded-xl border transition flex items-center gap-1.5 group">
+                        <span class="text-base group-hover:scale-110 transition">🎓</span>
+                        <span>Pembelajaran Coding</span>
+                        <span class="px-1.5 py-0.5 text-[10px] font-extrabold bg-blue-600 text-white rounded-full">Baru</span>
+                    </a>
+
                     <a href="{{ route('public.playground') }}" class="{{ request()->is('playground*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition flex items-center gap-1.5">
                         <span class="text-blue-600">⚡</span>
                         <span>Live Playground</span>
                     </a>
-                    <a href="{{ route('public.tutorials') }}" class="{{ request()->is('panduan*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition flex items-center gap-1.5">
-                        <span>📖</span>
-                        <span>Panduan Koding</span>
-                    </a>
+                    
                     <a href="{{ route('public.news') }}" class="{{ request()->is('berita*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition flex items-center gap-1.5">
                         <span>📰</span>
                         <span>Berita & Tips</span>
                     </a>
+                    
                     <a href="{{ route('about') }}" class="{{ request()->is('about*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition">Tentang Kami</a>
                     <a href="{{ route('contact') }}" class="{{ request()->is('contact*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition">Kontak</a>
                 </div>
 
-                <!-- Tombol Aksi Kanan (Login / Dashboard) -->
+                <!-- Tombol Aksi Kanan (Login / Dashboard) + Mobile Menu Button -->
                 <div class="flex items-center gap-3">
                     @auth
                         @if(Auth::user()->role_id == 1)
@@ -141,13 +147,43 @@
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 hover:scale-[1.02] flex items-center gap-1.5">
-                            <span>Masuk / Login</span>
+                        <a href="{{ route('login') }}" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 sm:px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-600/20 hover:shadow-blue-600/30 hover:scale-[1.02] flex items-center gap-1.5">
+                            <span>Masuk</span>
+                            <span class="hidden sm:inline">/ Login</span>
                             <span>→</span>
                         </a>
                     @endauth
+
+                    <!-- Mobile Menu Hamburger Button -->
+                    <button type="button" onclick="document.getElementById('mobile-nav-drawer').classList.toggle('hidden')" class="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 border border-slate-200 focus:outline-none" aria-label="Buka Menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                    </button>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-nav-drawer" class="hidden lg:hidden border-t border-slate-200/80 bg-white/95 backdrop-blur-md px-4 pt-3 pb-5 space-y-2 shadow-xl">
+            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-xl text-sm font-bold {{ request()->is('/') ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-50' }}">
+                🏠 Beranda
+            </a>
+            <a href="{{ route('public.learning') }}" class="block px-3 py-2 rounded-xl text-sm font-bold {{ request()->is('belajar*') || request()->is('panduan*') ? 'bg-blue-600 text-white' : 'text-blue-700 bg-blue-50/70 hover:bg-blue-100' }} flex items-center justify-between">
+                <span class="flex items-center gap-2">🎓 Pembelajaran Coding</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full {{ request()->is('belajar*') || request()->is('panduan*') ? 'bg-white text-blue-600' : 'bg-blue-600 text-white' }}">Lengkap</span>
+            </a>
+            <a href="{{ route('public.playground') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('playground*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
+                ⚡ Live Playground Koding
+            </a>
+            <a href="{{ route('public.news') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('berita*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
+                📰 Berita & Tips Teknologi
+            </a>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 px-3">
+                <a href="{{ route('about') }}" class="hover:text-blue-600">Tentang Kami</a>
+                <span>•</span>
+                <a href="{{ route('contact') }}" class="hover:text-blue-600">Kontak</a>
+                <span>•</span>
+                <a href="{{ route('privacy') }}" class="hover:text-blue-600">Privasi</a>
             </div>
         </div>
     </nav>
