@@ -264,6 +264,136 @@ val securePreferences = EncryptedSharedPreferences.create(
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+
+            // ARTIKEL ANDROID 5: Arsitektur Multi-Modul & Type-Safe Navigation
+            [
+                'title' => 'Navigasi Declarative & Arsitektur Multi-Modul Android 2026: Mengelola Skalabilitas Aplikasi Skala Besar',
+                'slug' => 'navigasi-declarative-arsitektur-multi-modul-android-2026',
+                'category' => 'android',
+                'summary' => 'Best practice arsitektur aplikasi Android modern skala enterprise: pemecahan monolit menjadi feature modules, implementasi Type-Safe Navigation Compose, dependency injection dengan Koin/Hilt, dan optimasi build time Gradle secara signifikan.',
+                'content' => '<p>Membangun aplikasi Android dengan basis kode monolitik tunggal (di mana seluruh modul fitur, jaringan, dan database bercampur di dalam modul <code>:app</code>) mungkin terasa cepat di awal pembuatan prototipe. Namun seiring bertambahnya fitur dan tim pengembang, arsitektur monolit menjadi mimpi buruk: waktu kompilasi (*build time*) membengkak hingga puluhan menit, konflik penggabungan kode (*merge conflicts*) terjadi setiap hari, dan kesalahan kecil pada satu fitur dapat meruntuhkan seluruh aplikasi.</p>
+<p>Memasuki tahun 2026, standar baku pengembangan aplikasi Android enterprise berpusat pada <strong>Arsitektur Multi-Modul</strong> yang dipadukan dengan <strong>Type-Safe Navigation di Jetpack Compose</strong>.</p>
+
+<img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80" alt="Antarmuka pengembangan aplikasi mobile modern di laptop" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Strategi Pembagian Modul: Core vs Feature Modules</h2>
+<p>Alih-alih membagi modul berdasarkan layer teknis semata (misal: modul-ui, modul-data), strategi modularisasi modern membaginya berdasarkan kapabilitas domain bisnis:</p>
+<ul>
+    <li><strong>:core:designsystem:</strong> Komponen UI terstandardisasi (tema warna, tipografi, tombol kustom, dan ikon) yang digunakan di seluruh aplikasi.</li>
+    <li><strong>:core:network & :core:database:</strong> Klien HTTP (Ktor / Retrofit) dan instance basis data lokal (Room / SQLDelight) yang terisolasi.</li>
+    <li><strong>:feature:auth, :feature:dashboard, :feature:learning:</strong> Setiap fitur bisnis diisolasi sebagai modul mandiri yang tidak saling bergantung secara langsung (<em>zero direct dependency between features</em>).</li>
+</ul>
+
+<h3>Manfaat Masif Compilation Avoidance di Gradle</h3>
+<p>Ketika seorang pengembang hanya mengubah file antarmuka di <code>:feature:learning</code>, mesin Gradle tidak perlu mengompilasi ulang modul <code>:feature:auth</code> atau <code>:core:network</code>. Hasilnya, siklus build incremental berkurang drastis dari 8 menit menjadi di bawah 25 detik!</p>
+
+<h2>2. Type-Safe Navigation di Jetpack Compose</h2>
+<p>Generasi awal Navigation Compose mengandalkan String URL route (mirip tautan web seperti <code>"profile/{userId}"</code>) yang sangat rawan memicu crash (*runtime exception*) akibat salah ketik parameter nama.</p>
+<p>Kini dengan integrasi pustaka resmi <strong>Kotlinx Serialization</strong>, rute navigasi didefinisikan murni sebagai class data bertipe kuat:</p>
+<pre class="ql-syntax">import kotlinx.serialization.Serializable
+
+// Definisikan rute dan argumen bertipe kuat (Type-Safe)
+@Serializable
+object HomeRoute
+
+@Serializable
+data class CourseDetailRoute(val courseId: String, val level: Int)
+
+// Di dalam NavHost Compose:
+NavHost(navController = navController, startDestination = HomeRoute) {
+    composable&lt;HomeRoute&gt; {
+        HomeScreen(onCourseClick = { id -&gt;
+            navController.navigate(CourseDetailRoute(courseId = id, level = 1))
+        })
+    }
+    composable&lt;CourseDetailRoute&gt; { backStackEntry -&gt;
+        val detail: CourseDetailRoute = backStackEntry.toRoute()
+        CourseDetailScreen(courseId = detail.courseId, level = detail.level)
+    }
+}</pre>
+<p>Compiler Kotlin akan langsung menolak proses kompilasi jika ada argumen wajib yang lupa disertakan. Tidak ada lagi crash layar putih di tangan pengguna akhir!</p>
+
+<img src="https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?auto=format&fit=crop&w=1200&q=80" alt="Robot sistem operasi Android dan grafis interaktif teknologi mobile" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Kesimpulan & Panduan Migrasi</h2>
+<p>Bagi Anda yang sedang merintis aplikasi skala menengah ke atas, mulailah dengan mengekstrak modul <code>:core:model</code> dan <code>:core:network</code> terlebih dahulu. Dengan arsitektur yang modular dan navigasi yang aman, aplikasi Anda siap diskalakan ke jutaan pengguna tanpa mengorbankan kecepatan rilis fitur baru.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // ARTIKEL ANDROID 6: Optimasi Baseline Profiles & R8
+            [
+                'title' => 'Kompilasi Ahead-Of-Time (AOT), Baseline Profiles, dan R8: Cara Menghasilkan Aplikasi Android Instan Tanpa Lag',
+                'slug' => 'optimasi-baseline-profiles-r8-kompilasi-aot-android',
+                'category' => 'android',
+                'summary' => 'Rahasia performa aplikasi startup instan (cold start) di bawah 500ms pada Android: cara kerja Android Runtime (ART), pembuatan Baseline Profiles dengan Macrobenchmark, dan teknik canggih optimasi ukuran APK dengan R8 Proguard tree shaking.',
+                'content' => '<p>Kesan pertama pengguna terhadap sebuah aplikasi ditentukan dalam 3 detik pertama. Jika aplikasi membutuhkan waktu lebih dari 5 detik hanya untuk memuat layar pembuka (*cold start*), atau mengalami frame drop (patah-patah) saat pengguna menggulir daftar berita pertama kali, kemungkinan besar pengguna akan memberikan rating bintang satu di Google Play Store atau bahkan langsung menghapus aplikasi tersebut.</p>
+<p>Di balik layar, Android Runtime (ART) bekerja keras menyeimbangkan antara waktu instalasi APK dan kecepatan eksekusi kode. Memahami sinergi antara <strong>Baseline Profiles</strong> dan <strong>Kompiler R8</strong> adalah rahasia para raksasa teknologi dalam menyajikan aplikasi yang terasa instan dan sehalus sutra.</p>
+
+<img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80" alt="Smartphone modern di tangan pengguna dengan layar grafis responsif cepat" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Dilema JIT vs AOT di Android Runtime (ART)</h2>
+<p>Dalam sejarah Android, kompilasi kode telah melalui beberapa revolusi besar:</p>
+<ol>
+    <li><strong>Dalvik JIT (Just-In-Time):</strong> Kode dikompilasi ke instruksi mesin saat aplikasi sedang berjalan. Efeknya: proses startup lambat dan ponsel terasa panas karena CPU bekerja ganda menerjemahkan bytecode.</li>
+    <li><strong>ART AOT Murni (Android 5-6):</strong> Seluruh kode dikompilasi saat instalasi. Efeknya: waktu unduh dan instalasi aplikasi sangat lama hingga menghabiskan ruang penyimpanan.</li>
+    <li><strong>Cloud Profiles & Baseline Profiles (Android Modern):</strong> Sistem hibrida cerdas. Hanya alur kritis (startup dan render halaman beranda) yang dikompilasi AOT terlebih dahulu, sedangkan fitur yang jarang dibuka tetap menggunakan JIT.</li>
+</ol>
+
+<h2>2. Apa Itu Baseline Profiles dan Bagaimana Cara Kerjanya?</h2>
+<p><strong>Baseline Profiles</strong> adalah daftar kelas dan method kritis yang dibundel langsung ke dalam file APK/AAB saat proses rilis di Google Play Store. Ketika pengguna mengunduh aplikasi, ART di perangkat pengguna langsung mengompilasi rute kritis tersebut menjadi kode mesin asli (native machine code) bahkan sebelum aplikasi dibuka pertama kali.</p>
+
+<h3>Hasil Pengujian di Lapangan:</h3>
+<ul>
+    <li><strong>Kecepatan Startup (Cold Start):</strong> Meningkat 30% hingga 45% lebih cepat (membuka aplikasi di bawah 500 milidetik).</li>
+    <li><strong>Pencegahan Frame Jank (ANR):</strong> Menghilangkan lag saat scrolling list berita atau feed pertama kali hingga 40%.</li>
+</ul>
+
+<h3>Cara Mengenerate Baseline Profile dengan Macrobenchmark:</h3>
+<pre class="ql-syntax">@OptIn(ExperimentalBaselineProfilesApi::class)
+class GenerateBaselineProfile {
+    @get:Rule
+    val baselineProfileRule = BaselineProfileRule()
+
+    @Test
+    fun generate() = baselineProfileRule.collect(
+        packageName = "online.vxai.app"
+    ) {
+        pressHome()
+        startActivityAndWait()
+        // Simulasikan alur pengguna yang paling krusial
+        device.findObject(By.text("Berita Terkini")).click()
+        device.waitForIdle()
+    }
+}</pre>
+
+<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80" alt="Grafik analitik data performa sistem digital dan efisiensi memori" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Optimasi Ukuran File dengan R8 Tree-Shaking</h2>
+<p>Selain kecepatan eksekusi, ukuran unduhan APK menentukan tingkat retensi pengguna di wilayah dengan koneksi seluler terbatas. Kompiler <strong>R8</strong> melakukan serangkaian transformasi mikro tingkat lanjut:</p>
+<ul>
+    <li><strong>Tree Shaking (Eliminasi Dead Code):</strong> Menghapus kelas dan fungsi pustaka eksternal yang tidak pernah dipanggil oleh kode Anda.</li>
+    <li><strong>Inlining Method:</strong> Menggabungkan method-method kecil ke dalam pemanggilnya untuk menghemat overhead pemanggilan stack memori.</li>
+    <li><strong>Resource Shrinking:</strong> Otomatis menghapus file gambar XML, string, dan layout yang tidak terpakai dari file binary APK final.</li>
+</ul>
+<p>Dengan memadukan Baseline Profiles dan konfigurasi R8 yang terkalibrasi, aplikasi Android Anda tidak hanya memiliki ukuran file yang ramping, tetapi juga menghadirkan pengalaman pengguna kelas dunia yang responsif dan tanpa jeda.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ];
     }
 }

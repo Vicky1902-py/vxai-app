@@ -44,9 +44,9 @@
             </a>
             
             <a href="{{ route('public.news', ['kategori' => 'coding']) }}" 
-               class="px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 {{ $activeCategory === 'coding' ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}">
+               class="px-4 py-2 rounded-2xl text-xs font-bold transition flex items-center gap-1.5 {{ in_array($activeCategory, ['coding', 'web']) ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20' : 'bg-slate-100 text-slate-700 hover:bg-slate-200' }}">
                 <span>💻 Coding</span>
-                <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $activeCategory === 'coding' ? 'bg-white/20' : 'bg-slate-200 text-slate-600' }}">{{ $categoryCounts['coding'] ?? 0 }}</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ in_array($activeCategory, ['coding', 'web']) ? 'bg-white/20' : 'bg-slate-200 text-slate-600' }}">{{ $categoryCounts['coding'] ?? 0 }}</span>
             </a>
 
             <a href="{{ route('public.news', ['kategori' => 'ai']) }}" 

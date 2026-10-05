@@ -283,6 +283,109 @@ swap=4GB</pre>
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+
+            // ARTIKEL KOMPUTER 5: Komputasi Kuantum & Chip Neuromorphic
+            [
+                'title' => 'Revolusi Komputasi Kuantum & Chip Neuromorphic 2026: Batas Akhir Silikon dan Kelahiran Era Pasca-Hukum Moore',
+                'slug' => 'revolusi-komputasi-kuantum-chip-neuromorphic-2026',
+                'category' => 'komputer',
+                'summary' => 'Eksplorasi mendalam evolusi perangkat keras komputasi: keterbatasan litografi transistor sub-1nm, prinsip superposisi qubit kuantum, serta arsitektur neuromorphic yang meniru efisiensi sinapsis otak manusia untuk komputasi AI hemat daya.',
+                'content' => '<p>Selama lebih dari lima puluh tahun, industri teknologi informasi dipandu oleh prediksi legendaris Gordon Moore: jumlah transistor dalam sebuah sirkuit terpadu mikroprosesor akan berlipat ganda setiap dua tahun sekali. Namun memasuki tahun 2026, hukum fisika telah menuntut batas akhir dari silikon konvensional. Ketika ukuran gerbang transistor mengecil hingga skala sub-1 nanometer (setara dengan lebar hanya beberapa atom silikon), fenomena kebocoran elektron akibat <em>quantum tunneling</em> membuat proses komputasi biner klasik menjadi tidak stabil dan memicu panas ekstrem.</p>
+<p>Untuk menembus kebuntuan ini, para insinyur perangkat keras komputer di seluruh dunia beralih ke dua paradigma baru yang radikal: <strong>Komputasi Kuantum</strong> dan <strong>Chip Neuromorphic</strong>.</p>
+
+<img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=80" alt="Visualisasi sirkuit komputasi kuantum fotonik modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Komputasi Kuantum: Melompati Batas Logika 0 dan 1</h2>
+<p>Komputer klasik memproses data dalam bentuk bit biner yang bernilai mutlak <code>0</code> atau <code>1</code>. Sebaliknya, komputer kuantum memanfaatkan sifat mekanika kuantum partikel subatomik melalui unit yang disebut <strong>Qubit (Quantum Bit)</strong>.</p>
+<ul>
+    <li><strong>Superposisi (Superposition):</strong> Qubit dapat berada dalam status 0, 1, atau kombinasi keduanya secara simultan. Jika 300 bit komputer klasik hanya dapat mewakili satu status pada satu waktu, 300 qubit dapat memproses status sebanyak jumlah atom di seluruh alam semesta dalam satu siklus komputasi.</li>
+    <li><strong>Keterikatan Kuantum (Entanglement):</strong> Dua qubit dapat saling terhubung erat secara instan tanpa memandang jarak fisik. Perubahan status pada satu qubit langsung tercermin pada pasangannya, memungkinkan transfer informasi berkecepatan absolut.</li>
+    <li><strong>Aplikasi Nyata:</strong> Simulasi struktur molekul kimia untuk penemuan obat kanker baru, optimalisasi logistik global bernilai miliaran variabel, dan pemecahan algoritma kriptografi klasik RSA (yang mendorong adopsi standar Post-Quantum Cryptography).</li>
+</ul>
+
+<h2>2. Chip Neuromorphic: Meniru Biologi Otak Manusia</h2>
+<p>Sementara komputer kuantum membutuhkan pendingin kriogenik bersuhu mendekati nol mutlak (-273°C), <strong>Chip Neuromorphic</strong> dirancang untuk berjalan pada perangkat sehari-hari dengan efisiensi energi yang mencengangkan.</p>
+<p>Arsitektur komputer modern sejak tahun 1945 mengadopsi model Von Neumann—di mana CPU dan Memori RAM terpisah oleh jalur data bus. Pemindahan data bolak-balik antara CPU dan RAM (<em>Von Neumann Bottleneck</em>) menyumbang lebih dari 80% pemborosan daya baterai saat menjalankan model AI.</p>
+
+<h3>Bagaimana Chip Neuromorphic Bekerja?</h3>
+<ol>
+    <li><strong>Integrasi Memori dan Komputasi:</strong> Unit pemrosesan dan penyimpanan disatukan dalam satu simpul yang mereplikasi fungsi <em>Neuron</em> dan <em>Sinapsis</em> biologis.</li>
+    <li><strong>Spiking Neural Networks (SNN):</strong> Berbeda dengan chip GPU yang terus-menerus mengonsumsi daya maksimum secara konstan, chip neuromorphic hanya mengalirkan energi listrik ketika menerima sinyal lonjakan informasi (*spike*), persis seperti neuron otak manusia saat merespons rangsangan indera.</li>
+    <li><strong>Konsumsi Daya Ekstrem Hemat:</strong> Mampu menjalankan visi komputer (computer vision) dan pengenalan suara lokal hanya dengan daya sebesar beberapa miliwatt, memperpanjang masa pakai baterai perangkat mobile dan drone hingga puluhan jam.</li>
+</ol>
+
+<img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="Papan sirkuit microchip prosesor generasi masa depan berkecepatan tinggi" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Kesimpulan: Arah Masa Depan Dunia Komputer</h2>
+<p>Kita sedang menyaksikan fajar baru peradaban teknologi. Komputer di masa depan tidak lagi bertumpu pada satu jenis prosesor saja, melainkan beroperasi secara hibrida: CPU mengelola sistem operasi dasar, GPU merender grafis visual, NPU memproses kalkulasi tensor, dan akselerator kuantum menangani simulasi fisika kompleks di pusat data awan global.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // ARTIKEL KOMPUTER 6: Manajemen Termal & Cooling System PC Modern
+            [
+                'title' => 'Manajemen Termal & Cooling System PC Modern: Perbandingan Mendalam Air Cooling, AIO Liquid, dan Custom Loop',
+                'slug' => 'manajemen-termal-cooling-system-pc-modern-air-vs-liquid',
+                'category' => 'komputer',
+                'summary' => 'Panduan rekayasa termal komprehensif bagi perakit PC dan stasiun kerja teknisi: dinamika perpindahan panas TDP, material thermal paste fase berubah (PTM7950), orientasi airflow tekanan positif/negatif, dan pencegahan thermal throttling pada CPU generasi terbaru.',
+                'content' => '<p>Di era prosesor modern yang memiliki konsumsi daya puncak (TDP / PPT) melampaui 250 Watt, sistem pendingin (*cooling system*) bukan lagi sekadar aksesori pelengkap atau penambah lampu RGB. Sistem termal adalah penentu mutlak apakah komputer Anda mampu mempertahankan kecepatan *boost clock* tertinggi secara konsisten, atau justru mengalami <strong>Thermal Throttling</strong> yang memangkas performa hingga separuhnya saat melakukan kompilasi kode perangkat lunak, rendering 3D, atau pemrosesan video beresolusi tinggi.</p>
+<p>Mari kita telaah prinsip termodinamika pendinginan PC dan panduan memilih solusi terbaik sesuai kebutuhan komputasi Anda.</p>
+
+<img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80" alt="Komponen pendingin kipas heatsink dan sistem sirkulasi udara PC modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Tiga Metode Pendinginan Populer: Kelebihan & Kelemahan</h2>
+
+<h3>A. Air Cooling (Pendingin Udara Heatsink)</h3>
+<p>Menggunakan pipa tembaga berisi cairan volatil (*heatpipes*) yang menguap saat terkena panas dari CPU (IHS) dan melepaskan panasnya ke sirip-sirip aluminium (*fins*) yang ditiup kipas:</p>
+<ul>
+    <li><strong>Kelebihan:</strong> Keandalan mekanis nyaris abadi. Tidak ada risiko kebocoran cairan pendingin. Perawatan hanya perlu membersihkan debu secara berkala.</li>
+    <li><strong>Kekurangan:</strong> Ukuran heatsink fisik sangat besar (dapat menghalangi slot RAM dan kartu grafis PCIe pertama). Kinerja pembuangan panas pada TDP di atas 220W terbatas.</li>
+</ul>
+
+<h3>B. AIO Liquid Cooler (All-in-One Tertutup)</h3>
+<p>Sistem pendingin air tertutup pabrikan yang menggabungkan blok pompa CPU, selang fleksibel, radiator, dan cairan pendingin dalam satu unit siap pasang:</p>
+<ul>
+    <li><strong>Kelebihan:</strong> Kapasitas penyerapan panas tinggi berkat radiator 280mm atau 360mm. Tampilan interior casing rapi dan modern.</li>
+    <li><strong>Kekurangan:</strong> Memiliki masa pakai terbatas (rata-rata 4–6 tahun) akibat keausan pompa mekanis dan fenomena permeasi cairan mikro (*micro-permeation*).</li>
+</ul>
+
+<h3>C. Custom Liquid Cooling Loop</h3>
+<p>Sistem pendingin rakitan profesional dengan reservoir terpisah, pompa bertenaga tinggi (D5/DDC), fitting kompresi, dan pipa akrilik/tembaga yang mendinginkan CPU serta GPU secara bersamaan:</p>
+<ul>
+    <li><strong>Kelebihan:</strong> Suhu terendah dan stabilitas termal terbaik di dunia komputasi. Kebisingan kipas sangat minim.</li>
+    <li><strong>Kekurangan:</strong> Biaya sangat mahal, membutuhkan keahlian perakitan tinggi, dan menuntut penggantian cairan pendingin secara berkala setiap tahun.</li>
+</ul>
+
+<img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&w=1200&q=80" alt="Pemasangan pasta termal pada prosesor CPU komputer desktop" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>2. Rekayasa Aliran Udara Casing: Positif vs Negatif Airflow</h2>
+<p>Menjaga sirkulasi udara di dalam wadah casing komputer sangat krusial agar panas yang dibuang dari komponen tidak terperangkap:</p>
+<ol>
+    <li><strong>Tekanan Positif (Positive Pressure - Disarankan):</strong> Volume udara masuk (*intake*) lebih besar daripada volume udara keluar (*exhaust*). Udara dipaksa keluar melalui celah-celah kecil casing, sehingga debu tidak dapat menyusup masuk selama kipas intake dilengkapi filter debu.</li>
+    <li><strong>Tekanan Negatif (Negative Pressure):</strong> Volume exhaust lebih besar dari intake. Panas cepat keluar, namun debu akan terhisap masuk dari setiap lubang tanpa filter.</li>
+    <li><strong>Aturan Emas Orientasi Kipas:</strong> Pasang kipas depan dan bawah sebagai penghisap udara dingin luar (Intake), sedangkan kipas atas dan belakang sebagai pendorong udara panas keluar (Exhaust) sesuai hukum konveksi udara alami (udara panas selalu naik ke atas).</li>
+</ol>
+
+<h2>3. Inovasi Thermal Interface Material (TIM) 2026: PTM7950</h2>
+<p>Permukaan logam pelindung prosesor (IHS) dan dasar pendingin tidak pernah benar-benar rata secara mikroskopis. Pasta termal berfungsi mengisi rongga udara mikro tersebut. Tren terbaru 2026 menunjukkan peralihan besar dari pasta termal pasta tradisional ke <strong>Phase Change Material (seperti Honeywell PTM7950)</strong>.</p>
+<p>Material padat berbentuk lembaran ini meleleh menjadi cairan pada suhu di atas 45°C untuk mengisi seluruh rongga mikro, dan tidak pernah mengalami fenomena *pump-out* atau kering bahkan setelah digunakan terus menerus selama bertahun-tahun.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ];
     }
 }

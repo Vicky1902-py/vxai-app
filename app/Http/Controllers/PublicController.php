@@ -207,8 +207,12 @@ class PublicController extends Controller
 
         // Filter Kategori
         $activeCategory = $request->query('kategori');
-        if ($activeCategory && in_array($activeCategory, ['coding', 'ai', 'teknologi', 'komputer', 'android'])) {
-            $query->where('category', $activeCategory);
+        if ($activeCategory && in_array($activeCategory, ['coding', 'web', 'ai', 'teknologi', 'komputer', 'android'])) {
+            if ($activeCategory === 'coding' || $activeCategory === 'web') {
+                $query->whereIn('category', ['coding', 'web']);
+            } else {
+                $query->where('category', $activeCategory);
+            }
         }
 
         // Pencarian Kata Kunci
@@ -235,7 +239,7 @@ class PublicController extends Controller
         // Hitung Jumlah per Kategori untuk Pills
         $categoryCounts = [
             'all' => Article::published()->count(),
-            'coding' => Article::published()->where('category', 'coding')->count(),
+            'coding' => Article::published()->whereIn('category', ['coding', 'web'])->count(),
             'ai' => Article::published()->where('category', 'ai')->count(),
             'teknologi' => Article::published()->where('category', 'teknologi')->count(),
             'komputer' => Article::published()->where('category', 'komputer')->count(),

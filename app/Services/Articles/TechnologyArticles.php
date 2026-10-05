@@ -148,6 +148,107 @@ $user = $stmt-&gt;fetch();</pre>
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+
+            // ARTIKEL TEKNOLOGI 4: Zero Trust & Kriptografi Pasca-Kuantum (PQC)
+            [
+                'title' => 'Arsitektur Zero Trust & Kriptografi Pasca-Kuantum (PQC): Standarisasi Baru Keamanan Siber Global',
+                'slug' => 'arsitektur-zero-trust-kriptografi-pasca-kuantum-pqc',
+                'category' => 'teknologi',
+                'summary' => 'Telaah komprehensif paradigma keamanan siber "Never Trust, Always Verify": implementasi micro-segmentation jaringan, autentikasi berbasis identitas mTLS, dan migrasi algoritma enkripsi standar NIST (Kyber & Dilithium) guna menghadapi ancaman "Harvest Now, Decrypt Later".',
+                'content' => '<p>Konsep keamanan jaringan tradisional yang mengandalkan analogi "Kastil Berparit" (Castle-and-Moat)—di mana siapa pun yang berada di luar jaringan dianggap musuh, dan siapa pun yang berhasil masuk ke dalam jaringan internal (misal via VPN) dianggap tepercaya—telah resmi usang. Serangan siber modern membuktikan bahwa mayoritas kebocoran data bermula dari penyusupan kredensial satu akun karyawan yang kemudian melakukan pergerakan lateral (*lateral movement*) ke seluruh basis data korporat.</p>
+<p>Untuk menghentikan ancaman tersebut, industri keamanan informasi beralih ke paradigma mutlak: <strong>Zero Trust Architecture (ZTA)</strong> dan bersiap menghadapi ancaman komputasi kuantum dengan <strong>Post-Quantum Cryptography (PQC)</strong>.</p>
+
+<img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80" alt="Grafik keamanan siber zero trust dan perlindungan gembok jaringan" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Tiga Prinsip Utama Zero Trust (NIST SP 800-207)</h2>
+<p>Filosofi Zero Trust berlandaskan moto sederhana: <em>"Never Trust, Always Verify"</em> (Jangan Pernah Percaya, Selalu Verifikasi).</p>
+<ol>
+    <li><strong>Verifikasi Eksplisit (Verify Explicitly):</strong> Setiap permintaan akses ke server atau API harus selalu diautentikasi dan diotorisasi berdasarkan seluruh titik data yang tersedia: identitas pengguna, lokasi geografis, kesehatan firmware perangkat, dan anomali perilaku sesi.</li>
+    <li><strong>Akses dengan Hak Minimal (Least Privilege Access):</strong> Pengguna dan layanan mikro hanya diberikan izin akses paling minim yang dibutuhkan untuk menyelesaikan tugasnya dalam durasi waktu terbatas (*Just-In-Time access*).</li>
+    <li><strong>Asumsikan Pelanggaran Telah Terjadi (Assume Breach):</strong> Rancang infrastruktur dengan anggapan bahwa peretas telah berhasil menyusup ke salah satu server. Terapkan <em>Micro-Segmentation</em> jaringan dan enkripsi data end-to-end (baik data saat transit maupun data saat diam di disk) agar penyusup terisolasi dalam satu ruang kedap udara.</li>
+</ol>
+
+<h2>2. Ancaman "Harvest Now, Decrypt Later" & Kriptografi Pasca-Kuantum</h2>
+<p>Kelompok peretas tingkat negara saat ini giat mencuri data terenkripsi milik pemerintah dan institusi perbankan meskipun saat ini mereka belum mampu membacanya. Strategi ini dikenal sebagai <em>"Harvest Now, Decrypt Later"</em> (Kumpulkan Sekarang, Dekripsi Nanti).</p>
+<p>Mereka menunggu kehadiran komputer kuantum yang mampu menjalankan <strong>Algoritma Shor</strong> untuk memecahkan enkripsi asimetris RSA dan Kurva Eliptik (ECC) hanya dalam hitungan menit.</p>
+
+<h3>Standar Baru NIST: ML-KEM (Kyber) & ML-DSA (Dilithium)</h3>
+<p>Institut Standar dan Teknologi Nasional AS (NIST) telah menetapkan algoritma <strong>Lattice-Based Cryptography</strong> sebagai standar baru pengganti RSA:</p>
+<ul>
+    <li><strong>ML-KEM (Sebelumnya Crystals-Kyber):</strong> Digunakan untuk pertukaran kunci sesi enkripsi (*Key Encapsulation Mechanism*). Sangat sulit dipecahkan oleh komputer klasik maupun kuantum karena berbasis masalah geometri matematika kisi multi-dimensi.</li>
+    <li><strong>ML-DSA (Sebelumnya Crystals-Dilithium):</strong> Digunakan untuk tanda tangan digital sertifikat SSL/TLS dan validasi integritas transaksi perangkat lunak.</li>
+</ul>
+
+<img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1200&q=80" alt="Ruang pusat kendali keamanan siber modern SOC" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Langkah Praktis Pengamanan Aplikasi Web untuk Developer</h2>
+<p>Anda tidak perlu menunggu menjadi korban peretasan untuk memulai langkah pencegahan:</p>
+<ul>
+    <li><strong>Terapkan Mutual TLS (mTLS):</strong> Jangan hanya klien yang memverifikasi server, pastikan server juga memverifikasi sertifikat kriptografi klien pada komunikasi antar-microservices.</li>
+    <li><strong>Tinggalkan Password Statis, Beralih ke Passkeys (FIDO2 / WebAuthn):</strong> Autentikasi biometrik tahan phising berbasis kunci kriptografi perangkat keras yang menghapus risiko pencurian kata sandi secara permanen.</li>
+    <li><strong>Pembaruan Cipher Suite Server Nginx / Apache:</strong> Aktifkan dukungan TLS 1.3 dan pantau pustaka OpenSSL 3.x yang telah mendukung eksperimen sandi hibrida kuantum.</li>
+</ul>
+<p>Keamanan siber di era modern bukan lagi tentang membangun tembok yang tebal, melainkan membangun kecerdasan adaptif yang mampu memverifikasi setiap denyut aliran data secara berkesinambungan.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+
+            // ARTIKEL TEKNOLOGI 5: Edge Computing & AI di Perangkat IoT
+            [
+                'title' => 'Edge Computing & AI di Perangkat IoT: Membawa Analisis Data Real-Time ke Garis Depan Tanpa Ketergantungan Cloud',
+                'slug' => 'edge-computing-ai-iot-analisis-realtime-tanpa-cloud',
+                'category' => 'teknologi',
+                'summary' => 'Transformasi arsitektur industri komputasi tepi (Edge): cara kerja inferensi model AI terkuantisasi (INT8/FP4) pada mikrokontroler hemat energi, arsitektur protokol MQTT vs gRPC, dan studi kasus otomasi pertanian serta smart manufacturing.',
+                'content' => '<p>Selama satu dekade terakhir, paradigma komputasi awan (Cloud Computing) memegang hegemoni mutlak: jutaan sensor Internet of Things (IoT) di pabrik, kamera pengawas lalu lintas, dan traktor pertanian mengirimkan seluruh data mentahnya ke server pusat data yang berjarak ribuan kilometer untuk diproses. Namun, arsitektur sentralistik ini mulai terbentur batasan fisik: biaya bandwidth yang melambung tinggi, ketergantungan koneksi internet yang rentan putus di area terpencil, serta latensi waktu transmisi (*network round-trip*) yang berbahaya untuk sistem kendali kritis.</p>
+<p>Sebagai solusinya, gelombang teknologi 2026 bergeser ke arah <strong>Edge Computing & TinyML</strong>: memindahkan otak pemrosesan data dan inferensi kecerdasan buatan langsung ke perangkat fisik terdepan.</p>
+
+<img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80" alt="Perangkat sensor IoT dan papan mikrokontroler cerdas di pabrik modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Apa Itu Edge AI dan Mengapa Sangat Kritis?</h2>
+<p><strong>Edge AI</strong> adalah teknik menjalankan model Machine Learning langsung pada perangkat keras lokal (mikrokontroler ESP32, Raspberry Pi, NVIDIA Jetson, atau NPU terintegrasi) tanpa perlu terhubung ke internet saat memproses data.</p>
+
+<h3>Tiga Keunggulan Utama Edge Computing:</h3>
+<ol>
+    <li><strong>Latensi Nyaris Nol (Ultra-Low Latency):</strong> Sistem kendali lengan robot industri atau pengereman darurat kendaraan otonom membutuhkan keputusan dalam waktu di bawah 5 milidetik. Menunggu respons server cloud dapat berakibat fatal.</li>
+    <li><strong>Privasi & Keamanan Data (Privacy by Design):</strong> Data video kamera pengawas atau rekam medis pasien dianalisis secara lokal. Yang dikirim ke server pusat hanyalah ringkasan metadata anonim (misal: "terdeteksi anomali pada pukul 14:00"), bukan rekaman video mentah.</li>
+    <li><strong>Operasional Tetap Berjalan saat Internet Padam:</strong> Sensor pertanian pintar di wilayah pedalaman Nusa Tenggara Timur (NTT) tetap dapat mendeteksi kelembaban tanah dan mengaktifkan pompa irigasi otomatis meskipun koneksi seluler BTS terputus.</li>
+</ol>
+
+<h2>2. Teknik Kompresi Model: Kuantisasi INT8 & TinyML</h2>
+<p>Bagaimana mungkin model AI yang biasanya membutuhkan GPU raksasa berdaya 400 Watt dapat berjalan di atas chip mikrokontroler sebesar koin dengan daya kurang dari 1 Watt?</p>
+<p>Kuncinya terletak pada <strong>Kuantisasi Bobot (Model Quantization)</strong>:</p>
+<ul>
+    <li>Model AI standar dilatih menggunakan bilangan pecahan presisi 32-bit (FP32).</li>
+    <li>Melalui teknik kuantisasi post-training (PTQ), bobot model dikonversi menjadi bilangan bulat 8-bit (INT8) atau bahkan 4-bit (INT4).</li>
+    <li>Ukuran memori model menyusut hingga 75%, dan perhitungan matematika integer dapat dieksekusi secara instan oleh prosesor ARM Cortex tanpa kehilangan akurasi yang signifikan.</li>
+</ul>
+
+<img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80" alt="Jaringan data terdistribusi dan komunikasi perangkat nirkabel" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Protokol Komunikasi Modern: MQTT vs gRPC</h2>
+<p>Di lingkungan Edge Computing, efisiensi paket data komunikasi sangat menentukan konsumsi baterai perangkat:</p>
+<ul>
+    <li><strong>MQTT (Message Queuing Telemetry Transport):</strong> Protokol publish/subscribe super ringan dengan header paket hanya sebesar 2 byte. Sangat ideal untuk perangkat mikrokontroler dengan bandwidth minim dan jaringan tidak stabil.</li>
+    <li><strong>gRPC over HTTP/2:</strong> Menggunakan serialisasi biner Protocol Buffers (Protobuf). Sangat cocok untuk komunikasi data berkecepatan tinggi antara perangkat Edge Gateway lokal dengan cluster backend perusahaan.</li>
+</ul>
+<p>Masa depan komputasi terdistribusi bukanlah memilih antara Cloud atau Edge, melainkan merajut simfoni hibrida: komputasi cerdas instan di perangkat tepi (Edge), dan analisis data analitik makro jangka panjang di komputasi awan (Cloud).</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ];
     }
 }

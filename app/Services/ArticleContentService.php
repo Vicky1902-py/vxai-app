@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Services\Articles\AiArticles;
 use App\Services\Articles\AndroidArticles;
 use App\Services\Articles\ComputerArticles;
 use App\Services\Articles\TechnologyArticles;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_10_05_adsense_approval_full_content_v2';
+    public const VERSION = '2026_10_05_comprehensive_knowledge_base_v3';
 
     /**
      * Dapatkan semua artikel default komprehensif untuk kepatuhan penuh Google AdSense E-E-A-T
@@ -22,6 +23,7 @@ class ArticleContentService
     {
         return array_merge(
             self::getBaseArticles(),
+            AiArticles::getArticles(),
             ComputerArticles::getArticles(),
             AndroidArticles::getArticles(),
             TechnologyArticles::getArticles(),
