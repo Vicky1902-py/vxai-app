@@ -25,6 +25,30 @@
     @endif
     <meta property="article:author" content="{{ $article->author_name ?? 'Redaksi VxAI' }}">
     <meta property="article:section" content="{{ $article->category_label }}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": {{ json_encode($article->title) }},
+      "image": [{{ json_encode($article->safe_thumbnail) }}],
+      "datePublished": "{{ ($article->published_at ?? $article->created_at)->toIso8601String() }}",
+      "dateModified": "{{ $article->updated_at->toIso8601String() }}",
+      "author": {
+        "@type": "Person",
+        "name": {{ json_encode($article->author_name ?? 'Vicky Koroh') }},
+        "jobTitle": "Lead Developer & Technology Researcher"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "VxAI Lab",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ asset('favicon.ico') }}"
+        }
+      },
+      "description": {{ json_encode($ogDesc) }}
+    }
+    </script>
 @endsection
 
 @push('styles')
@@ -176,15 +200,15 @@
         </div>
     @endif
 
-    <!-- Banner AdSense Tengah (Jika Aktif) -->
-    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
+    <!-- Banner AdSense Tengah (Hanya jika slot resmi telah dikonfigurasi) -->
+    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']) && !empty($settings['adsense_slot_in_article']) && $settings['adsense_slot_in_article'] !== '1234567890')
         <div class="my-6 text-center overflow-hidden rounded-2xl">
             <ins class="adsbygoogle"
                  style="display:block; text-align:center;"
                  data-ad-layout="in-article"
                  data-ad-format="fluid"
                  data-ad-client="{{ $settings['adsense_client_id'] }}"
-                 data-ad-slot="1234567890"></ins>
+                 data-ad-slot="{{ $settings['adsense_slot_in_article'] }}"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
         </div>
     @endif
@@ -193,6 +217,42 @@
     <main class="article-body bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/90 shadow-sm">
         {!! $article->content !!}
     </main>
+
+    <!-- Kotak Penulis & E-E-A-T Credibility Box (Standar Google AdSense) -->
+    <div class="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xl sm:text-2xl shadow-md shrink-0">
+                {{ substr($article->author_name ?? 'V', 0, 1) }}
+            </div>
+            <div class="space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">
+                        {{ $article->author_name ?? 'Vicky Koroh' }}
+                    </h3>
+                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                        Penulis & Kontributor Terverifikasi
+                    </span>
+                </div>
+                <p class="text-xs text-slate-600 font-medium">
+                    Software Engineer, Peneliti Edukasi AI & Praktisi Kurikulum Vokasi
+                </p>
+            </div>
+        </div>
+        <p class="text-xs text-slate-600 leading-relaxed pt-3 border-t border-slate-200/80">
+            Penulis aktif mengembangkan platform edukasi teknologi, sistem pakar kurikulum, dan solusi komputasi cerdas. Setiap artikel disusun melalui riset mendalam, pengujian kode secara langsung, dan kepatuhan standar industri terkini demi menyajikan wawasan yang orisinal, bermanfaat, dan dapat dipercaya bagi seluruh pembaca.
+        </p>
+        <div class="flex flex-wrap items-center gap-3 pt-1 text-[11px] text-slate-500 font-semibold">
+            <span class="flex items-center gap-1 text-emerald-600">
+                <span>✓</span> Ditinjau & Teruji Teknis
+            </span>
+            <span>•</span>
+            <span class="flex items-center gap-1 text-blue-600">
+                <span>🛡️</span> Standar Kualitas E-E-A-T
+            </span>
+            <span>•</span>
+            <span>Terakhir diperbarui: {{ $article->updated_at->format('d M Y') }}</span>
+        </div>
+    </div>
 
     <!-- Banner Tombol Praktik Langsung ke Playground -->
     <div class="bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
@@ -208,13 +268,13 @@
         </a>
     </div>
 
-    <!-- Banner AdSense Bawah (Jika Aktif) -->
-    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
+    <!-- Banner AdSense Bawah (Hanya jika slot resmi telah dikonfigurasi) -->
+    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']) && !empty($settings['adsense_slot_bottom']) && $settings['adsense_slot_bottom'] !== '1234567890')
         <div class="my-6 text-center overflow-hidden rounded-2xl">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ $settings['adsense_client_id'] }}"
-                 data-ad-slot="1234567890"
+                 data-ad-slot="{{ $settings['adsense_slot_bottom'] }}"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>

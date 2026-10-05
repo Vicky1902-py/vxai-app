@@ -367,7 +367,7 @@
             </div>
 
             @if(isset($latestArticles) && $latestArticles->count() > 0)
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     @foreach($latestArticles as $art)
                         <article class="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between overflow-hidden group">
                             <div>
@@ -503,13 +503,13 @@
 
     </main>
 
-    <!-- Banner AdSense di Halaman Utama (Jika Aktif) -->
-    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
+    <!-- Banner AdSense di Halaman Utama (Hanya jika slot resmi telah dikonfigurasi) -->
+    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']) && !empty($settings['adsense_slot_main']) && $settings['adsense_slot_main'] !== '1234567890')
         <div class="max-w-5xl mx-auto px-4 my-6 text-center">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ $settings['adsense_client_id'] }}"
-                 data-ad-slot="1234567890"
+                 data-ad-slot="{{ $settings['adsense_slot_main'] }}"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>

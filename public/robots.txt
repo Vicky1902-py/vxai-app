@@ -1,2 +1,15 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /login
+Disallow: /guru
+Disallow: /siswa
+Disallow: /migrate-db
+
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://vxai.online/sitemap.xml

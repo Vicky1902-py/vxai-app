@@ -3,22 +3,40 @@
 namespace App\Services;
 
 use App\Models\Article;
+use App\Services\Articles\AndroidArticles;
+use App\Services\Articles\ComputerArticles;
+use App\Services\Articles\TechnologyArticles;
+use App\Services\Articles\WebArticles;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_09_24_guru_vxai_online_deep_learning_v1';
+    public const VERSION = '2026_10_05_adsense_approval_full_content_v2';
 
     /**
-     * Dapatkan daftar artikel edukasi & inovasi teknologi berkualitas tinggi:
+     * Dapatkan semua artikel default komprehensif untuk kepatuhan penuh Google AdSense E-E-A-T
+     */
+    public static function getDefaultArticles(): array
+    {
+        return array_merge(
+            self::getBaseArticles(),
+            ComputerArticles::getArticles(),
+            AndroidArticles::getArticles(),
+            TechnologyArticles::getArticles(),
+            WebArticles::getArticles()
+        );
+    }
+
+    /**
+     * Dapatkan daftar artikel dasar edukasi & inovasi teknologi berkualitas tinggi:
      * - Sistem Perangkat Ajar SMK 2026 Deep Learning (guru.vxai.online)
      * - Dasar-dasar Koding
      * - Dasar-dasar AI
      * - Belajar HTML
      */
-    public static function getDefaultArticles(): array
+    public static function getBaseArticles(): array
     {
         $now = now();
 

@@ -19,13 +19,13 @@
         </p>
     </div>
 
-    <!-- Banner AdSense Atas (Jika Aktif) -->
-    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
+    <!-- Banner AdSense Atas (Hanya jika slot resmi telah dikonfigurasi) -->
+    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']) && !empty($settings['adsense_slot_news']) && $settings['adsense_slot_news'] !== '1234567890')
         <div class="max-w-4xl mx-auto text-center my-4 overflow-hidden rounded-2xl">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ $settings['adsense_client_id'] }}"
-                 data-ad-slot="1234567890"
+                 data-ad-slot="{{ $settings['adsense_slot_news'] }}"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>

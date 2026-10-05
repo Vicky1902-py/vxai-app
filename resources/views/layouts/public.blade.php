@@ -157,13 +157,13 @@
         @yield('content')
     </div>
 
-    <!-- Banner AdSense di Footer (Jika Aktif) -->
-    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']))
+    <!-- Banner AdSense di Footer (Hanya jika slot resmi telah dikonfigurasi) -->
+    @if(isset($settings['adsense_status']) && $settings['adsense_status'] === 'true' && !empty($settings['adsense_client_id']) && !empty($settings['adsense_slot_footer']) && $settings['adsense_slot_footer'] !== '1234567890')
         <div class="max-w-5xl mx-auto px-4 my-6 text-center">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="{{ $settings['adsense_client_id'] }}"
-                 data-ad-slot="1234567890"
+                 data-ad-slot="{{ $settings['adsense_slot_footer'] }}"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
