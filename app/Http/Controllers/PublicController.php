@@ -53,8 +53,8 @@ class PublicController extends Controller
             'name' => 'Vicky Koroh',
             'title' => 'Pendidik Vokasi Rekayasa Perangkat Lunak & Inovator AI',
             'role' => 'Founder & Lead Developer VxAI Lab & guru.vxai.online',
-            'institution' => 'SMKN 1 Kupang Barat, Nusa Tenggara Timur (NTT)',
-            'bio' => 'Pendidik kejuruan dan full-stack software engineer yang berfokus pada demokratisasi pembelajaran koding dan integrasi kecerdasan artifisial untuk pendidikan vokasi di Indonesia. Pengembang mandiri platform Sistem Perangkat Ajar SMK 2026 (guru.vxai.online) yang berlandaskan regulasi resmi BSKAP No. 046/H/KR/2025 dan Permendikdasmen No. 13/2025.',
+            'institution' => 'Pendidik Vokasi Kejuruan & Jaringan SMK se-Nusa Tenggara Timur (NTT)',
+            'bio' => 'Pendidik kejuruan dan full-stack software engineer berbasis di Kupang, Nusa Tenggara Timur (NTT). Berfokus pada demokratisasi pembelajaran koding dan integrasi kecerdasan artifisial untuk pendidikan vokasi di Indonesia. Berpengalaman mendampingi komunitas guru dan siswa SMK di NTT dalam penguasaan kurikulum teknologi digital, serta pengembang mandiri platform Sistem Perangkat Ajar SMK 2026 (guru.vxai.online) yang berlandaskan regulasi resmi BSKAP No. 046/H/KR/2025 dan Permendikdasmen No. 13/2025.',
             'avatar' => !empty($settings['app_logo']) ? asset($settings['app_logo']) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
             'skills' => ['HTML5 / CSS3 / JS', 'Laravel & PHP 8.2+', 'Kurikulum Merdeka SMK', 'Deep Learning 3M', 'Pure Expert Systems', 'Tailwind CSS'],
             'social' => [

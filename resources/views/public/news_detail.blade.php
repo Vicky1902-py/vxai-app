@@ -237,7 +237,7 @@
                         </span>
                     </div>
                     <p class="text-xs text-slate-600 font-medium">
-                        Software Engineer, Pendidik Vokasi SMKN 1 Kupang Barat & Inovator Sistem Perangkat Ajar
+                        Software Engineer, Pendidik Vokasi SMK NTT & Inovator Sistem Perangkat Ajar (guru.vxai.online)
                     </p>
                 </div>
             </div>

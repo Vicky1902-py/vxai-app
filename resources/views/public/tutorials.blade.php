@@ -15,7 +15,7 @@
             Panduan Lengkap <span class="text-blue-600">Pemrograman Web</span> Modern
         </h1>
         <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Materi terstruktur dari tingkat dasar hingga mahir yang disusun khusus untuk siswa SMKN 1 Kupang Barat dan siapa saja yang ingin menguasai teknologi web. Setiap topik dilengkapi studi kasus yang bisa langsung Anda uji di <strong>Live Playground</strong>.
+            Materi terstruktur dari tingkat dasar hingga mahir yang dirancang untuk siswa SMK kejuruan se-NTT dan siapa saja yang ingin menguasai rekayasa web modern. Setiap topik dilengkapi studi kasus yang bisa langsung Anda uji di <strong>Live Playground</strong>.
         </p>
 
         <!-- Quick Jump Bar -->
@@ -300,7 +300,7 @@
                 <h3 class="text-base font-extrabold text-slate-900 mb-2">3.1 Variabel Modern (`const` & `let`) dan Fungsi</h3>
                 <p class="text-xs text-slate-600 mb-3">Gunakan `const` untuk nilai yang tidak berubah dan `let` untuk nilai yang akan bertambah atau berganti:</p>
                 <pre class="bg-slate-900 text-slate-200 p-5 rounded-2xl text-xs font-mono overflow-x-auto leading-relaxed border border-slate-800">// Deklarasi Variabel
-const namaSekolah = "SMKN 1 Kupang Barat";
+const namaSekolah = "SMK Vokasi NTT";
 let jumlahSiswa = 350;
 
 // Arrow Function Modern

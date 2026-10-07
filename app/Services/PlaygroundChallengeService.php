@@ -28,7 +28,7 @@ class PlaygroundChallengeService
                     'Ubah judul `<h1>` menjadi nama lengkap Anda.',
                     'Tuliskan satu paragraf `<p>` yang menceritakan alasan Anda ingin belajar koding.',
                     'Tambahkan tag `<strong>` pada kata kunci penting dan `<em>` untuk teks miring.',
-                    'Ubah atribut `href` pada link `<a>` agar mengarah ke website SMKN 1 Kupang Barat atau situs favorit Anda.'
+                    'Ubah atribut `href` pada link `<a>` agar mengarah ke website sekolah Anda atau situs favorit Anda.'
                 ],
                 'html_code' => '<!DOCTYPE html>
 <html lang="id">
@@ -388,7 +388,7 @@ tr:hover { background: #334155/30; }
                 ],
                 'html_code' => '<div class="container">
   <div class="header">
-    <h2>Portofolio Siswa SMKN 1 Kupang Barat 🌟</h2>
+    <h2>Portofolio Siswa SMK Vokasi 🌟</h2>
     <p>Koleksi karya koding website inovatif</p>
   </div>
 
@@ -923,7 +923,7 @@ const quotes = [
   \'"Satu-satunya cara melakukan pekerjaan hebat adalah mencintai apa yang Anda kerjakan." - Steve Jobs\',
   \'"Koding bukan tentang mengetik sintaks, melainkan tentang menyelesaikan masalah." - Anonim\',
   \'"Jangan takut berbuat salah saat menulis kode; bug adalah guru terbaik." - Programmer\',
-  \'"Generasi muda SMKN 1 Kupang Barat siap memimpin era Kecerdasan Buatan!" - VxAI\'
+  \'"Talenta digital muda SMK se-NTT siap memimpin era Kecerdasan Buatan!" - VxAI\'
 ];
 
 document.getElementById(\'btn-quote\').addEventListener(\'click\', function() {

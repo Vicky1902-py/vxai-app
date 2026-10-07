@@ -94,7 +94,7 @@
                     <span class="text-[11px] text-slate-400 block mb-1">Diterbitkan pada:</span>
                     <span class="text-xs font-bold text-slate-800">{{ $issueDate }}</span>
                     <div class="mt-8 border-t border-slate-300 pt-1 text-[11px] text-slate-500">
-                        Kupang Barat, NTT
+                        Kupang
                     </div>
                 </div>
 

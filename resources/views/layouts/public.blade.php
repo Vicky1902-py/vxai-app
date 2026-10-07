@@ -84,7 +84,7 @@
             "jobTitle": "Pendidik Vokasi & Lead Developer",
             "worksFor": {
               "@type": "EducationalOrganization",
-              "name": "SMKN 1 Kupang Barat"
+              "name": "Pendidikan Vokasi & Jaringan SMK Nusa Tenggara Timur (NTT)"
             },
             "url": "{{ route('public.author') }}"
           },
@@ -294,7 +294,7 @@
                 <!-- Kolom 4: Kontak & Komunitas -->
                 <div>
                     <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Kontak & Komunitas</h4>
-                    <p class="mb-2 leading-relaxed">Pertanyaan materi, bimbingan siswa, atau kerjasama sekolah SMKN 1 Kupang Barat:</p>
+                    <p class="mb-2 leading-relaxed">Pertanyaan kurikulum, bimbingan siswa, atau kemitraan sekolah kejuruan SMK se-NTT:</p>
                     <div class="space-y-2">
                         <a href="https://wa.me/6282266383444?text={{ urlencode('Halo Admin VxAI, saya ingin bertanya tentang pembelajaran koding:') }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition">
                             <span>📱</span> <span>Chat WhatsApp Resmi</span>
@@ -310,7 +310,7 @@
             </div>
 
             <div class="border-t border-slate-800/80 pt-6 flex flex-col md:flex-row justify-between items-center text-slate-500 gap-2">
-                <p>&copy; {{ date('Y') }} {{ $settings['app_name'] ?? 'VxAI Coding Lab' }} • Karya Vicky Koroh (SMKN 1 Kupang Barat, NTT).</p>
+                <p>&copy; {{ date('Y') }} {{ $settings['app_name'] ?? 'VxAI Coding Lab' }} • Karya Vicky Koroh (Pendidik Vokasi NTT).</p>
                 <p>Platform Edukasi Koding & Akses Terbuka Pembelajar Seluruh Indonesia.</p>
             </div>
         </div>

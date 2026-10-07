@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('title', 'Profil Penulis & Inovator: ' . $author['name'] . ' - ' . ($settings['app_name'] ?? 'VxAI Coding Lab'))
-@section('meta_description', 'Profil resmi ' . $author['name'] . ', pendidik vokasi SMKN 1 Kupang Barat dan pengembang Sistem Perangkat Ajar SMK 2026 (guru.vxai.online) serta platform VxAI Coding Lab.')
+@section('meta_description', 'Profil resmi ' . $author['name'] . ', pendidik vokasi kejuruan NTT dan pengembang Sistem Perangkat Ajar SMK 2026 (guru.vxai.online) serta platform VxAI Coding Lab.')
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
@@ -94,7 +94,7 @@
                 </span>
                 <h3 class="text-xl font-black">VxAI Coding Lab</h3>
                 <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                    Lingkungan belajar pemrograman interaktif tanpa instalasi. Membimbing siswa SMKN 1 Kupang Barat dan publik menguasai HTML5, CSS3, JavaScript, dan eksplorasi asisten AI modern langsung di browser.
+                    Lingkungan belajar pemrograman interaktif tanpa instalasi. Membimbing siswa SMK se-Nusa Tenggara Timur dan publik menguasai HTML5, CSS3, JavaScript, dan eksplorasi asisten AI modern langsung di browser.
                 </p>
             </div>
             <div class="mt-6 pt-4 border-t border-blue-800/60 flex items-center justify-between">

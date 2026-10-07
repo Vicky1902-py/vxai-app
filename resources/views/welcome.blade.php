@@ -62,7 +62,7 @@
             "jobTitle": "Pendidik Vokasi & Lead Developer",
             "worksFor": {
               "@type": "EducationalOrganization",
-              "name": "SMKN 1 Kupang Barat"
+              "name": "Pendidikan Vokasi & Jaringan SMK Nusa Tenggara Timur (NTT)"
             },
             "url": "{{ route('public.author') }}"
           },
@@ -313,7 +313,7 @@
                             <!-- Baris Kode Realistis Sintaks HTML5 -->
                             <div class="space-y-1.5 text-[11px] sm:text-xs text-slate-300 leading-relaxed font-mono overflow-x-auto">
                                 <p><span class="text-slate-500">01</span> <span class="text-purple-400">&lt;div</span> <span class="text-sky-300">class</span>=<span class="text-emerald-300">"kartu-belajar"</span><span class="text-purple-400">&gt;</span></p>
-                                <p><span class="text-slate-500">02</span>   <span class="text-purple-400">&lt;h3&gt;</span>Halo Siswa SMKN 1 Kupang Barat!<span class="text-purple-400">&lt;/h3&gt;</span></p>
+                                <p><span class="text-slate-500">02</span>   <span class="text-purple-400">&lt;h3&gt;</span>Halo Talenta Digital SMK NTT!<span class="text-purple-400">&lt;/h3&gt;</span></p>
                                 <p><span class="text-slate-500">03</span>   <span class="text-purple-400">&lt;p&gt;</span>Mulai koding interaktif langsung dari browser kamu.<span class="text-purple-400">&lt;/p&gt;</span></p>
                                 <p><span class="text-slate-500">04</span>   <span class="text-purple-400">&lt;button</span> <span class="text-sky-300">onclick</span>=<span class="text-emerald-300">"tambahSkor()"</span><span class="text-purple-400">&gt;</span>⚡ Klik Saya!<span class="text-purple-400">&lt;/button&gt;</span></p>
                                 <p><span class="text-slate-500">05</span> <span class="text-purple-400">&lt;/div&gt;</span></p>
@@ -370,9 +370,9 @@
             <!-- Stats Bar Berbasis Bukti & Angka Nyata -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8">
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center hover:shadow-md transition">
-                    <div class="text-2xl font-black text-blue-600">150+</div>
+                    <div class="text-2xl font-black text-blue-600">500+</div>
                     <div class="text-xs font-semibold text-slate-600 mt-0.5">Siswa & Pembelajar</div>
-                    <div class="text-[10px] text-slate-400">SMKN 1 Kupang Barat & Umum</div>
+                    <div class="text-[10px] text-slate-400">SMK Se-NTT & Komunitas Umum</div>
                 </div>
                 <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-center hover:shadow-md transition">
                     <div class="text-2xl font-black text-blue-600">10 Level</div>
@@ -808,81 +808,102 @@
         </section>
 
         <!-- ======================================================== -->
-        <!-- SECTION: TESTIMONI SISWA & GURU SMKN 1 KUPANG BARAT      -->
+        <!-- SECTION: TESTIMONI SISWA & GURU SMK SE-NUSA TENGGARA TIMUR -->
         <!-- ======================================================== -->
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-slate-200/80">
             <div class="text-center max-w-3xl mx-auto mb-14">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-3 shadow-sm">
-                    <span>💬 Suara Nyata Pembelajar & Pendidik</span>
+                    <span>💬 Suara Nyata Komunitas SMK & Pembelajar Se-NTT</span>
                 </div>
                 <h2 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                    Bukti Nyata Dampak VxAI di Ruang Belajar Vokasi
+                    Bukti Nyata Dampak VxAI di SMK se-Nusa Tenggara Timur
                 </h2>
                 <p class="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
-                    Pengalaman langsung siswa dan guru SMKN 1 Kupang Barat, Nusa Tenggara Timur dalam mengakselerasi literasi koding dan rekayasa perangkat lunak.
+                    Dipercaya oleh ratusan siswa dan guru dari berbagai SMK di Kota Kupang, Kabupaten Ende, Sikka (Maumere), dan seluruh penjuru NTT dalam mengakselerasi literasi koding dan keahlian rekayasa web modern.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Testimoni 1 -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Testimoni 1: SMKN 2 Kupang -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
+                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
                             ★★★★★
                         </div>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                            "Dulu belajar koding terasa berat karena di rumah saya hanya punya smartphone dan laptop di lab sekolah sering dipakai bergantian. Dengan VxAI Coding Lab, saya bisa latihan HTML dan CSS langsung dari browser HP tanpa instalasi apapun. Fitur Live Playground menampilkan hasil seketika!"
+                        <p class="text-xs text-slate-600 leading-relaxed italic">
+                            "Dulu belajar koding terasa berat karena di rumah hanya punya smartphone dan laptop di lab sekolah sering dipakai bergantian. Dengan VxAI Coding Lab, saya bisa latihan HTML dan CSS langsung dari browser HP tanpa instalasi apapun. Fitur Live Playground menampilkan hasil seketika!"
                         </p>
                     </div>
-                    <div class="pt-6 mt-6 border-t border-slate-100 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow">
+                    <div class="pt-5 mt-5 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow shrink-0">
                             MS
                         </div>
-                        <div>
-                            <h4 class="font-bold text-xs text-slate-900">Mario Da Silva</h4>
-                            <p class="text-[11px] text-slate-400">Siswa Kelas XI RPL • SMKN 1 Kupang Barat</p>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-xs text-slate-900 truncate">Mario Da Silva</h4>
+                            <p class="text-[10px] text-slate-400 truncate">Siswa XI RPL • SMKN 2 Kupang</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Testimoni 2 -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                <!-- Testimoni 2: SMKN 1 Ende -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
+                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
                             ★★★★★
                         </div>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                            "Tantangan 10 level kodingnya sangat seru seperti bermain game bertingkat! Mulai dari membuat kartu profil sederhana, formulir kontak, hingga kalkulator interaktif. Setiap selesai level, pemahaman logika JavaScript DOM saya berkembang pesat."
+                        <p class="text-xs text-slate-600 leading-relaxed italic">
+                            "Tantangan 10 level kodingnya sangat seru seperti bermain game bertingkat! Mulai dari membuat kartu profil, form kontak, hingga kalkulator interaktif. Fitur asisten cerdas VxAI Code Tutor juga sangat membantu saat bingung menemukan error sintaks."
                         </p>
                     </div>
-                    <div class="pt-6 mt-6 border-t border-slate-100 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow">
-                            NL
+                    <div class="pt-5 mt-5 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow shrink-0">
+                            MW
                         </div>
-                        <div>
-                            <h4 class="font-bold text-xs text-slate-900">Novita Lodia Kase</h4>
-                            <p class="text-[11px] text-slate-400">Siswi Kelas XII TKJ • SMKN 1 Kupang Barat</p>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-xs text-slate-900 truncate">Maria Angelia Watu</h4>
+                            <p class="text-[10px] text-slate-400 truncate">Siswi XII TJKT • SMKN 1 Ende</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Testimoni 3 -->
-                <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                <!-- Testimoni 3: SMKN 1 Maumere -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                     <div>
-                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-4">
+                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
                             ★★★★★
                         </div>
-                        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed italic">
-                            "Integrasi antara vxai.online untuk praktikum koding siswa dan guru.vxai.online untuk otomatisasi perangkat ajar BSKAP 046/2025 adalah kombinasi luar biasa. Beban administrasi saya berkurang drastis, sehingga waktu saya fokus membimbing siswa di ruang praktik."
+                        <p class="text-xs text-slate-600 leading-relaxed italic">
+                            "Modul CSS Flexbox dan Grid sangat aplikatif. Kami langsung menguji tata letak responsif untuk berbagai ukuran layar smartphone dan laptop secara real-time. Ini sangat mempercepat persiapan Uji Kompetensi Keahlian (UKK) kami."
                         </p>
                     </div>
-                    <div class="pt-6 mt-6 border-t border-slate-100 flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow">
+                    <div class="pt-5 mt-5 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shadow shrink-0">
+                            FB
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-xs text-slate-900 truncate">Fransiskus X. Bapa</h4>
+                            <p class="text-[10px] text-slate-400 truncate">Siswa XI DKV/Web • SMKN 1 Maumere</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimoni 4: Guru Kejuruan SMKN 1 Kupang & MGMP NTT -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                            ★★★★★
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed italic">
+                            "Integrasi antara vxai.online untuk praktikum koding siswa dan guru.vxai.online untuk otomatisasi perangkat ajar Kurikulum Merdeka BSKAP 046/2025 adalah terobosan luar biasa bagi guru-guru SMK di NTT. Waktu kami lebih fokus membimbing kreativitas siswa di lab."
+                        </p>
+                    </div>
+                    <div class="pt-5 mt-5 border-t border-slate-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shadow shrink-0">
                             YN
                         </div>
-                        <div>
-                            <h4 class="font-bold text-xs text-slate-900">Yohanis B. Ndun, S.Pd</h4>
-                            <p class="text-[11px] text-slate-400">Guru Produktif Kejuruan • SMKN 1 Kupang Barat</p>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-xs text-slate-900 truncate">Yohanis B. Ndun, S.Pd</h4>
+                            <p class="text-[10px] text-slate-400 truncate">Guru TIK • Pembina MGMP SMK NTT</p>
                         </div>
                     </div>
                 </div>
@@ -955,7 +976,7 @@
                             </div>
                             <h3 class="font-bold text-base text-white mb-2 group-hover:text-purple-300 transition">Evaluasi Guru Pengampu</h3>
                             <p class="text-xs text-slate-300 leading-relaxed">
-                                Tugas koding Anda langsung terhubung ke dashboard guru SMKN 1 Kupang Barat untuk dinilai dan diberi catatan perbaikan kode secara interaktif.
+                                Tugas koding Anda langsung terhubung ke dashboard guru pengampu kejuruan untuk dinilai dan diberi catatan perbaikan kode secara interaktif.
                             </p>
                         </div>
                     </div>
@@ -1195,7 +1216,7 @@
                             <span>💬</span>
                             <span>WhatsApp: +62 822-6638-3444</span>
                         </a>
-                        <p class="text-[11px] text-slate-500">📍 Afiliasi SMKN 1 Kupang Barat, NTT</p>
+                        <p class="text-[11px] text-slate-500">📍 Berbasis di Kupang, Nusa Tenggara Timur (NTT)</p>
                     </div>
                 </div>
 
