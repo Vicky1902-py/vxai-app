@@ -249,6 +249,74 @@ $user = $stmt-&gt;fetch();</pre>
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+
+            // ARTIKEL TEKNOLOGI 6: Kedaulatan Data & UU PDP di Pendidikan
+            [
+                'title' => 'Kedaulatan Data Pendidikan di Era AI: Menjaga Privasi Siswa dan Dokumen Sekolah Sesuai Undang-Undang Perlindungan Data Pribadi (UU PDP)',
+                'slug' => 'kedaulatan-data-pendidikan-ai-privasi-siswa-uu-pdp',
+                'category' => 'teknologi',
+                'summary' => 'Tinjauan mendalam tata kelola keamanan siber dan perlindungan data pribadi saat sekolah mengadopsi platform kecerdasan buatan: risiko kebocoran data nilai & identitas siswa, kepatuhan UU No. 27 Tahun 2022 (UU PDP), arsitektur Zero Trust di jaringan sekolah, serta panduan memilih layanan AI yang tidak mengeksploitasi data siswa untuk pelatihan model publik.',
+                'content' => '<p>Di tengah gegap gempita pemanfaatan kecerdasan buatan (Artificial Intelligence) dalam dunia pendidikan Indonesia, sebuah ancaman senyap mengintai: <strong>risiko kebocoran data pribadi siswa dan kerentanan kedaulatan data institusi pendidikan</strong>. Banyak guru dan siswa secara tanpa sadar mengunggah berkas sensitif—seperti naskah ujian yang belum dirilis, data Nomor Induk Siswa Nasional (NISN), rekam konseling bimbingan siswa, hingga laporan keuangan sekolah—ke layanan chatbot AI pihak ketiga yang gratis di internet.</p>
+<p>Tanpa disadari, banyak platform AI komersial secara baku menggunakan data masukan pengguna untuk melatih ulang (<em>retrain</em>) model kecerdasan buatan mereka. Hal ini berpotensi membocorkan rahasia institusi dan melanggar hukum positif di Indonesia: <strong>Undang-Undang Nomor 27 Tahun 2022 tentang Pelindungan Data Pribadi (UU PDP)</strong>.</p>
+
+<img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80" alt="Gembok keamanan siber digital dan perisai enkripsi data privasi" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Apa Itu UU PDP dan Kewajiban Sekolah sebagai Pengendali Data?</h2>
+<p>Berdasarkan UU PDP, institusi pendidikan (mulai dari SD, SMP, SMA/SMK, hingga Perguruan Tinggi) dikategorikan secara hukum sebagai <strong>Pengendali Data Pribadi</strong> (<em>Data Controller</em>). Ini berarti sekolah memikul tanggung jawab hukum penuh untuk menjaga kerahasiaan, integritas, dan ketersediaan data siswa serta guru.</p>
+
+<h3>Klasifikasi Data di Lingkungan Sekolah:</h3>
+<ul>
+    <li><strong>Data Pribadi Umum:</strong> Nama lengkap, jenis kelamin, kewarganegaraan, agama, dan data pribadi yang dikombinasikan untuk mengidentifikasi seseorang.</li>
+    <li><strong>Data Pribadi Spesifik (Sensitif):</strong> Rekam medis kesehatan siswa, data biometrik (sidik jari absensi), rekam konseling psikologis, dan data anak di bawah umur yang mendapatkan perlindungan ekstra ketat menurut hukum.</li>
+</ul>
+
+<img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80" alt="Jaringan infrastruktur awan data aman dengan protokol enkripsi modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>2. Bahaya Memakai AI Publik Sembarangan: Fenomena "Model Inversion"</h2>
+<p>Ketika seorang guru mengunggah soal ujian atau data nilai ke chatbot publik, data tersebut dapat diserap ke dalam bobot jaringan saraf tiruan AI. Peneliti keamanan siber telah membuktikan adanya teknik serangan yang disebut <em>Training Data Extraction</em> atau <em>Prompt Extraction Attack</em>:</p>
+<blockquote>"Seorang peretas di belahan dunia lain dapat menyusun prompt manipulatif yang memicu AI memuntahkan kembali potongan kalimat rahasia yang pernah diunggah oleh pengguna lain jika sistem AI tersebut tidak memiliki batasan isolasi data privat (data silo)."</blockquote>
+<p>Inilah alasan utama mengapa alat riset modern seperti <strong>Google NotebookLM</strong> dan sistem pakar lokal seperti <strong>Sistem Perangkat Ajar SMK guru.vxai.online</strong> menerapkan kebijakan isolasi ketat: <em>dokumen pengguna tidak pernah digunakan untuk melatih model dasar publik</em>.</p>
+
+<h2>3. Arsitektur Zero Trust & Solusi Private RAG untuk Sekolah</h2>
+<p>Untuk melindungi lingkungan digital sekolah di tahun 2026, tim IT sekolah (khususnya guru dan siswa jurusan Teknik Komputer Jaringan / Cyber Security) disarankan menerapkan prinsip <strong>Zero Trust Architecture</strong> (<em>"Never Trust, Always Verify"</em>):</p>
+
+<ol>
+    <li>
+        <strong>Enkripsi Ganda (At-Rest & In-Transit):</strong>
+        <p>Pastikan seluruh basis data sekolah terenkripsi dengan algoritma standar militer <code>AES-256</code> saat disimpan di disk, dan selalu dipancarkan menggunakan protokol <code>TLS 1.3</code> saat dikirimkan melalui internet.</p>
+    </li>
+    <li>
+        <strong>Pemanfaatan Local LLM & Self-Hosted RAG:</strong>
+        <p>Alih-alih bergantung pada layanan luar negeri, sekolah dapat memanfaatkan server laboratorium internal untuk menjalankan model AI open-source (seperti Llama 3 atau Mistral terkuantisasi) menggunakan Ollama. Dengan cara ini, 100% data soal dan dokumen sekolah tidak pernah keluar dari jaringan kabel LAN lokal sekolah.</p>
+    </li>
+    <li>
+        <strong>Klausul Perjanjian Pemrosesan Data (DPA):</strong>
+        <p>Jika sekolah menggunakan vendor perangkat lunak pendidikan berbasis cloud, pastikan pihak penyedia menandatangani dokumen komitmen bahwa mereka tidak akan menjual data siswa atau memanfaatkannya untuk periklanan bertarget.</p>
+    </li>
+</ol>
+
+<img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80" alt="Suasana literasi digital dan keamanan data di ruang kelas modern" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>4. Panduan Praktis Etika Penggunaan AI bagi Guru dan Siswa</h2>
+<p>Sekolah yang cerdas tidak memblokir total teknologi AI, melainkan membekali warganya dengan literasi etika keamanan data:</p>
+<ul>
+    <li><strong>Anonimisasi Dokumen Sebelum Unggah:</strong> Hapus nama siswa, nomor induk, tanggal lahir, dan alamat rumah sebelum naskah tugas atau studi kasus dimasukkan ke asisten AI. Ganti nama dengan inisial seperti "Siswa A" atau "Siswa B".</li>
+    <li><strong>Pisahkan Akun Pribadi dan Akun Lembaga:</strong> Selalu gunakan akun email berdomain resmi sekolah (seperti <code>@sch.id</code> atau <code>@belajar.id</code>) yang telah memiliki proteksi perjanjian kepatuhan enterprise dari penyedia layanan.</li>
+    <li><strong>Rutin Bersihkan Riwayat Percakapan (Audit Log):</strong> Lakukan pembersihan riwayat sesi berkala dan nonaktifkan opsi <em>"Help improve our models"</em> pada menu pengaturan privasi aplikasi AI.</li>
+</ul>
+
+<h2>5. Kesimpulan: Teknologi Canggih Harus Berjalan Bersama Regulasi</h2>
+<p>Kecerdasan buatan adalah akselerator kemajuan pendidikan vokasi yang tiada tanding. Namun, kemajuan teknologi tanpa perlindungan data adalah bom waktu. Dengan memahami regulasi UU PDP dan menerapkan prinsip tata kelola kedaulatan data yang disiplin, kita memastikan generasi muda Indonesia belajar dengan teknologi paling mutakhir dalam ruang digital yang aman, terlindungi, dan bermartabat.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ];
     }
 }

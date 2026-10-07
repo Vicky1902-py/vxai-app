@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Schema;
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_10_05_comprehensive_knowledge_base_v3';
+    public const VERSION = '2026_10_07_notebooklm_grounded_rag_knowledge_v4';
 
     /**
      * Dapatkan semua artikel default komprehensif untuk kepatuhan penuh Google AdSense E-E-A-T

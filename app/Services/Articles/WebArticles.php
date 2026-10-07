@@ -229,6 +229,125 @@ class WebArticles
                 'created_at' => $now,
                 'updated_at' => $now,
             ],
+
+            // ARTIKEL WEB / CODING 5: Tutorial RAG Belajar Mandiri
+            [
+                'title' => 'Panduan Membangun Asisten Belajar RAG Sederhana: Menghubungkan Dokumen Modul Ajar ke Model Bahasa Menggunakan JavaScript dan Python',
+                'slug' => 'panduan-membangun-asisten-belajar-rag-dokumen-javascript-python',
+                'category' => 'coding',
+                'summary' => 'Tutorial teknis komprehensif bagi siswa SMK Jurusan RPL/PPLG dan pengembang web pemula dalam merekayasa sistem pencarian materi cerdas berbasis Retrieval-Augmented Generation (RAG): memahami konsep Text Embeddings, menghitung kemiripan Cosine Similarity, serta membangun antarmuka web interaktif yang menampilkan kutipan sitasi sumber secara real-time.',
+                'content' => '<p>Di era teknologi kecerdasan buatan saat ini, banyak siswa SMK jurusan Rekayasa Perangkat Lunak (RPL/PPLG) beranggapan bahwa membangun aplikasi AI membutuhkan keahlian matematika doktor atau modal server berharga puluhan juta rupiah. Anggapan ini keliru! Salah satu teknologi AI paling dicari oleh industri saat ini—<strong>Retrieval-Augmented Generation (RAG)</strong>—dapat dibangun oleh pengembang pemula menggunakan JavaScript dan Python dasar.</p>
+<p>Dalam panduan edukatif ini, kita akan membongkar cara kerja arsitektur sistem seperti <em>Google NotebookLM</em> dan mempraktikkannya untuk membuat <strong>Asisten Belajar Mandiri Berbasis Dokumen Modul Ajar SMK</strong>.</p>
+
+<img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80" alt="Siswa sedang menulis kode pemrograman di laptop dengan layar monitor ganda" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>1. Apa Itu RAG dan Mengapa Menjadi Standar Emas?</h2>
+<p>Secara sederhana, RAG adalah teknik memberikan "buku catatan terbuka" kepada model AI sebelum ia menjawab pertanyaan:</p>
+<ul>
+    <li><strong>Retrieval (Pencarian Dokumen):</strong> Sistem mencari 2 atau 3 paragraf paling relevan dari kumpulan modul belajar yang Anda unggah berdasarkan pertanyaan pengguna.</li>
+    <li><strong>Augmented (Pengayaan Konteks):</strong> Paragraf yang ditemukan tersebut disisipkan ke dalam prompt sebagai teks instruksi latar belakang.</li>
+    <li><strong>Generation (Pembuatan Respons):</strong> Model AI merangkum dan menyusun jawaban hanya berlandaskan paragraf yang diberikan, lengkap dengan nomor rujukan halaman.</li>
+</ul>
+
+<h2>2. Tiga Komponen Inti Sistem RAG</h2>
+<p>Untuk membangun sistem RAG fungsional, kita hanya membutuhkan tiga komponen komputasi:</p>
+<ol>
+    <li><strong>Document Chunker:</strong> Script pemotong naskah panjang (PDF atau Markdown) menjadi potongan kecil berukuran sekitar 300 - 500 kata per bagian.</li>
+    <li><strong>Embedding Generator:</strong> Model ringan (seperti model embedding Gemini atau all-MiniLM-L6-v2) yang mengubah kalimat teks menjadi deretan angka koordinat matematis.</li>
+    <li><strong>Cosine Similarity Matcher:</strong> Rumus aljabar linear sederhana untuk mengukur sudut kemiripan antara vektor pertanyaan siswa dengan vektor paragraf modul.</li>
+</ol>
+
+<img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1200&q=80" alt="Diagram aljabar linear dan kalkulasi vektor kemiripan dokumen" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>3. Implementasi Kode Sederhana: Menghitung Kemiripan Cosine di JavaScript</h2>
+<p>Berikut adalah contoh implementasi fungsi <code>cosineSimilarity</code> murni menggunakan JavaScript modern yang dapat dijalankan langsung di browser atau lingkungan Node.js tanpa perlu library tambahan:</p>
+
+<pre class="ql-syntax">function dotProduct(vecA, vecB) {
+    let product = 0;
+    for (let i = 0; i &lt; vecA.length; i++) {
+        product += vecA[i] * vecB[i];
+    }
+    return product;
+}
+
+function magnitude(vec) {
+    let sum = 0;
+    for (let i = 0; i &lt; vec.length; i++) {
+        sum += vec[i] * vec[i];
+    }
+    return Math.sqrt(sum);
+}
+
+function cosineSimilarity(vecA, vecB) {
+    const dot = dotProduct(vecA, vecB);
+    const magA = magnitude(vecA);
+    const magB = magnitude(vecB);
+    if (magA === 0 || magB === 0) return 0;
+    return dot / (magA * magB);
+}
+
+// Simulasi: Mencari chunk dokumen dengan skor kemiripan tertinggi
+function findMostRelevantChunk(queryVector, documentChunks) {
+    let bestScore = -1;
+    let bestChunk = null;
+
+    for (const chunk of documentChunks) {
+        const score = cosineSimilarity(queryVector, chunk.embedding);
+        if (score &gt; bestScore) {
+            bestScore = score;
+            bestChunk = chunk;
+        }
+    }
+
+    return { chunk: bestChunk, score: bestScore };
+}</pre>
+
+<h2>4. Merakit Prompt dengan Grounding Context & Sitasi Sumber</h2>
+<p>Setelah potongan modul terbaik ditemukan, kita merakit <em>System Prompt</em> yang ketat. Ini adalah rahasia mengapa sistem seperti NotebookLM tidak pernah berhalusinasi:</p>
+
+<pre class="ql-syntax">const systemPrompt = `Anda adalah Asisten Belajar Vokasi yang jujur dan presisi.
+Tugas Anda adalah menjawab pertanyaan siswa HANYA berdasarkan konteks dokumen di bawah ini.
+Aturan Wajib:
+1. Cantumkan [Sumber: Judul Modul, Hal. X] di setiap akhir kalimat fakta.
+2. Jika jawaban tidak ditemukan di dalam konteks, katakan: "Informasi tersebut tidak tercantum dalam modul ajar yang tersedia."
+3. DILARANG KERAS mengarang fakta di luar konteks yang diberikan.
+
+KONTEKS DOKUMEN:
+"""
+${relevantChunk.content}
+"""
+
+PERTANYAAN SISWA:
+${studentQuestion}`;</pre>
+
+<img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=1200&q=80" alt="Antarmuka web interaktif asisten belajar dengan kotak obrolan responsif" style="width:100%;border-radius:16px;margin:24px 0;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+
+<h2>5. Membangun Antarmuka Chat Web Responsif</h2>
+<p>Bagi siswa yang sedang menyiapkan proyek Uji Kompetensi Keahlian (UKK) jurusan RPL, antarmuka web dapat dirancang dengan HTML5 semantik dan CSS Flexbox yang ringan:</p>
+
+<pre class="ql-syntax">&lt;div class="chat-container"&gt;
+    &lt;div id="chatMessages" class="messages-area"&gt;
+        &lt;!-- Pesan AI akan dirender di sini beserta badge kutipan --&gt;
+    &lt;/div&gt;
+    &lt;form id="queryForm" class="input-form"&gt;
+        &lt;input type="text" id="userInput" placeholder="Tanyakan materi modul koding..." required&gt;
+        &lt;button type="submit" id="sendBtn"&gt;Tanya Asisten&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/div&gt;</pre>
+
+<h2>6. Kesimpulan & Langkah Pengembangan Lanjutan</h2>
+<p>Dengan memahami arsitektur RAG di atas, para siswa kejuruan tidak lagi sekadar menjadi konsumen pasif teknologi kecerdasan buatan, melainkan kreator inovasi yang mampu membangun solusi nyata untuk kebutuhan sekolah masing-masing.</p>
+<p>Langkah berikutnya yang dapat dieksplorasi adalah menerapkan penyimpanan vektor lokal menggunakan <em>IndexedDB</em> di browser atau <em>SQLite-vec</em> di server sekolah sehingga asisten ajar dapat beroperasi secara cepat, hemat kuota internet, dan aman bagi privasi data seluruh civitas akademika.</p>',
+                'thumbnail_url' => 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=80',
+                'author_id' => 1,
+                'author_name' => 'Vicky Koroh',
+                'views_count' => 0,
+                'status' => 'published',
+                'is_featured' => false,
+                'published_at' => $now,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ];
     }
 }
