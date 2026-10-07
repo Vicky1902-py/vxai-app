@@ -24,7 +24,13 @@ Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name
 
 // Panduan & Pembelajaran Koding Interaktif
 Route::get('/belajar', [PublicController::class, 'tutorials'])->name('public.learning');
-Route::get('/panduan', [PublicController::class, 'tutorials'])->name('public.tutorials');
+Route::redirect('/panduan', '/belajar', 301)->name('public.tutorials');
+
+// Halaman Profil Penulis & Inovator (E-E-A-T AdSense)
+Route::get('/penulis/{slug?}', [PublicController::class, 'authorProfile'])->name('public.author');
+
+// Halaman Sertifikat Kelulusan 10 Level & Verifikasi Publik
+Route::get('/sertifikat', [PublicController::class, 'certificate'])->name('public.certificate');
 
 // Portal Berita & Tips Koding, AI, Komputer, Android
 Route::get('/berita', [PublicController::class, 'newsIndex'])->name('public.news');

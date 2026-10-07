@@ -128,8 +128,8 @@
 
                     <div class="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
                         <div class="text-xs text-slate-500">
-                            <span class="font-bold text-slate-800 block">{{ $featuredArticle->author_name }}</span>
-                            <span class="text-[11px] text-slate-400">{{ $featuredArticle->published_at ? $featuredArticle->published_at->format('d M Y') : $featuredArticle->created_at->format('d M Y') }}</span>
+                            <a href="{{ $featuredArticle->author_url }}" class="font-bold text-slate-800 hover:text-blue-600 transition block">{{ $featuredArticle->author_name }}</a>
+                            <span class="text-[11px] text-slate-400">{{ $featuredArticle->formatted_date }}</span>
                         </div>
 
                         <a href="{{ route('public.news.detail', $featuredArticle->slug) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition flex items-center gap-1.5">
@@ -165,7 +165,7 @@
                         <!-- Teks Artikel -->
                         <div class="p-6">
                             <div class="flex items-center gap-2 text-[11px] text-slate-400 mb-2">
-                                <span>{{ $art->published_at ? $art->published_at->format('d M Y') : $art->created_at->format('d M Y') }}</span>
+                                <span>{{ $art->formatted_date }}</span>
                                 <span>•</span>
                                 <span>{{ $art->reading_time }}</span>
                                 <span>•</span>
@@ -187,7 +187,7 @@
                     <!-- Footer Kartu -->
                     <div class="px-6 pb-6 pt-2 flex items-center justify-between border-t border-slate-50">
                         <span class="text-[11px] font-semibold text-slate-500">
-                            Oleh: {{ $art->author_name }}
+                            Oleh: <a href="{{ $art->author_url }}" class="hover:text-blue-600 transition text-slate-700 font-bold">{{ $art->author_name }}</a>
                         </span>
                         <a href="{{ route('public.news.detail', $art->slug) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 transition flex items-center gap-1">
                             <span>Baca</span>

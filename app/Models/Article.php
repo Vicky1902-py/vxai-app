@@ -114,4 +114,39 @@ class Article extends Model
             default => 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1000&q=80',
         };
     }
+
+    // Format Tanggal Indonesia Singkat: 05 Okt 2026
+    public function getFormattedDateAttribute(): string
+    {
+        $dt = $this->published_at ?? $this->created_at ?? now();
+        $bulanIndo = [
+            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+            7 => 'Jul', 8 => 'Agu', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des'
+        ];
+        return $dt->format('d') . ' ' . ($bulanIndo[(int)$dt->format('m')] ?? $dt->format('M')) . ' ' . $dt->format('Y');
+    }
+
+    // Format Tanggal Indonesia Lengkap: Senin, 05 Oktober 2026
+    public function getFormattedFullDateAttribute(): string
+    {
+        $dt = $this->published_at ?? $this->created_at ?? now();
+        $hariIndo = [
+            'Sunday' => 'Minggu', 'Monday' => 'Senin', 'Tuesday' => 'Selasa',
+            'Wednesday' => 'Rabu', 'Thursday' => 'Kamis', 'Friday' => 'Jumat', 'Saturday' => 'Sabtu'
+        ];
+        $bulanLengkap = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+            7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        $hari = $hariIndo[$dt->format('l')] ?? $dt->format('l');
+        $bulan = $bulanLengkap[(int)$dt->format('m')] ?? $dt->format('F');
+
+        return "{$hari}, " . $dt->format('d') . " {$bulan} " . $dt->format('Y');
+    }
+
+    // URL Profil Penulis E-E-A-T
+    public function getAuthorUrlAttribute(): string
+    {
+        return route('public.author', ['slug' => \Illuminate\Support\Str::slug($this->author_name ?? 'vicky-koroh')]);
+    }
 }

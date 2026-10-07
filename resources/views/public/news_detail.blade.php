@@ -163,12 +163,14 @@
         <!-- Penulis & Tanggal -->
         <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow">
-                    {{ substr($article->author_name, 0, 1) }}
-                </div>
+                <a href="{{ $article->author_url }}" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow hover:scale-105 transition" title="Lihat Profil Penulis">
+                    {{ substr($article->author_name ?? 'V', 0, 1) }}
+                </a>
                 <div>
-                    <div class="font-bold text-slate-900">{{ $article->author_name }}</div>
-                    <div class="text-[11px] text-slate-400">{{ $article->published_at ? $article->published_at->format('l, d F Y') : $article->created_at->format('l, d F Y') }}</div>
+                    <a href="{{ $article->author_url }}" class="font-bold text-slate-900 hover:text-blue-600 transition block">
+                        {{ $article->author_name }}
+                    </a>
+                    <div class="text-[11px] text-slate-400">{{ $article->formatted_full_date }}</div>
                 </div>
             </div>
 
@@ -220,26 +222,31 @@
 
     <!-- Kotak Penulis & E-E-A-T Credibility Box (Standar Google AdSense) -->
     <div class="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm space-y-4">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xl sm:text-2xl shadow-md shrink-0">
-                {{ substr($article->author_name ?? 'V', 0, 1) }}
-            </div>
-            <div class="space-y-1">
-                <div class="flex items-center gap-2 flex-wrap">
-                    <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">
-                        {{ $article->author_name ?? 'Vicky Koroh' }}
-                    </h3>
-                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                        Penulis & Kontributor Terverifikasi
-                    </span>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <a href="{{ $article->author_url }}" class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xl sm:text-2xl shadow-md shrink-0 hover:scale-105 transition" title="Lihat Profil Lengkap">
+                    {{ substr($article->author_name ?? 'V', 0, 1) }}
+                </a>
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <a href="{{ $article->author_url }}" class="font-extrabold text-slate-900 text-base sm:text-lg hover:text-blue-600 transition">
+                            {{ $article->author_name ?? 'Vicky Koroh' }}
+                        </a>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                            Penulis & Kontributor Terverifikasi
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        Software Engineer, Pendidik Vokasi SMKN 1 Kupang Barat & Inovator Sistem Perangkat Ajar
+                    </p>
                 </div>
-                <p class="text-xs text-slate-600 font-medium">
-                    Software Engineer, Peneliti Edukasi AI & Praktisi Kurikulum Vokasi
-                </p>
             </div>
+            <a href="{{ $article->author_url }}" class="px-4 py-2 rounded-xl bg-white border border-blue-200 hover:border-blue-400 text-blue-700 text-xs font-bold shadow-sm transition hover:shadow flex items-center gap-1.5 shrink-0">
+                <span>Lihat Profil & Portofolio</span> ➔
+            </a>
         </div>
         <p class="text-xs text-slate-600 leading-relaxed pt-3 border-t border-slate-200/80">
-            Penulis aktif mengembangkan platform edukasi teknologi, sistem pakar kurikulum, dan solusi komputasi cerdas. Setiap artikel disusun melalui riset mendalam, pengujian kode secara langsung, dan kepatuhan standar industri terkini demi menyajikan wawasan yang orisinal, bermanfaat, dan dapat dipercaya bagi seluruh pembaca.
+            Penulis aktif mengembangkan platform edukasi teknologi, sistem pakar kurikulum (guru.vxai.online), dan solusi komputasi cerdas. Setiap artikel disusun melalui riset mendalam, pengujian kode secara langsung, dan kepatuhan standar industri terkini demi menyajikan wawasan yang orisinal, bermanfaat, dan dapat dipercaya bagi seluruh pembaca.
         </p>
         <div class="flex flex-wrap items-center gap-3 pt-1 text-[11px] text-slate-500 font-semibold">
             <span class="flex items-center gap-1 text-emerald-600">
@@ -250,7 +257,7 @@
                 <span>🛡️</span> Standar Kualitas E-E-A-T
             </span>
             <span>•</span>
-            <span>Terakhir diperbarui: {{ $article->updated_at->format('d M Y') }}</span>
+            <span>Terakhir diperbarui: {{ $article->formatted_date }}</span>
         </div>
     </div>
 

@@ -86,11 +86,23 @@
         </div>
 
         <div class="flex items-center gap-2 md:gap-3">
-            <!-- Tombol Pilih Tingkatan & Latihan (FITUR BARU) -->
-            <button onclick="openChallengeModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3.5 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-extrabold shadow-md shadow-blue-600/30 flex items-center gap-1.5 transition active:scale-95">
-                <span>🎯</span> <span>Tingkatan Koding</span>
-                <span class="hidden sm:inline-block px-1.5 py-0.5 rounded bg-white/20 text-[10px]">10 Latihan</span>
+            <!-- Tombol Asisten Cerdas VxAI Code Tutor -->
+            <button onclick="openAiTutorModal()" class="bg-gradient-to-r from-purple-600 via-indigo-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-extrabold shadow-md shadow-purple-600/30 flex items-center gap-1.5 transition active:scale-95 group">
+                <span class="group-hover:rotate-12 transition">🤖</span> 
+                <span>VxAI Tutor</span>
+                <span class="hidden sm:inline-block px-1.5 py-0.5 rounded bg-white/20 text-[10px] font-mono">AI Active</span>
             </button>
+
+            <!-- Tombol Pilih Tingkatan & Latihan -->
+            <button onclick="openChallengeModal()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-extrabold shadow-md shadow-blue-600/30 flex items-center gap-1.5 transition active:scale-95">
+                <span>🎯</span> <span class="hidden sm:inline">Tingkatan</span> Koding
+                <span class="hidden md:inline-block px-1.5 py-0.5 rounded bg-white/20 text-[10px]">10 Latihan</span>
+            </button>
+
+            <!-- Tombol Sertifikat 10 Level -->
+            <a href="{{ route('public.certificate') }}" target="_blank" class="hidden xl:inline-flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-bold transition">
+                <span>📜</span> <span>Sertifikat</span>
+            </a>
 
             <!-- Tombol Petunjuk Kode -->
             <button onclick="openHintModal()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition active:scale-95">
@@ -98,7 +110,7 @@
             </button>
             
             <!-- Tombol Kirim / Uji Kode -->
-            <button id="btn-submit" onclick="kirimKode()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-bold shadow-md shadow-emerald-600/20 active:scale-95 transition flex items-center gap-1.5">
+            <button id="btn-submit" onclick="kirimKode()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-bold shadow-md shadow-emerald-600/20 active:scale-95 transition flex items-center gap-1.5">
                 <span>🚀</span> <span>Kirim / Simpan</span>
             </button>
 
@@ -253,6 +265,118 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- MODAL VXAI CODE TUTOR (AI-POWERED INTERACTIVE ASSISTANT) -->
+    <!-- ======================================================== -->
+    <div id="modal-ai-tutor" class="fixed inset-0 bg-slate-950/80 z-[120] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col border border-slate-700/80 modal-enter overflow-hidden">
+            <!-- Header Modal -->
+            <div class="p-5 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-sky-500 flex items-center justify-center text-xl shadow-lg shadow-purple-500/30">
+                        🤖
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-black text-sm md:text-base text-white">VxAI Interactive Code Tutor</h3>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-900/60 text-purple-300 border border-purple-700">v2.6 Aktif</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">Asisten cerdas analisis kode, deteksi error sintaks, dan petunjuk logika</p>
+                    </div>
+                </div>
+                <button onclick="closeAiTutorModal()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none p-1">&times;</button>
+            </div>
+
+            <!-- Tab Nav AI Tutor -->
+            <div class="flex border-b border-slate-800 bg-slate-950/60 px-4 text-xs font-bold">
+                <button onclick="switchAiTab('inspect')" id="tab-ai-inspect" class="py-3 px-4 text-sky-400 border-b-2 border-sky-400 transition flex items-center gap-1.5">
+                    <span>🔍</span> <span>Audit & Analisis Kode</span>
+                </button>
+                <button onclick="switchAiTab('hint')" id="tab-ai-hint" class="py-3 px-4 text-slate-400 border-b-2 border-transparent transition flex items-center gap-1.5">
+                    <span>💡</span> <span>Petunjuk Tantangan</span>
+                </button>
+                <button onclick="switchAiTab('best-practice')" id="tab-ai-best-practice" class="py-3 px-4 text-slate-400 border-b-2 border-transparent transition flex items-center gap-1.5">
+                    <span>✨</span> <span>Rekomendasi Clean Code</span>
+                </button>
+            </div>
+
+            <!-- Body Modal -->
+            <div class="p-6 overflow-y-auto space-y-4 text-xs custom-scrollbar flex-1 bg-slate-900">
+                <!-- Tab Content 1: Audit & Analisis Kode -->
+                <div id="ai-content-inspect" class="space-y-4">
+                    <div class="flex items-center justify-between bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-slate-300 font-semibold">Status Analisis Real-Time:</span>
+                        </div>
+                        <button onclick="runAiInspection()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-xl transition text-[11px] flex items-center gap-1">
+                            <span>🔄</span> <span>Pindai Ulang Kode</span>
+                        </button>
+                    </div>
+
+                    <div id="ai-inspection-results" class="space-y-3">
+                        <!-- Populated by JS runAiInspection() -->
+                    </div>
+                </div>
+
+                <!-- Tab Content 2: Petunjuk Tantangan -->
+                <div id="ai-content-hint" class="space-y-4 hidden">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <h4 class="font-bold text-amber-400 text-xs flex items-center gap-1.5">
+                            <span>🎯</span> <span id="ai-hint-challenge-title">Tantangan Aktif</span>
+                        </h4>
+                        <p class="text-slate-300 leading-relaxed text-xs" id="ai-hint-challenge-body">
+                            Pilih latihan terlebih dahulu untuk mendapatkan bimbingan langkah demi langkah dari AI Tutor.
+                        </p>
+                        <div id="ai-hint-progressive-container" class="space-y-2 pt-2 border-t border-slate-800">
+                            <!-- Hints generated dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content 3: Rekomendasi Clean Code -->
+                <div id="ai-content-best-practice" class="space-y-4 hidden">
+                    <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+                        <h4 class="font-bold text-purple-400 text-xs flex items-center gap-1.5">
+                            <span>✨</span> <span>Standar Rekayasa Web Modern (W3C & Industry Standards)</span>
+                        </h4>
+                        <ul class="space-y-2 text-slate-300 leading-relaxed" id="ai-best-practice-list">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong>HTML5 Semantik:</strong> Gunakan tag bermakna seperti <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code> daripada membungkus semua konten dengan <code>&lt;div&gt;</code> biasa.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong>Aksesibilitas (a11y):</strong> Selalu cantumkan atribut <code>alt="..."</code> pada tag gambar <code>&lt;img&gt;</code> agar ramah bagi pembaca layar tuna netra.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong>CSS Mobile-First:</strong> Rancang tata letak fleksibel menggunakan Flexbox atau CSS Grid agar tampilan tetap rapi di smartphone siswa.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong>JavaScript Aman:</strong> Gunakan <code>const</code> dan <code>let</code> ketimbang <code>var</code>, serta manfaatkan <code>addEventListener</code> untuk menangani interaksi pengguna.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2 text-slate-400 text-[11px]">
+                    <span>📜 Telah menyelesaikan 10 level?</span>
+                    <a href="{{ route('public.certificate') }}" target="_blank" class="text-emerald-400 font-bold hover:underline flex items-center gap-0.5">
+                        <span>Cetak Sertifikat Digital</span> ➔
+                    </a>
+                </div>
+                <button onclick="closeAiTutorModal()" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 px-5 py-2 rounded-xl font-bold text-white transition">
+                    Tutup Asisten
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
     <!-- MODAL INSTRUKSI DETAIL TANTANGAN AKTIF                   -->
     <!-- ======================================================== -->
     <div id="modal-instructions" class="fixed inset-0 bg-slate-950/80 z-[110] hidden flex items-center justify-center p-4 backdrop-blur-sm">
@@ -374,6 +498,242 @@
         // KONTROL EDITOR CODEMIRROR & TAMPILAN
         // ========================================================
         let activeChallenge = null;
+
+        // ========================================================
+        // KONTROL VXAI INTERACTIVE CODE TUTOR
+        // ========================================================
+        function openAiTutorModal() {
+            document.getElementById('modal-ai-tutor').classList.remove('hidden');
+            runAiInspection();
+            setupAiChallengeHints();
+        }
+
+        function closeAiTutorModal() {
+            document.getElementById('modal-ai-tutor').classList.add('hidden');
+        }
+
+        function switchAiTab(tabName) {
+            const tabs = ['inspect', 'hint', 'best-practice'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-ai-' + t);
+                const content = document.getElementById('ai-content-' + t);
+                if (t === tabName) {
+                    btn.classList.add('text-sky-400', 'border-sky-400');
+                    btn.classList.remove('text-slate-400', 'border-transparent');
+                    content.classList.remove('hidden');
+                } else {
+                    btn.classList.remove('text-sky-400', 'border-sky-400');
+                    btn.classList.add('text-slate-400', 'border-transparent');
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        function setupAiChallengeHints() {
+            const titleEl = document.getElementById('ai-hint-challenge-title');
+            const bodyEl = document.getElementById('ai-hint-challenge-body');
+            const hintsContainer = document.getElementById('ai-hint-progressive-container');
+
+            if (activeChallenge) {
+                titleEl.innerText = activeChallenge.title + ' (' + activeChallenge.levelBadge + ')';
+                bodyEl.innerText = activeChallenge.desc;
+                hintsContainer.innerHTML = '';
+
+                const hints = [
+                    { level: 'Level 1: Konsep Dasar', text: 'Periksa instruksi utama: ' + (activeChallenge.instructions[0] || 'Tuliskan elemen HTML sesuai instruksi.') },
+                    { level: 'Level 2: Sintaks yang Dibutuhkan', text: 'Gunakan struktur yang tepat. ' + (activeChallenge.instructions[1] || 'Pastikan tag penutup berpasangan dengan benar.') },
+                    { level: 'Level 3: Uji Coba & Verifikasi', text: (activeChallenge.instructions[2] || 'Pastikan hasil pratinjau di panel kanan berubah sebelum mengirim/menyimpan kode.') }
+                ];
+
+                hints.forEach(h => {
+                    const d = document.createElement('div');
+                    d.className = 'bg-slate-900 p-3 rounded-xl border border-slate-800 text-xs';
+                    d.innerHTML = `<span class="font-bold text-amber-300 block mb-1">💡 ${h.level}:</span><span class="text-slate-300">${h.text}</span>`;
+                    hintsContainer.appendChild(d);
+                });
+            } else {
+                titleEl.innerText = 'Pilih Tantangan Koding';
+                bodyEl.innerText = 'Buka menu "10 Level Latihan" untuk memilih latihan HTML, CSS, atau JavaScript, lalu kembali ke asisten ini untuk petunjuk khusus.';
+                hintsContainer.innerHTML = '';
+            }
+        }
+
+        function runAiInspection() {
+            const html = htmlEditor.getValue();
+            const css = cssEditor.getValue();
+            const js = jsEditor.getValue();
+
+            const container = document.getElementById('ai-inspection-results');
+            container.innerHTML = '';
+
+            const findings = [];
+
+            // 1. Audit HTML
+            if (!html || html.trim() === '') {
+                findings.push({
+                    type: 'warning',
+                    title: 'Editor HTML Masih Kosong',
+                    detail: 'Tuliskan setidaknya satu tag HTML seperti <h1>, <p>, atau <button> untuk memulai tampilan.'
+                });
+            } else {
+                if (/<img(?![^>]*\balt=)[^>]*>/i.test(html)) {
+                    findings.push({
+                        type: 'tip',
+                        title: 'Aksesibilitas Gambar (a11y)',
+                        detail: 'Terdapat tag <img> tanpa atribut alt. Tambahkan atribut alt="deskripsi" agar ramah mesin pencari dan screen reader.'
+                    });
+                }
+
+                const hasSemantic = /<(header|nav|main|footer|section|article|figure)/i.test(html);
+                if (hasSemantic) {
+                    findings.push({
+                        type: 'success',
+                        title: 'Struktur HTML5 Semantik Bagus!',
+                        detail: 'Kode Anda menggunakan tag semantik modern yang mempermudah pembacaan mesin pencari (SEO).'
+                    });
+                } else if (html.length > 150) {
+                    findings.push({
+                        type: 'tip',
+                        title: 'Saran Semantik HTML5',
+                        detail: 'Pertimbangkan untuk mengganti pembungkus <div> dengan tag <main>, <section>, atau <article> untuk struktur yang lebih bersih.'
+                    });
+                }
+            }
+
+            // 2. Audit CSS
+            if (css && css.trim() !== '') {
+                const openBrace = (css.match(/\{/g) || []).length;
+                const closeBrace = (css.match(/\}/g) || []).length;
+                if (openBrace !== closeBrace) {
+                    findings.push({
+                        type: 'error',
+                        title: 'Kurung Kurawal CSS Tidak Seimbang',
+                        detail: `Ditemukan ${openBrace} kurung buka '{' dan ${closeBrace} kurung tutup '}'. Periksa kembali penutupan blok selektor CSS Anda.`
+                    });
+                } else {
+                    findings.push({
+                        type: 'success',
+                        title: 'Sintaks CSS Valid',
+                        detail: 'Semua kurung kurawal CSS berpasangan dengan sempurna.'
+                    });
+                }
+
+                if (css.includes('display: flex') || css.includes('display: grid')) {
+                    findings.push({
+                        type: 'success',
+                        title: 'Menggunakan Layout CSS Modern',
+                        detail: 'Bagus! Anda menerapkan Flexbox / Grid untuk perataan responsif.'
+                    });
+                }
+            }
+
+            // 3. Audit JavaScript
+            if (js && js.trim() !== '') {
+                try {
+                    new Function(js);
+                    findings.push({
+                        type: 'success',
+                        title: 'Sintaks JavaScript Lolos Validasi',
+                        detail: 'Tidak terdeteksi kesalahan sintaks dasar pada kode JavaScript Anda.'
+                    });
+                } catch (err) {
+                    findings.push({
+                        type: 'error',
+                        title: 'Kesalahan Sintaks JavaScript Terdeteksi',
+                        detail: `Pesan kesalahan: "${err.message}". Periksa kembali tanda kurung, titik koma, atau penulisan variabel.`
+                    });
+                }
+
+                if (/\bvar\s+[a-zA-Z_$]/.test(js)) {
+                    findings.push({
+                        type: 'tip',
+                        title: 'Saran ES6 Modern: Hindari "var"',
+                        detail: 'Gunakan kata kunci modern "const" untuk nilai tetap atau "let" untuk variabel yang nilainya dapat berubah.'
+                    });
+                }
+
+                if (js.includes('addEventListener')) {
+                    findings.push({
+                        type: 'success',
+                        title: 'Event Listener Standar Industri',
+                        detail: 'Bagus! Anda menggunakan addEventListener untuk memisahkan logika JavaScript dari atribut HTML inline.'
+                    });
+                }
+            }
+
+            // 4. Audit Tantangan Aktif
+            if (activeChallenge) {
+                let challengeMatch = false;
+                if (activeChallenge.id === 'html_struktur' && /<h1/i.test(html) && /<p/i.test(html)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'html_list' && /<(ul|ol)/i.test(html) && /<li/i.test(html)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'html_table' && /<table/i.test(html) && /<tr/i.test(html)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'html_form' && /<form/i.test(html) && /<input/i.test(html)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'css_flexbox' && /display\s*:\s*flex/i.test(css)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'css_grid' && /display\s*:\s*grid/i.test(css)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'css_card' && /border-radius/i.test(css)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'js_dom' && /addEventListener/i.test(js)) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'js_kalkulator' && (js.includes('+') || js.includes('parseInt') || js.includes('Number'))) {
+                    challengeMatch = true;
+                } else if (activeChallenge.id === 'js_game' && /Math\.random/i.test(js)) {
+                    challengeMatch = true;
+                }
+
+                if (challengeMatch) {
+                    findings.unshift({
+                        type: 'congrats',
+                        title: `🎉 Kriteria "${activeChallenge.title}" Berhasil Dipenuhi!`,
+                        detail: 'Kode Anda memenuhi spesifikasi tantangan ini. Klik tombol "🚀 Kirim / Simpan" untuk mencatatkan poin XP ke akun Anda!'
+                    });
+                }
+            }
+
+            findings.forEach(f => {
+                const card = document.createElement('div');
+                let borderClass = 'border-slate-800 bg-slate-950';
+                let icon = 'ℹ️';
+                let titleColor = 'text-white';
+
+                if (f.type === 'congrats') {
+                    borderClass = 'border-emerald-600 bg-emerald-950/40';
+                    icon = '🏆';
+                    titleColor = 'text-emerald-300';
+                } else if (f.type === 'success') {
+                    borderClass = 'border-emerald-800/80 bg-slate-950';
+                    icon = '✅';
+                    titleColor = 'text-emerald-400';
+                } else if (f.type === 'error') {
+                    borderClass = 'border-rose-800/90 bg-rose-950/30';
+                    icon = '❌';
+                    titleColor = 'text-rose-400';
+                } else if (f.type === 'warning') {
+                    borderClass = 'border-amber-800/80 bg-slate-950';
+                    icon = '⚠️';
+                    titleColor = 'text-amber-400';
+                } else if (f.type === 'tip') {
+                    borderClass = 'border-sky-800/80 bg-slate-950';
+                    icon = '💡';
+                    titleColor = 'text-sky-300';
+                }
+
+                card.className = `p-4 rounded-2xl border ${borderClass} flex items-start gap-3 transition`;
+                card.innerHTML = `
+                    <span class="text-xl shrink-0 mt-0.5">${icon}</span>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-xs ${titleColor} mb-1">${f.title}</h4>
+                        <p class="text-slate-300 text-[11px] leading-relaxed">${f.detail}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
         function openHintModal() { document.getElementById('hint-modal').classList.remove('hidden'); }
         function closeHintModal() { document.getElementById('hint-modal').classList.add('hidden'); }

@@ -28,17 +28,66 @@ class PublicController extends Controller
         $settings = $this->getSettings();
         $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
         $totalStudents = Schema::hasTable('users') ? DB::table('users')->where('role_id', 3)->count() : 0;
+        $totalArticles = Schema::hasTable('articles') ? DB::table('articles')->where('status', 'published')->count() : 0;
         
         $latestArticles = collect();
         if (Schema::hasTable('articles')) {
             $latestArticles = Article::published()
                 ->orderBy('is_featured', 'desc')
-                ->orderBy('created_at', 'desc')
+                ->orderBy('published_at', 'desc')
                 ->limit(7)
                 ->get();
         }
 
-        return view('welcome', compact('settings', 'totalSubmissions', 'totalStudents', 'latestArticles'));
+        return view('welcome', compact('settings', 'totalSubmissions', 'totalStudents', 'totalArticles', 'latestArticles'));
+    }
+
+    // Halaman Profil Penulis & Inovator (E-E-A-T Google AdSense)
+    public function authorProfile($slug = null)
+    {
+        ArticleContentService::syncDefaultArticles();
+        $settings = $this->getSettings();
+
+        // Data Penulis Utama / Founder
+        $author = [
+            'name' => 'Vicky Koroh',
+            'title' => 'Pendidik Vokasi Rekayasa Perangkat Lunak & Inovator AI',
+            'role' => 'Founder & Lead Developer VxAI Lab & guru.vxai.online',
+            'institution' => 'SMKN 1 Kupang Barat, Nusa Tenggara Timur (NTT)',
+            'bio' => 'Pendidik kejuruan dan full-stack software engineer yang berfokus pada demokratisasi pembelajaran koding dan integrasi kecerdasan artifisial untuk pendidikan vokasi di Indonesia. Pengembang mandiri platform Sistem Perangkat Ajar SMK 2026 (guru.vxai.online) yang berlandaskan regulasi resmi BSKAP No. 046/H/KR/2025 dan Permendikdasmen No. 13/2025.',
+            'avatar' => !empty($settings['app_logo']) ? asset($settings['app_logo']) : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+            'skills' => ['HTML5 / CSS3 / JS', 'Laravel & PHP 8.2+', 'Kurikulum Merdeka SMK', 'Deep Learning 3M', 'Pure Expert Systems', 'Tailwind CSS'],
+            'social' => [
+                'github' => 'https://github.com/Vicky1902-py',
+                'website' => 'https://guru.vxai.online',
+                'email' => $settings['contact_email'] ?? 'admin@vxai.online',
+            ]
+        ];
+
+        $articles = collect();
+        if (Schema::hasTable('articles')) {
+            $articles = Article::published()
+                ->orderBy('published_at', 'desc')
+                ->get();
+        }
+
+        return view('public.author_profile', compact('settings', 'author', 'articles'));
+    }
+
+    // Halaman Sertifikat Kelulusan 10 Level & Verifikasi Publik
+    public function certificate(Request $request)
+    {
+        $settings = $this->getSettings();
+        $user = Auth::user();
+
+        // Nama penerima sertifikat (dari akun login atau parameter input)
+        $studentName = $request->query('nama') 
+            ?? ($user ? $user->name : 'Siswa Pembelajar VxAI');
+
+        $certId = 'VXAI-CERT-' . strtoupper(substr(md5($studentName . '2026'), 0, 8));
+        $issueDate = now()->translatedFormat('d F Y') ?? now()->format('d M Y');
+
+        return view('public.certificate', compact('settings', 'user', 'studentName', 'certId', 'issueDate'));
     }
 
     // Halaman Playground Publik
