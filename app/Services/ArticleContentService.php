@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Services\Articles\AiArticles;
 use App\Services\Articles\AndroidArticles;
 use App\Services\Articles\ComputerArticles;
+use App\Services\Articles\StudentTutorialArticle;
 use App\Services\Articles\TechnologyArticles;
 use App\Services\Articles\WebArticles;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Schema;
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_10_07_notebooklm_grounded_rag_knowledge_v4';
+    public const VERSION = '2026_10_08_panduan_lengkap_siswa_playground_v1';
 
     /**
      * Dapatkan semua artikel default komprehensif untuk kepatuhan penuh Google AdSense E-E-A-T
@@ -23,6 +24,7 @@ class ArticleContentService
     {
         return array_merge(
             self::getBaseArticles(),
+            StudentTutorialArticle::getArticles(),
             AiArticles::getArticles(),
             ComputerArticles::getArticles(),
             AndroidArticles::getArticles(),

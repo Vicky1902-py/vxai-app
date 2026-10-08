@@ -36,6 +36,21 @@
                 ⚡ Buka Playground
             </a>
         </div>
+
+        <!-- Banner Tutorial Resmi Siswa -->
+        <div class="mt-8 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-5 border border-blue-700/60 shadow-lg text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3.5">
+                <span class="text-3xl shrink-0">🚀</span>
+                <div>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-blue-300 bg-blue-950/80 px-2 py-0.5 rounded border border-blue-700/80">Panduan Resmi Terlengkap Siswa</span>
+                    <h3 class="font-extrabold text-sm sm:text-base text-white mt-0.5">Tutorial Langkah demi Langkah Siswa di VxAI Coding Lab</h3>
+                    <p class="text-xs text-slate-300 mt-0.5 leading-relaxed">Dari membuka web, login akun, pengerjaan 10 level playground, hingga mendapatkan nilai dan sertifikat.</p>
+                </div>
+            </div>
+            <a href="{{ route('public.news.detail', 'panduan-lengkap-siswa-belajar-koding-vxai-playground-sampai-selesai') }}" class="shrink-0 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold transition shadow-md shadow-blue-600/30 flex items-center gap-1.5">
+                <span>Baca Artikel Lengkap</span> ➔
+            </a>
+        </div>
     </div>
 
     <!-- ======================================================== -->
