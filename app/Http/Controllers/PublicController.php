@@ -97,16 +97,82 @@ class PublicController extends Controller
         $user = Auth::user();
         $challenges = PlaygroundChallengeService::getActiveChallenges();
 
+        // Pastikan kolom challenge_id & challenge_title ada pada tabel coding_submissions
+        try {
+            if (Schema::hasTable('coding_submissions')) {
+                if (!Schema::hasColumn('coding_submissions', 'challenge_id')) {
+                    Schema::table('coding_submissions', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('challenge_id', 50)->nullable()->index()->after('user_id');
+                    });
+                }
+                if (!Schema::hasColumn('coding_submissions', 'challenge_title')) {
+                    Schema::table('coding_submissions', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('challenge_title', 255)->nullable()->after('guest_name');
+                    });
+                }
+            }
+        } catch (\Throwable $migErr) {}
+
         $userSubmissions = collect();
+        $completedChallengeMap = [];
+        $nextIncompleteChallengeId = !empty($challenges) ? $challenges[0]['id'] : 'html_struktur';
+
         if ($user && Schema::hasTable('coding_submissions')) {
             $userSubmissions = DB::table('coding_submissions')
                 ->where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
-                ->limit(20)
                 ->get();
+
+            // Peta tantangan yang telah diselesaikan/dikirim oleh siswa
+            foreach ($userSubmissions as $sub) {
+                $chId = $sub->challenge_id ?? null;
+                // Jika challenge_id kosong di data terdahulu, cocokkan lewat challenge_title
+                if (empty($chId) && !empty($sub->challenge_title)) {
+                    foreach ($challenges as $ch) {
+                        if (trim($ch['title']) === trim($sub->challenge_title) || str_contains($sub->challenge_title, $ch['title'])) {
+                            $chId = $ch['id'];
+                            break;
+                        }
+                    }
+                }
+
+                if ($chId && !isset($completedChallengeMap[$chId])) {
+                    $completedChallengeMap[$chId] = [
+                        'submission_id' => $sub->id,
+                        'challenge_id' => $chId,
+                        'challenge_title' => $sub->challenge_title ?? '',
+                        'score' => (int) ($sub->score ?? 0),
+                        'feedback' => $sub->feedback ?? null,
+                        'created_at' => $sub->created_at,
+                    ];
+                }
+            }
+
+            // Temukan level pertama dari 10 tantangan yang BELUM dikerjakan oleh siswa
+            $foundIncomplete = false;
+            foreach ($challenges as $ch) {
+                if (!isset($completedChallengeMap[$ch['id']])) {
+                    $nextIncompleteChallengeId = $ch['id'];
+                    $foundIncomplete = true;
+                    break;
+                }
+            }
+
+            // Jika semua 10 tantangan sudah selesai dikerjakan, arahkan ke level 10
+            if (!$foundIncomplete && !empty($challenges)) {
+                $lastChallenge = end($challenges);
+                $nextIncompleteChallengeId = $lastChallenge['id'];
+            }
         }
 
-        return view('public.playground', compact('settings', 'user', 'challenges', 'userSubmissions'));
+        return view('public.playground', compact(
+            'settings',
+            'user',
+            'challenges',
+            'userSubmissions',
+            'completedChallengeMap',
+            'nextIncompleteChallengeId'
+        ));
     }
 
     // Endpoint API untuk Siswa melihat riwayat nilai & catatan tugas
@@ -236,23 +302,45 @@ class PublicController extends Controller
                 'css_code' => 'nullable|string|max:100000',
                 'js_code' => 'nullable|string|max:100000',
                 'guest_name' => 'nullable|string|max:100',
+                'challenge_id' => 'nullable|string|max:50',
                 'challenge_title' => 'nullable|string|max:255',
+                'overwrite' => 'nullable|boolean',
             ]);
 
-            // Coba perbarui charset tabel coding_submissions ke utf8mb4 jika belum & pastikan kolom challenge_title ada
+            // Coba perbarui charset tabel coding_submissions ke utf8mb4 jika belum & pastikan kolom challenge_id & challenge_title ada
             try {
                 DB::statement("ALTER TABLE `coding_submissions` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
                 DB::statement("ALTER TABLE `coding_submissions` MODIFY `user_id` BIGINT(20) UNSIGNED NULL");
-                if (Schema::hasTable('coding_submissions') && !Schema::hasColumn('coding_submissions', 'challenge_title')) {
-                    Schema::table('coding_submissions', function (\Illuminate\Database\Schema\Blueprint $table) {
-                        $table->string('challenge_title', 255)->nullable()->after('guest_name');
-                    });
+                if (Schema::hasTable('coding_submissions')) {
+                    if (!Schema::hasColumn('coding_submissions', 'challenge_id')) {
+                        Schema::table('coding_submissions', function (\Illuminate\Database\Schema\Blueprint $table) {
+                            $table->string('challenge_id', 50)->nullable()->index()->after('user_id');
+                        });
+                    }
+                    if (!Schema::hasColumn('coding_submissions', 'challenge_title')) {
+                        Schema::table('coding_submissions', function (\Illuminate\Database\Schema\Blueprint $table) {
+                            $table->string('challenge_title', 255)->nullable()->after('guest_name');
+                        });
+                    }
                 }
             } catch (\Throwable $alterErr) {}
 
             $user = Auth::user();
             $clientIp = $request->ip() ?: '127.0.0.1';
+            $challengeId = trim((string) $request->input('challenge_id', ''));
             $challengeTitle = trim((string) $request->input('challenge_title', ''));
+            $isOverwrite = $request->boolean('overwrite');
+
+            // Cocokkan slug / title jika salah satunya kosong
+            if (empty($challengeId) && !empty($challengeTitle) && $challengeTitle !== 'Eksplorasi Bebas') {
+                $allChallenges = PlaygroundChallengeService::getActiveChallenges();
+                foreach ($allChallenges as $c) {
+                    if (trim($c['title']) === $challengeTitle) {
+                        $challengeId = $c['id'];
+                        break;
+                    }
+                }
+            }
 
             // Bersihkan emoji dari string kode agar aman 100% dari error SQLSTATE 1366 Incorrect string value
             $htmlCode = $this->sanitizeCodeForDatabase($request->input('html_code', ''));
@@ -264,50 +352,125 @@ class PublicController extends Controller
             $newXp = null;
 
             if ($user) {
+                // ========================================================
                 // 1. KONDISI SISWA / PENGGUNA TERDAFTAR (LOGIN)
+                // ========================================================
                 $studentName = $user->name;
                 $userId = $user->id;
 
-                // Tambahkan poin XP dan naikkan level siswa
-                $xpEarned = 25;
-                $currentXp = (int) ($user->xp ?? 0);
-                $newXp = $currentXp + $xpEarned;
-                $newLevel = (int) floor($newXp / 100) + 1;
-
-                try {
-                    DB::table('users')->where('id', $userId)->update([
-                        'xp' => $newXp,
-                        'level' => $newLevel,
-                        'updated_at' => now(),
-                    ]);
-                } catch (\Throwable $xpErr) {
-                    \Illuminate\Support\Facades\Log::warning('Gagal update XP siswa: ' . $xpErr->getMessage());
+                // DETEKSI PENDOBELAN TUGAS OLEH SISWA:
+                // Cek apakah siswa ini sudah pernah mengirim tugas untuk challenge ini sebelumnya
+                $existingSubmission = null;
+                if (!empty($challengeId) || (!empty($challengeTitle) && $challengeTitle !== 'Eksplorasi Bebas')) {
+                    $existingQuery = DB::table('coding_submissions')->where('user_id', $userId);
+                    $existingQuery->where(function($q) use ($challengeId, $challengeTitle) {
+                        if (!empty($challengeId)) {
+                            $q->where('challenge_id', $challengeId);
+                        }
+                        if (!empty($challengeTitle)) {
+                            if (!empty($challengeId)) {
+                                $q->orWhere('challenge_title', $challengeTitle);
+                            } else {
+                                $q->where('challenge_title', $challengeTitle);
+                            }
+                        }
+                    });
+                    $existingSubmission = $existingQuery->first();
                 }
 
-                $insertData = [
-                    'user_id' => $userId,
-                    'guest_name' => $studentName,
-                    'challenge_title' => !empty($challengeTitle) ? $challengeTitle : null,
-                    'html_code' => $htmlCode,
-                    'css_code' => $cssCode,
-                    'js_code' => $jsCode,
-                    'score' => 0,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                // JIKA SUDAH PERNAH DIKERJAKAN & SISWA BELUM MEMILIH OVERWRITE:
+                if ($existingSubmission && !$isOverwrite) {
+                    return response()->json([
+                        'success' => false,
+                        'is_duplicate' => true,
+                        'challenge_id' => $challengeId ?: $existingSubmission->challenge_id,
+                        'challenge_title' => $challengeTitle ?: $existingSubmission->challenge_title,
+                        'existing_score' => (int) ($existingSubmission->score ?? 0),
+                        'existing_feedback' => $existingSubmission->feedback ?? null,
+                        'existing_id' => $existingSubmission->id,
+                        'message' => "Level \"{$challengeTitle}\" sudah pernah Anda kerjakan sebelumnya! Silakan pilih apakah ingin beralih ke level berikutnya atau menimpa hasil lama.",
+                    ], 409);
+                }
 
-                $responseMessage = "Luar biasa, {$user->name}! Kode Anda berhasil dikirim ke guru. (+{$xpEarned} XP diperoleh! Total: {$newXp} XP | Level: {$newLevel})";
+                if ($existingSubmission && $isOverwrite) {
+                    // SKENARIO A: SISWA MEMILIH MENGULANG LEVEL & MENIMPA HASIL LAMA
+                    // Reset score ke 0 dan feedback ke null agar guru menilai ulang
+                    // TIDAK ADA PENAMBAHAN XP GANDA agar tidak terjadi exploit/farming XP
+                    DB::table('coding_submissions')->where('id', $existingSubmission->id)->update([
+                        'challenge_id' => !empty($challengeId) ? $challengeId : $existingSubmission->challenge_id,
+                        'challenge_title' => !empty($challengeTitle) ? $challengeTitle : $existingSubmission->challenge_title,
+                        'html_code' => $htmlCode,
+                        'css_code' => $cssCode,
+                        'js_code' => $jsCode,
+                        'score' => 0,
+                        'feedback' => null,
+                        'updated_at' => now(),
+                    ]);
+
+                    $currentXp = (int) ($user->xp ?? 0);
+                    $newXp = $currentXp;
+                    $newLevel = (int) floor($newXp / 100) + 1;
+                    $xpEarned = 0; // 0 XP untuk overwrite demi integritas poin
+
+                    $responseMessage = "Hasil koding lama untuk \"{$challengeTitle}\" berhasil diganti! Nilai telah di-reset ke 0 untuk dinilai ulang oleh guru.";
+
+                } else {
+                    // SKENARIO B: PERTAMA KALI MENYELESAIKAN LEVEL INI
+                    $xpEarned = 25;
+                    $currentXp = (int) ($user->xp ?? 0);
+                    $newXp = $currentXp + $xpEarned;
+                    $newLevel = (int) floor($newXp / 100) + 1;
+
+                    try {
+                        DB::table('users')->where('id', $userId)->update([
+                            'xp' => $newXp,
+                            'level' => $newLevel,
+                            'updated_at' => now(),
+                        ]);
+                    } catch (\Throwable $xpErr) {
+                        \Illuminate\Support\Facades\Log::warning('Gagal update XP siswa: ' . $xpErr->getMessage());
+                    }
+
+                    $insertData = [
+                        'user_id' => $userId,
+                        'challenge_id' => !empty($challengeId) ? $challengeId : null,
+                        'guest_name' => $studentName,
+                        'challenge_title' => !empty($challengeTitle) ? $challengeTitle : null,
+                        'html_code' => $htmlCode,
+                        'css_code' => $cssCode,
+                        'js_code' => $jsCode,
+                        'score' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    if (Schema::hasTable('coding_submissions')) {
+                        try {
+                            DB::table('coding_submissions')->insert($insertData);
+                        } catch (\Throwable $insertErr) {
+                            if (is_null($insertData['user_id'])) {
+                                $fallbackId = DB::table('users')->value('id') ?? 1;
+                                $insertData['user_id'] = $fallbackId;
+                            }
+                            DB::table('coding_submissions')->insert($insertData);
+                        }
+                    }
+
+                    $responseMessage = "Luar biasa, {$user->name}! Kode Anda berhasil dikirim ke guru. (+{$xpEarned} XP diperoleh! Total: {$newXp} XP | Level: {$newLevel})";
+                }
 
             } else {
+                // ========================================================
                 // 2. KONDISI PENGUNJUNG PUBLIK / TAMU (TANPA LOGIN)
+                // ========================================================
                 $inputGuest = trim((string) $request->input('guest_name', ''));
                 $guestDisplayName = !empty($inputGuest) 
                     ? "{$inputGuest} [Tamu - IP: {$clientIp}]" 
                     : "Tamu [IP: {$clientIp}]";
 
-                $userId = null;
                 $insertData = [
                     'user_id' => null,
+                    'challenge_id' => !empty($challengeId) ? $challengeId : null,
                     'guest_name' => $guestDisplayName,
                     'challenge_title' => !empty($challengeTitle) ? $challengeTitle : null,
                     'html_code' => $htmlCode,
@@ -318,29 +481,30 @@ class PublicController extends Controller
                     'updated_at' => now(),
                 ];
 
-                $responseMessage = "Hasil koding Anda berhasil dikirim ke panel guru sebagai {$guestDisplayName}!";
-            }
-
-            if (Schema::hasTable('coding_submissions')) {
-                try {
-                    DB::table('coding_submissions')->insert($insertData);
-                } catch (\Throwable $insertErr) {
-                    // Fallback jika database memiliki constraint NOT NULL pada user_id:
-                    if (is_null($insertData['user_id'])) {
-                        $fallbackId = DB::table('users')->value('id') ?? 1;
-                        $insertData['user_id'] = $fallbackId;
+                if (Schema::hasTable('coding_submissions')) {
+                    try {
+                        DB::table('coding_submissions')->insert($insertData);
+                    } catch (\Throwable $insertErr) {
+                        if (is_null($insertData['user_id'])) {
+                            $fallbackId = DB::table('users')->value('id') ?? 1;
+                            $insertData['user_id'] = $fallbackId;
+                        }
+                        DB::table('coding_submissions')->insert($insertData);
                     }
-                    DB::table('coding_submissions')->insert($insertData);
                 }
+
+                $responseMessage = "Hasil koding Anda berhasil dikirim ke panel guru sebagai {$guestDisplayName}!";
             }
 
             return response()->json([
                 'success' => true,
                 'message' => $responseMessage,
                 'is_logged_in' => (bool) $user,
+                'is_overwrite' => $isOverwrite,
                 'xp_earned' => $xpEarned,
                 'total_xp' => $newXp,
                 'level' => $newLevel,
+                'challenge_id' => $challengeId,
                 'challenge_title' => $challengeTitle,
             ]);
 

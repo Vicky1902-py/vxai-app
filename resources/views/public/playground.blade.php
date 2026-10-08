@@ -601,6 +601,77 @@
     </div>
 
     <!-- ======================================================== -->
+    <!-- 2B. MODAL KONFIRMASI TIMPA / RESET LEVEL SUDAH DIKERJAKAN -->
+    <!-- ======================================================== -->
+    <div id="modal-confirm-overwrite-level" class="fixed inset-0 bg-slate-950/85 z-[145] hidden flex items-center justify-center p-3 sm:p-4 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-lg flex flex-col border border-amber-500/60 modal-enter overflow-hidden">
+            
+            <div class="p-5 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold border border-amber-500/40 shadow-inner">
+                        🔁
+                    </div>
+                    <div>
+                        <h3 class="font-black text-sm sm:text-base text-white">Level Ini Sudah Pernah Dikerjakan!</h3>
+                        <span class="text-[11px] text-amber-400 font-bold" id="overwrite-modal-badge">Pemberitahuan Pendobelan Tugas</span>
+                    </div>
+                </div>
+                <button onclick="closeConfirmOverwriteModal()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none p-1 transition">&times;</button>
+            </div>
+
+            <div class="p-5 sm:p-6 space-y-4 text-xs bg-slate-900">
+                <div class="space-y-1">
+                    <p class="text-slate-300 leading-relaxed">
+                        Halo <strong class="text-white">{{ Auth::check() ? Auth::user()->name : 'Siswa' }}</strong>, Anda sebelumnya telah mengirimkan tugas untuk level:
+                    </p>
+                    <h4 class="text-sm sm:text-base font-black text-amber-300" id="overwrite-modal-title">-</h4>
+                </div>
+
+                <!-- Kartu Status Nilai Sebelumnya -->
+                <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Nilai Saat Ini:</span>
+                            <span class="text-sm font-black text-white" id="overwrite-modal-score">-</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Status Tugas:</span>
+                            <span class="text-xs font-black text-emerald-400" id="overwrite-modal-status">Tersimpan di Guru</span>
+                        </div>
+                    </div>
+                    <div id="overwrite-modal-feedback-box" class="hidden p-2.5 bg-blue-950/40 border border-blue-900/60 rounded-xl text-xs text-blue-200">
+                        <span class="text-[10px] font-bold text-blue-300 uppercase block">Catatan Guru:</span>
+                        <p class="text-slate-200 text-[11px] mt-0.5" id="overwrite-modal-feedback-text">-</p>
+                    </div>
+                </div>
+
+                <!-- Box Peringatan / Aturan Reset -->
+                <div class="p-4 bg-amber-950/40 border border-amber-700/60 rounded-2xl text-amber-200 text-xs space-y-2 leading-relaxed">
+                    <div class="flex items-center gap-1.5 font-black text-amber-300">
+                        <span>⚠️</span> <span>Ketentuan Memulai Ulang & Ganti Hasil:</span>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
+                        <li>Jika memilih <strong>Ganti Hasil Lama</strong>, kode lama Anda akan ditimpa dengan kode baru ini.</li>
+                        <li><strong>Nilai dan catatan guru akan di-reset ke 0</strong>, sehingga guru akan melakukan evaluasi dan penilaian baru.</li>
+                        <li>Poin XP tidak akan diduplikasi demi menjaga keadilan leaderboard siswa.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Pilihan Aksi -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col sm:flex-row items-center gap-2.5">
+                <button type="button" onclick="actionSwitchToNextIncomplete()" class="w-full sm:flex-1 py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-1.5 order-2 sm:order-1">
+                    <span>🎯</span> <span>Beralih ke Level Belum Dikerjakan</span>
+                </button>
+                <button type="button" onclick="actionConfirmOverwrite()" class="w-full sm:flex-1 py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs shadow-md shadow-amber-600/30 transition flex items-center justify-center gap-1.5 order-1 sm:order-2">
+                    <span>🔄</span> <span>Ganti Hasil Lama & Reset Nilai</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
     <!-- 3. MODAL NILAI & CATATAN GURU SISWA (FITUR 2)            -->
     <!-- ======================================================== -->
     <div id="modal-my-grades" class="fixed inset-0 bg-slate-950/85 z-[125] hidden flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
@@ -692,6 +763,10 @@
         // DATABASE TANTANGAN KODING BERJENJANG (DINAMIS DARI DATABASE)
         // ========================================================
         const codingChallenges = @json($challenges ?? []);
+        let completedChallengeMap = @json($completedChallengeMap ?? []);
+        let nextIncompleteChallengeId = @json($nextIncompleteChallengeId ?? 'html_struktur');
+        const isLoggedIn = @json((bool) $user);
+        let duplicateDetectedData = null;
 
         // ========================================================
         // KONTROL EDITOR CODEMIRROR & TAMPILAN
@@ -987,25 +1062,69 @@
 
             filtered.forEach(ch => {
                 const card = document.createElement('div');
-                card.className = 'bg-slate-950 p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4';
+                const isCompleted = completedChallengeMap && completedChallengeMap[ch.id];
+                const isNextTarget = (ch.id === nextIncompleteChallengeId && !isCompleted);
+                
+                let borderClass = 'border-slate-800 hover:border-slate-700 bg-slate-950';
+                if (isCompleted) {
+                    borderClass = 'border-emerald-800/80 bg-slate-950/90 shadow-sm shadow-emerald-950/20';
+                } else if (isNextTarget) {
+                    borderClass = 'border-blue-500/90 bg-blue-950/20 shadow-md shadow-blue-500/10 ring-1 ring-blue-500/40';
+                }
+
+                card.className = `${borderClass} p-5 rounded-2xl border transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4`;
                 
                 let badgeColor = 'bg-emerald-950 text-emerald-400 border-emerald-800';
                 if (ch.level === 'menengah') badgeColor = 'bg-blue-950 text-blue-400 border-blue-800';
                 if (ch.level === 'mahir') badgeColor = 'bg-purple-950 text-purple-400 border-purple-800';
 
+                // Status Pill (Selesai vs Target Selanjutnya vs Belum)
+                let statusPillHtml = '';
+                let actionBtnHtml = '';
+
+                if (isCompleted) {
+                    const scoreText = isCompleted.score > 0 ? `Nilai: ${isCompleted.score}/100` : 'Menunggu Nilai';
+                    statusPillHtml = `
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-950 text-emerald-300 border border-emerald-700 inline-flex items-center gap-1">
+                            <span>✓</span> <span>Selesai (${scoreText})</span>
+                        </span>
+                    `;
+                    actionBtnHtml = `
+                        <button onclick="loadChallenge('${ch.id}')" class="bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition shrink-0 inline-flex items-center gap-1.5 active:scale-95">
+                            <span>↺</span> <span>Buka Ulang</span>
+                        </button>
+                    `;
+                } else if (isNextTarget) {
+                    statusPillHtml = `
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-950 text-sky-300 border border-sky-600 inline-flex items-center gap-1 animate-pulse">
+                            <span>🎯</span> <span>Level Target Berikutnya</span>
+                        </span>
+                    `;
+                    actionBtnHtml = `
+                        <button onclick="loadChallenge('${ch.id}')" class="bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-lg shadow-blue-600/30 transition shrink-0 inline-flex items-center gap-1.5 active:scale-95">
+                            <span>⚡</span> <span>Kerjakan Level Ini</span>
+                        </button>
+                    `;
+                } else {
+                    actionBtnHtml = `
+                        <button onclick="loadChallenge('${ch.id}')" class="bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 hover:border-blue-500 shadow transition shrink-0 inline-flex items-center gap-1.5 active:scale-95">
+                            <span>⚡</span> <span>Muat Latihan Ini</span>
+                        </button>
+                    `;
+                }
+
                 card.innerHTML = `
                     <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1.5">
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${badgeColor}">
                                 ${ch.levelBadge}
                             </span>
+                            ${statusPillHtml}
                             <h3 class="font-extrabold text-sm text-white">${ch.title}</h3>
                         </div>
                         <p class="text-xs text-slate-400 leading-relaxed">${ch.desc}</p>
                     </div>
-                    <button onclick="loadChallenge('${ch.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition shrink-0 inline-flex items-center gap-1.5">
-                        <span>⚡</span> <span>Muat Latihan Ini</span>
-                    </button>
+                    ${actionBtnHtml}
                 `;
                 container.appendChild(card);
             });
@@ -1119,11 +1238,12 @@
         let pendingNextChallenge = null;
         let studentSubmissions = @json($userSubmissions ?? []);
 
-        function kirimKode() {
+        function kirimKode(overwrite = false) {
             const btn = document.getElementById('btn-submit');
             btn.innerHTML = '<span>⏳</span> <span>Menyimpan...</span>';
             btn.disabled = true;
 
+            const challengeId = activeChallenge ? activeChallenge.id : '';
             const challengeTitle = activeChallenge ? activeChallenge.title : 'Eksplorasi Bebas';
 
             fetch('{{ route("public.playground.submit") }}', {
@@ -1137,7 +1257,9 @@
                     html_code: htmlEditor.getValue(),
                     css_code: cssEditor.getValue(),
                     js_code: jsEditor.getValue(),
-                    challenge_title: challengeTitle
+                    challenge_id: challengeId,
+                    challenge_title: challengeTitle,
+                    overwrite: overwrite === true
                 })
             })
             .then(async res => {
@@ -1146,6 +1268,14 @@
                     data = await res.json();
                 } catch (e) {}
 
+                // JIKA TERDETEKSI DUPLIKAT (HTTP 409 atau is_duplicate: true)
+                if (res.status === 409 || (data && data.is_duplicate)) {
+                    btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
+                    btn.disabled = false;
+                    openConfirmOverwriteModal(data);
+                    return null;
+                }
+
                 if (!res.ok) {
                     const errorMsg = (data && data.message) ? data.message : ('Server merespons status: ' + res.status);
                     throw new Error(errorMsg);
@@ -1153,8 +1283,24 @@
                 return data;
             })
             .then(data => {
+                if (!data) return; // Sudah ditangani oleh modal konfirmasi overwrite 409
+
                 btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
                 btn.disabled = false;
+
+                // Tandai challenge ini selesai di completedChallengeMap
+                if (challengeId) {
+                    completedChallengeMap[challengeId] = {
+                        challenge_id: challengeId,
+                        challenge_title: challengeTitle,
+                        score: 0,
+                        feedback: null,
+                        created_at: 'Baru saja'
+                    };
+                }
+
+                // Perbarui level berikutnya yang belum dikerjakan
+                updateNextIncompleteChallenge();
 
                 // Hitung level berikutnya dari array 10 tantangan
                 let currentIdx = -1;
@@ -1168,21 +1314,37 @@
                     ? codingChallenges[currentIdx + 1]
                     : null;
 
-                // Tambahkan entri submisi baru ke memori siswa
+                // Tambahkan atau perbarui entri submisi di memori siswa
                 if (data.is_logged_in) {
-                    studentSubmissions.unshift({
-                        challenge_title: challengeTitle,
-                        score: 0,
-                        feedback: '',
-                        created_at: 'Baru saja',
-                        html_code: htmlEditor.getValue(),
-                        css_code: cssEditor.getValue(),
-                        js_code: jsEditor.getValue()
-                    });
+                    if (overwrite) {
+                        const existingIdx = studentSubmissions.findIndex(s => 
+                            (s.challenge_id && s.challenge_id === challengeId) || 
+                            (s.challenge_title && s.challenge_title === challengeTitle)
+                        );
+                        if (existingIdx !== -1) {
+                            studentSubmissions[existingIdx].score = 0;
+                            studentSubmissions[existingIdx].feedback = null;
+                            studentSubmissions[existingIdx].html_code = htmlEditor.getValue();
+                            studentSubmissions[existingIdx].css_code = cssEditor.getValue();
+                            studentSubmissions[existingIdx].js_code = jsEditor.getValue();
+                            studentSubmissions[existingIdx].created_at = 'Diperbarui baru saja';
+                        }
+                    } else {
+                        studentSubmissions.unshift({
+                            challenge_id: challengeId,
+                            challenge_title: challengeTitle,
+                            score: 0,
+                            feedback: '',
+                            created_at: 'Baru saja',
+                            html_code: htmlEditor.getValue(),
+                            css_code: cssEditor.getValue(),
+                            js_code: jsEditor.getValue()
+                        });
+                    }
                 }
 
                 // Tampilkan Modal Berhasil Custom
-                openSubmissionSuccessModal(data, activeChallenge, nextChallenge, currentIdx);
+                openSubmissionSuccessModal(data, activeChallenge, nextChallenge, currentIdx, overwrite);
             })
             .catch(err => {
                 btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
@@ -1191,7 +1353,7 @@
             });
         }
 
-        function openSubmissionSuccessModal(data, currentCh, nextCh, currentIdx) {
+        function openSubmissionSuccessModal(data, currentCh, nextCh, currentIdx, isOverwrite = false) {
             pendingNextChallenge = nextCh;
 
             document.getElementById('success-modal-message').textContent = data.message || 'Kode berhasil disimpan ke database!';
@@ -1199,7 +1361,10 @@
 
             // XP Badge
             const xpContainer = document.getElementById('success-xp-badge-container');
-            if (data.is_logged_in) {
+            if (isOverwrite) {
+                xpContainer.className = 'mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-950/80 text-amber-300 text-xs font-black border border-amber-700 shadow-inner';
+                xpContainer.innerHTML = `<span>🔄 Hasil Lama Diperbarui (Nilai di-reset ke 0 untuk dinilai ulang oleh guru)</span>`;
+            } else if (data.is_logged_in) {
                 xpContainer.className = 'mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 text-emerald-300 text-xs font-black border border-emerald-700 shadow-inner';
                 xpContainer.innerHTML = `<span>⭐ +${data.xp_earned || 25} XP Diperoleh! Total: ${data.total_xp || 0} XP (Level ${data.level || 1})</span>`;
             } else {
@@ -1269,6 +1434,76 @@
             closeConfirmNextLevelModal();
             loadChallenge(targetCh.id);
             openChallengeInstructions();
+        }
+
+        // ========================================================
+        // KONTROL MODAL CEGAH PENDOBELAN & ALTERNATIF OVERWRITE
+        // ========================================================
+        function openConfirmOverwriteModal(duplicateData) {
+            duplicateDetectedData = duplicateData;
+            document.getElementById('overwrite-modal-title').textContent = duplicateData.challenge_title || (activeChallenge ? activeChallenge.title : 'Tantangan Koding');
+            
+            const scoreEl = document.getElementById('overwrite-modal-score');
+            const statusEl = document.getElementById('overwrite-modal-status');
+            const feedbackBox = document.getElementById('overwrite-modal-feedback-box');
+            const feedbackText = document.getElementById('overwrite-modal-feedback-text');
+
+            if (duplicateData.existing_score > 0) {
+                scoreEl.textContent = `${duplicateData.existing_score} / 100`;
+                statusEl.textContent = 'Sudah Dinilai Guru';
+                statusEl.className = 'text-xs font-black text-emerald-400';
+            } else {
+                scoreEl.textContent = '0 / 100 (Belum Dinilai)';
+                statusEl.textContent = 'Menunggu Evaluasi Guru';
+                statusEl.className = 'text-xs font-black text-amber-400';
+            }
+
+            if (duplicateData.existing_feedback) {
+                feedbackBox.classList.remove('hidden');
+                feedbackText.textContent = `"${duplicateData.existing_feedback}"`;
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            document.getElementById('modal-confirm-overwrite-level').classList.remove('hidden');
+        }
+
+        function closeConfirmOverwriteModal() {
+            document.getElementById('modal-confirm-overwrite-level').classList.add('hidden');
+            duplicateDetectedData = null;
+        }
+
+        function actionConfirmOverwrite() {
+            closeConfirmOverwriteModal();
+            kirimKode(true); // Kirim ulang dengan parameter overwrite = true
+        }
+
+        function actionSwitchToNextIncomplete() {
+            closeConfirmOverwriteModal();
+            updateNextIncompleteChallenge();
+            if (nextIncompleteChallengeId && codingChallenges.some(c => c.id === nextIncompleteChallengeId)) {
+                loadChallenge(nextIncompleteChallengeId);
+                const targetCh = codingChallenges.find(c => c.id === nextIncompleteChallengeId);
+                showToast(`🎯 Beralih ke ${targetCh ? targetCh.title : 'level berikutnya yang belum dikerjakan'}.`, 'success');
+            } else {
+                showToast('Seluruh level sudah dikerjakan!', 'info');
+            }
+        }
+
+        function updateNextIncompleteChallenge() {
+            let found = null;
+            for (let i = 0; i < codingChallenges.length; i++) {
+                const c = codingChallenges[i];
+                if (!completedChallengeMap[c.id]) {
+                    found = c.id;
+                    break;
+                }
+            }
+            if (found) {
+                nextIncompleteChallengeId = found;
+            } else if (codingChallenges.length > 0) {
+                nextIncompleteChallengeId = codingChallenges[codingChallenges.length - 1].id;
+            }
         }
 
         // ========================================================
@@ -1452,8 +1687,18 @@
             const challengeParam = params.get('challenge');
             if (challengeParam && codingChallenges.some(c => c.id === challengeParam)) {
                 loadChallenge(challengeParam);
+            } else if (isLoggedIn && nextIncompleteChallengeId && codingChallenges.some(c => c.id === nextIncompleteChallengeId)) {
+                // OTOMATIS ARAHKAN SISWA KE LEVEL SELANJUTNYA YANG BELUM DIKERJAKAN
+                loadChallenge(nextIncompleteChallengeId);
+                const targetCh = codingChallenges.find(c => c.id === nextIncompleteChallengeId);
+                const completedCount = Object.keys(completedChallengeMap || {}).length;
+                if (completedCount >= codingChallenges.length) {
+                    showToast(`🎉 Hebat! Anda telah menuntaskan seluruh 10 level tantangan koding.`, 'success');
+                } else if (completedCount > 0 && targetCh) {
+                    showToast(`👋 Selamat datang kembali! Diarahkan ke ${targetCh.title} (level berikutnya yang belum dikerjakan).`, 'info');
+                }
             } else {
-                // Default ke Latihan 1 jika tidak ada parameter
+                // Default ke Latihan 1 jika pengunjung umum (tamu)
                 loadChallenge('html_struktur');
             }
         });

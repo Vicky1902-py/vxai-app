@@ -79,6 +79,8 @@ class AdminController extends Controller
                 Schema::create('coding_submissions', function (Blueprint $table) {
                     $table->id();
                     $table->unsignedBigInteger('user_id')->nullable()->index();
+                    $table->string('challenge_id', 50)->nullable()->index();
+                    $table->string('challenge_title', 255)->nullable();
                     $table->string('guest_name')->nullable();
                     $table->longText('html_code')->nullable();
                     $table->longText('css_code')->nullable();
@@ -89,6 +91,12 @@ class AdminController extends Controller
                 });
             } else {
                 Schema::table('coding_submissions', function (Blueprint $table) {
+                    if (!Schema::hasColumn('coding_submissions', 'challenge_id')) {
+                        $table->string('challenge_id', 50)->nullable()->index()->after('user_id');
+                    }
+                    if (!Schema::hasColumn('coding_submissions', 'challenge_title')) {
+                        $table->string('challenge_title', 255)->nullable()->after('guest_name');
+                    }
                     if (!Schema::hasColumn('coding_submissions', 'guest_name')) {
                         $table->string('guest_name')->nullable()->after('user_id');
                     }
