@@ -17,6 +17,12 @@ return Application::configure(basePath: dirname(__DIR__))
             'track.traffic' => \App\Http\Middleware\TrackVisitorTraffic::class,
         ]);
 
+        // Bebaskan endpoint playground submit dari validasi token CSRF (mencegah token expired saat siswa berlama-lama koding)
+        $middleware->validateCsrfTokens(except: [
+            'playground/submit',
+            'siswa/playground/submit',
+        ]);
+
         // Pasang middleware pelacak trafik dan pengecekan maintenance secara global untuk web
         $middleware->web(append: [
             \App\Http\Middleware\TrackVisitorTraffic::class,

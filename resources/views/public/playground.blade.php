@@ -916,6 +916,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
@@ -924,14 +925,25 @@
                     js_code: jsEditor.getValue()
                 })
             })
-            .then(res => res.json())
+            .then(async res => {
+                let data = null;
+                try {
+                    data = await res.json();
+                } catch (e) {}
+
+                if (!res.ok) {
+                    const errorMsg = (data && data.message) ? data.message : ('Server merespons kode: ' + res.status);
+                    throw new Error(errorMsg);
+                }
+                return data;
+            })
             .then(data => {
-                alert(data.message);
+                alert(data && data.message ? data.message : 'Kode berhasil disimpan!');
                 btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
                 btn.disabled = false;
             })
             .catch(err => {
-                alert('Gagal mengirim kode. Periksa koneksi internet Anda.');
+                alert('Pemberitahuan: ' + err.message);
                 btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
                 btn.disabled = false;
             });

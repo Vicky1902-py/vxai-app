@@ -183,63 +183,106 @@ class PublicController extends Controller
     // Submit Kode dari Playground (Mendukung Siswa Login & Pengunjung Tamu)
     public function submitCode(Request $request)
     {
-        $request->validate([
-            'html_code' => 'nullable|string|max:100000',
-            'css_code' => 'nullable|string|max:100000',
-            'js_code' => 'nullable|string|max:100000',
-            'guest_name' => 'nullable|string|max:100',
-        ]);
-
-        // Pastikan tabel ada
-        if (!Schema::hasTable('coding_submissions')) {
-            try {
-                Artisan::call('migrate', ['--force' => true]);
-            } catch (\Throwable $e) {}
-        }
-
-        $userId = Auth::id();
-        $guestName = $userId ? Auth::user()->name : ($request->input('guest_name') ?: 'Pengunjung Publik');
-
-        if (Schema::hasTable('coding_submissions')) {
-            DB::table('coding_submissions')->insert([
-                'user_id' => $userId,
-                'guest_name' => $guestName,
-                'html_code' => $request->html_code,
-                'css_code' => $request->css_code,
-                'js_code' => $request->js_code,
-                'score' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
+        try {
+            $request->validate([
+                'html_code' => 'nullable|string|max:100000',
+                'css_code' => 'nullable|string|max:100000',
+                'js_code' => 'nullable|string|max:100000',
+                'guest_name' => 'nullable|string|max:100',
             ]);
-        }
 
-        $xpEarned = 0;
-        $newLevel = null;
-        $newXp = null;
+            // Pastikan tabel coding_submissions ada secara mandiri tanpa memicu tabrakan artisan migrate
+            if (!Schema::hasTable('coding_submissions')) {
+                try {
+                    \Illuminate\Database\Schema\Blueprint;
+                    Schema::create('coding_submissions', function ($table) {
+                        $table->id();
+                        $table->unsignedBigInteger('user_id')->nullable()->index();
+                        $table->string('guest_name')->nullable();
+                        $table->longText('html_code')->nullable();
+                        $table->longText('css_code')->nullable();
+                        $table->longText('js_code')->nullable();
+                        $table->integer('score')->nullable()->default(0);
+                        $table->text('feedback')->nullable();
+                        $table->timestamps();
+                    });
+                } catch (\Throwable $migErr) {}
+            }
 
-        if ($userId && Schema::hasTable('users')) {
-            $user = Auth::user();
-            $xpEarned = 25;
-            $newXp = (int) $user->xp + $xpEarned;
-            $newLevel = (int) floor($newXp / 100) + 1;
+            $userId = Auth::id();
+            $guestName = $userId 
+                ? (Auth::user()->name ?? 'Siswa Pembelajar') 
+                : ($request->input('guest_name') ?: 'Pengunjung Publik');
 
-            DB::table('users')->where('id', $userId)->update([
-                'xp' => $newXp,
+            if (Schema::hasTable('coding_submissions')) {
+                $insertData = [
+                    'guest_name' => $guestName,
+                    'html_code' => $request->input('html_code', ''),
+                    'css_code' => $request->input('css_code', ''),
+                    'js_code' => $request->input('js_code', ''),
+                    'score' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                if ($userId) {
+                    $insertData['user_id'] = $userId;
+                } else {
+                    $insertData['user_id'] = null;
+                }
+
+                try {
+                    DB::table('coding_submissions')->insert($insertData);
+                } catch (\Throwable $insertErr) {
+                    // Fallback jika database memiliki constraint NOT NULL pada user_id:
+                    // Gunakan user ID pertama yang ada di database agar karya siswa tetap aman tersimpan
+                    $fallbackId = DB::table('users')->value('id') ?? 1;
+                    $insertData['user_id'] = $fallbackId;
+                    $insertData['guest_name'] = $guestName . ($userId ? '' : ' (Tamu)');
+                    DB::table('coding_submissions')->insert($insertData);
+                }
+            }
+
+            $xpEarned = 0;
+            $newLevel = null;
+            $newXp = null;
+
+            if ($userId && Schema::hasTable('users')) {
+                try {
+                    $user = Auth::user();
+                    $xpEarned = 25;
+                    $currentXp = (int) ($user->xp ?? 0);
+                    $newXp = $currentXp + $xpEarned;
+                    $newLevel = (int) floor($newXp / 100) + 1;
+
+                    DB::table('users')->where('id', $userId)->update([
+                        'xp' => $newXp,
+                        'level' => $newLevel,
+                        'updated_at' => now(),
+                    ]);
+                } catch (\Throwable $xpErr) {
+                    \Illuminate\Support\Facades\Log::warning('Gagal update XP siswa: ' . $xpErr->getMessage());
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => $userId 
+                    ? "Luar biasa! Kode Anda berhasil dikirim ke guru. (+{$xpEarned} XP diperoleh!)" 
+                    : "Kode Anda berhasil diuji dan disimpan di sistem!",
+                'is_logged_in' => (bool) $userId,
+                'xp_earned' => $xpEarned,
+                'total_xp' => $newXp,
                 'level' => $newLevel,
-                'updated_at' => now(),
             ]);
-        }
 
-        return response()->json([
-            'success' => true,
-            'message' => $userId 
-                ? "Luar biasa! Kode Anda berhasil dikirim ke guru. (+{$xpEarned} XP diperoleh!)" 
-                : "Kode Anda berhasil diuji dan disimpan di sistem publik!",
-            'is_logged_in' => (bool) $userId,
-            'xp_earned' => $xpEarned,
-            'total_xp' => $newXp,
-            'level' => $newLevel,
-        ]);
+        } catch (\Throwable $fatalError) {
+            \Illuminate\Support\Facades\Log::error('submitCode fatal error: ' . $fatalError->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memproses kode: ' . $fatalError->getMessage(),
+            ], 500);
+        }
     }
 
     // ========================================================
