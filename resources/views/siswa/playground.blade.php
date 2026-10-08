@@ -311,12 +311,20 @@
         })
         .then(response => response.json())
         .then(data => {
-            alert(data.message); // Tampilkan pop-up sukses
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 border border-emerald-500 text-emerald-300 px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold';
+            toast.textContent = data.message || 'Kode berhasil dikirim!';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
             btn.innerHTML = 'Kirim';
             btn.disabled = false;
         })
         .catch(error => {
-            alert('Gagal mengirim kode. Cek koneksi Anda.');
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 border border-rose-500 text-rose-300 px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold';
+            toast.textContent = 'Gagal mengirim kode. Cek koneksi Anda.';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
             btn.innerHTML = 'Kirim';
             btn.disabled = false;
         });

@@ -104,6 +104,13 @@
                 <span>📜</span> <span>Sertifikat</span>
             </a>
 
+            @auth
+                <!-- Tombol Nilai & Catatan Guru (Khusus Siswa Login) -->
+                <button onclick="openMyGradesModal()" class="bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition active:scale-95" title="Lihat Nilai & Catatan Guru">
+                    <span>📊</span> <span class="hidden md:inline">Nilai Saya</span>
+                </button>
+            @endauth
+
             <!-- Tombol Petunjuk Kode -->
             <button onclick="openHintModal()" class="bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-700 px-3 py-1.5 md:py-2 rounded-xl text-xs md:text-sm font-bold flex items-center gap-1.5 transition active:scale-95">
                 <span>💡</span> <span class="hidden md:inline">Kamus Kode</span>
@@ -482,6 +489,198 @@
         </div>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- 1. MODAL SUKSES SUBMISI & PROGRESI 10 LEVEL             -->
+    <!-- ======================================================== -->
+    <div id="modal-submission-success" class="fixed inset-0 bg-slate-950/85 z-[130] hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-lg flex flex-col border border-emerald-500/40 modal-enter overflow-hidden">
+            
+            <!-- Header Animasi & Gamifikasi -->
+            <div class="p-6 text-center border-b border-slate-800 bg-gradient-to-b from-emerald-950/40 to-slate-900">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 text-white text-3xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-500/30">
+                    🎉
+                </div>
+                <h3 class="text-xl font-black text-white">Tugas Koding Berhasil Disimpan!</h3>
+                <p class="text-xs text-slate-300 mt-1 max-w-sm mx-auto" id="success-modal-message">
+                    Hasil kodingan Anda telah masuk ke sistem dan siap dievaluasi oleh guru.
+                </p>
+                
+                <!-- Gamifikasi Badge (XP / Level) -->
+                <div id="success-xp-badge-container" class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 text-emerald-300 text-xs font-black border border-emerald-700 shadow-inner">
+                    <span>⭐ +25 XP Diperoleh!</span>
+                </div>
+            </div>
+
+            <!-- Konten Latihan Berikutnya -->
+            <div class="p-6 space-y-4 text-xs bg-slate-900">
+                <!-- Info Tantangan Selesai -->
+                <div class="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Tantangan Diselesaikan:</span>
+                        <span class="font-extrabold text-white text-xs" id="success-current-challenge-title">-</span>
+                    </div>
+                    <span class="text-emerald-400 font-black text-xs">✓ Lolos</span>
+                </div>
+
+                <!-- Kartu Tantangan Berikutnya (Jika Ada) -->
+                <div id="success-next-level-card" class="p-4 bg-gradient-to-br from-blue-950/60 to-indigo-950/40 rounded-2xl border border-blue-800/80 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="px-2.5 py-0.5 rounded-full bg-blue-600 text-white font-black text-[10px] uppercase tracking-wider" id="success-next-level-badge">
+                            Level Berikutnya
+                        </span>
+                        <span class="text-blue-300 text-[11px] font-bold">Siap Dikerjakan ➔</span>
+                    </div>
+                    <h4 class="font-black text-white text-sm" id="success-next-level-title">-</h4>
+                    <p class="text-slate-300 text-[11px] leading-relaxed" id="success-next-level-desc">-</p>
+                </div>
+
+                <!-- Kartu Selamat Selesai 10 Level (Jika Level 10 Selesai) -->
+                <div id="success-all-completed-card" class="hidden p-5 bg-gradient-to-br from-amber-950/60 to-yellow-950/40 rounded-2xl border border-amber-600/80 text-center space-y-3">
+                    <span class="text-4xl block">🏆</span>
+                    <h4 class="font-black text-amber-300 text-base">LUAR BIASA! 10 LEVEL SELESAI</h4>
+                    <p class="text-slate-300 text-xs leading-relaxed">
+                        Anda telah menuntaskan seluruh kurikulum koding dari dasar hingga mahir. Anda berhak mendapatkan Sertifikat Digital Resmi!
+                    </p>
+                    <a href="{{ route('public.certificate') }}" target="_blank" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 transition">
+                        <span>🎓</span> <span>Klaim & Cetak Sertifikat Kelulusan</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Modal Footer Aksi -->
+            <div class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col sm:flex-row items-center justify-end gap-2.5">
+                <button type="button" onclick="closeSubmissionSuccessModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
+                    Tetap di Level Ini
+                </button>
+                <button type="button" id="btn-next-level-action" onclick="onLanjutNextLevelClicked()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-600/30 transition flex items-center justify-center gap-1.5">
+                    <span>🚀</span> <span id="btn-next-level-text">Lanjut ke Level Berikutnya</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 2. MODAL KONFIRMASI NEXT LEVEL: LANJUT ATAU BACA PANDUAN -->
+    <!-- ======================================================== -->
+    <div id="modal-confirm-next-level" class="fixed inset-0 bg-slate-950/85 z-[140] hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-md flex flex-col border border-blue-500/50 modal-enter overflow-hidden">
+            
+            <div class="p-5 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-2xl">🎯</span>
+                    <div>
+                        <h3 class="font-black text-sm text-white">Konfirmasi Memulai Latihan</h3>
+                        <span class="text-[10px] text-blue-400 font-bold" id="confirm-next-badge">Level Berikutnya</span>
+                    </div>
+                </div>
+                <button onclick="closeConfirmNextLevelModal()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none p-1 transition">&times;</button>
+            </div>
+
+            <div class="p-6 space-y-4 text-xs bg-slate-900">
+                <div class="text-center space-y-1.5">
+                    <h4 class="text-base font-black text-white" id="confirm-next-title">-</h4>
+                    <p class="text-slate-400 text-xs" id="confirm-next-desc">-</p>
+                </div>
+
+                <div class="p-3.5 bg-blue-950/40 border border-blue-900/60 rounded-2xl text-blue-200 text-center leading-relaxed">
+                    Bagaimana Anda ingin memulai level ini? Anda dapat <strong>langsung menulis kode</strong> atau <strong>membaca panduan & instruksi terlebih dahulu</strong>.
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col sm:flex-row items-center gap-2.5">
+                <button type="button" onclick="actionConfirmNextDirect()" class="w-full flex-1 py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-1.5">
+                    <span>🚀</span> <span>Lanjut Koding</span>
+                </button>
+                <button type="button" onclick="actionConfirmNextWithGuide()" class="w-full flex-1 py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-md shadow-indigo-600/30 transition flex items-center justify-center gap-1.5">
+                    <span>📖</span> <span>Baca Panduan</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 3. MODAL NILAI & CATATAN GURU SISWA (FITUR 2)            -->
+    <!-- ======================================================== -->
+    <div id="modal-my-grades" class="fixed inset-0 bg-slate-950/85 z-[125] hidden flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col border border-slate-700 modal-enter overflow-hidden">
+            
+            <div class="p-5 border-b border-slate-800 bg-slate-950 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-lg font-bold shadow-md shadow-blue-500/20">
+                        📊
+                    </span>
+                    <div>
+                        <h3 class="font-black text-sm sm:text-base text-white">Nilai & Evaluasi Guru Anda</h3>
+                        <p class="text-[11px] text-slate-400">Pantau perkembangan nilai tugas koding dan catatan bimbingan guru</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="refreshMyGrades()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs font-bold transition" title="Muat Ulang Nilai">
+                        🔄
+                    </button>
+                    <button onclick="closeMyGradesModal()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none p-1 transition">&times;</button>
+                </div>
+            </div>
+
+            <!-- Konten Daftar Nilai -->
+            <div class="p-5 overflow-y-auto space-y-3.5 flex-1 custom-scrollbar" id="my-grades-list-container">
+                <!-- Di-render dinamis oleh JavaScript -->
+            </div>
+
+            <div class="p-4 border-t border-slate-800 bg-slate-950 flex justify-between items-center shrink-0 text-xs">
+                <a href="{{ route('siswa.dashboard') }}" class="text-blue-400 hover:underline font-bold flex items-center gap-1">
+                    <span>🏠 Buka Dashboard Siswa</span> ➔
+                </a>
+                <button onclick="closeMyGradesModal()" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold transition">
+                    Tutup
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 4. CUSTOM ALERT MODAL (PENGGANTI ALERT BROWSER)         -->
+    <!-- ======================================================== -->
+    <div id="modal-custom-alert" class="fixed inset-0 bg-slate-950/85 z-[150] hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col border border-slate-700 modal-enter overflow-hidden text-center p-6">
+            <div id="custom-alert-icon" class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3"></div>
+            <h3 class="font-black text-base text-white" id="custom-alert-title">-</h3>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed" id="custom-alert-message">-</p>
+            <div class="mt-5">
+                <button type="button" onclick="closeCustomAlert()" class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs transition">
+                    OK, Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 5. CUSTOM CONFIRM MODAL (PENGGANTI CONFIRM BROWSER)       -->
+    <!-- ======================================================== -->
+    <div id="modal-custom-confirm" class="fixed inset-0 bg-slate-950/85 z-[150] hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-sm flex flex-col border border-slate-700 modal-enter overflow-hidden p-6 text-center">
+            <div class="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 bg-amber-950/60 text-amber-400 border border-amber-800">
+                ⚠️
+            </div>
+            <h3 class="font-black text-base text-white" id="custom-confirm-title">Konfirmasi</h3>
+            <p class="text-xs text-slate-300 mt-1.5 leading-relaxed" id="custom-confirm-message">-</p>
+            <div class="mt-5 flex gap-2">
+                <button type="button" onclick="resolveCustomConfirm(false)" class="flex-1 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
+                    Batal
+                </button>
+                <button type="button" onclick="resolveCustomConfirm(true)" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs transition">
+                    Ya, Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[160] flex flex-col gap-2 pointer-events-none"></div>
+
     <!-- CodeMirror Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
@@ -842,9 +1041,16 @@
 
         function resetCurrentChallenge() {
             if (activeChallenge) {
-                if (confirm("Reset kode ke kondisi awal latihan ini?")) {
-                    loadChallenge(activeChallenge.id);
-                }
+                showCustomConfirm(
+                    "Reset Kode Tantangan?",
+                    `Kembalikan kode latihan "${activeChallenge.title}" ke kondisi awal? Seluruh perubahan Anda saat ini akan di-reset.`,
+                    (confirmed) => {
+                        if (confirmed) {
+                            loadChallenge(activeChallenge.id);
+                            showToast("Kode telah di-reset ke kondisi awal latihan.", "info");
+                        }
+                    }
+                );
             }
         }
 
@@ -907,10 +1113,18 @@
             btn.classList.add('text-orange-400', 'border-orange-400', 'bg-slate-850');
         }
 
+        // ========================================================
+        // FITUR PROGRESI LEVEL 1-10 & PENGIRIMAN KODE
+        // ========================================================
+        let pendingNextChallenge = null;
+        let studentSubmissions = @json($userSubmissions ?? []);
+
         function kirimKode() {
             const btn = document.getElementById('btn-submit');
             btn.innerHTML = '<span>⏳</span> <span>Menyimpan...</span>';
             btn.disabled = true;
+
+            const challengeTitle = activeChallenge ? activeChallenge.title : 'Eksplorasi Bebas';
 
             fetch('{{ route("public.playground.submit") }}', {
                 method: 'POST',
@@ -922,7 +1136,8 @@
                 body: JSON.stringify({
                     html_code: htmlEditor.getValue(),
                     css_code: cssEditor.getValue(),
-                    js_code: jsEditor.getValue()
+                    js_code: jsEditor.getValue(),
+                    challenge_title: challengeTitle
                 })
             })
             .then(async res => {
@@ -932,21 +1147,268 @@
                 } catch (e) {}
 
                 if (!res.ok) {
-                    const errorMsg = (data && data.message) ? data.message : ('Server merespons kode: ' + res.status);
+                    const errorMsg = (data && data.message) ? data.message : ('Server merespons status: ' + res.status);
                     throw new Error(errorMsg);
                 }
                 return data;
             })
             .then(data => {
-                alert(data && data.message ? data.message : 'Kode berhasil disimpan!');
                 btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
                 btn.disabled = false;
+
+                // Hitung level berikutnya dari array 10 tantangan
+                let currentIdx = -1;
+                if (activeChallenge) {
+                    currentIdx = codingChallenges.findIndex(c => c.id === activeChallenge.id);
+                } else {
+                    currentIdx = 0;
+                }
+
+                const nextChallenge = (currentIdx >= 0 && currentIdx < codingChallenges.length - 1)
+                    ? codingChallenges[currentIdx + 1]
+                    : null;
+
+                // Tambahkan entri submisi baru ke memori siswa
+                if (data.is_logged_in) {
+                    studentSubmissions.unshift({
+                        challenge_title: challengeTitle,
+                        score: 0,
+                        feedback: '',
+                        created_at: 'Baru saja',
+                        html_code: htmlEditor.getValue(),
+                        css_code: cssEditor.getValue(),
+                        js_code: jsEditor.getValue()
+                    });
+                }
+
+                // Tampilkan Modal Berhasil Custom
+                openSubmissionSuccessModal(data, activeChallenge, nextChallenge, currentIdx);
             })
             .catch(err => {
-                alert('Pemberitahuan: ' + err.message);
                 btn.innerHTML = '<span>🚀</span> <span>Kirim / Simpan</span>';
                 btn.disabled = false;
+                showCustomAlert('Pemberitahuan Sistem', err.message, 'error');
             });
+        }
+
+        function openSubmissionSuccessModal(data, currentCh, nextCh, currentIdx) {
+            pendingNextChallenge = nextCh;
+
+            document.getElementById('success-modal-message').textContent = data.message || 'Kode berhasil disimpan ke database!';
+            document.getElementById('success-current-challenge-title').textContent = currentCh ? currentCh.title : 'Tantangan Koding';
+
+            // XP Badge
+            const xpContainer = document.getElementById('success-xp-badge-container');
+            if (data.is_logged_in) {
+                xpContainer.className = 'mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 text-emerald-300 text-xs font-black border border-emerald-700 shadow-inner';
+                xpContainer.innerHTML = `<span>⭐ +${data.xp_earned || 25} XP Diperoleh! Total: ${data.total_xp || 0} XP (Level ${data.level || 1})</span>`;
+            } else {
+                xpContainer.className = 'mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800 text-slate-300 text-xs font-bold border border-slate-700 shadow-inner';
+                xpContainer.innerHTML = `<span>🌐 Tersimpan dalam Mode Publik (Tamu)</span>`;
+            }
+
+            const nextCard = document.getElementById('success-next-level-card');
+            const completedCard = document.getElementById('success-all-completed-card');
+            const btnNext = document.getElementById('btn-next-level-action');
+
+            if (nextCh) {
+                // Masih ada level berikutnya (Level 1..9)
+                nextCard.classList.remove('hidden');
+                completedCard.classList.add('hidden');
+                btnNext.classList.remove('hidden');
+
+                document.getElementById('success-next-level-badge').textContent = `Level ${currentIdx + 2} (${nextCh.levelBadge})`;
+                document.getElementById('success-next-level-title').textContent = nextCh.title;
+                document.getElementById('success-next-level-desc').textContent = nextCh.desc;
+                document.getElementById('btn-next-level-text').textContent = `Lanjut ke Level ${currentIdx + 2} (${nextCh.title})`;
+            } else {
+                // Sudah Level 10 (Selesai Seluruh Tantangan)
+                nextCard.classList.add('hidden');
+                btnNext.classList.add('hidden');
+                completedCard.classList.remove('hidden');
+            }
+
+            document.getElementById('modal-submission-success').classList.remove('hidden');
+        }
+
+        function closeSubmissionSuccessModal() {
+            document.getElementById('modal-submission-success').classList.add('hidden');
+        }
+
+        // Saat tombol "Lanjut ke Level Berikutnya" diklik, munculkan konfirmasi "Lanjut" & "Baca Panduan"
+        function onLanjutNextLevelClicked() {
+            if (!pendingNextChallenge) return;
+            closeSubmissionSuccessModal();
+            openConfirmNextLevelModal(pendingNextChallenge);
+        }
+
+        function openConfirmNextLevelModal(nextCh) {
+            document.getElementById('confirm-next-badge').textContent = nextCh.levelBadge;
+            document.getElementById('confirm-next-title').textContent = nextCh.title;
+            document.getElementById('confirm-next-desc').textContent = nextCh.desc;
+            document.getElementById('modal-confirm-next-level').classList.remove('hidden');
+        }
+
+        function closeConfirmNextLevelModal() {
+            document.getElementById('modal-confirm-next-level').classList.add('hidden');
+        }
+
+        // Pilihan 1: Lanjut Koding Langsung
+        function actionConfirmNextDirect() {
+            if (!pendingNextChallenge) return;
+            const targetCh = pendingNextChallenge;
+            closeConfirmNextLevelModal();
+            loadChallenge(targetCh.id);
+            showToast(`🚀 Memulai ${targetCh.title}! Selamat berkoding.`, 'success');
+        }
+
+        // Pilihan 2: Baca Panduan Dulu
+        function actionConfirmNextWithGuide() {
+            if (!pendingNextChallenge) return;
+            const targetCh = pendingNextChallenge;
+            closeConfirmNextLevelModal();
+            loadChallenge(targetCh.id);
+            openChallengeInstructions();
+        }
+
+        // ========================================================
+        // FITUR LIHAT NILAI & CATATAN GURU SISWA DI PLAYGROUND
+        // ========================================================
+        function openMyGradesModal() {
+            renderMyGrades();
+            document.getElementById('modal-my-grades').classList.remove('hidden');
+        }
+
+        function closeMyGradesModal() {
+            document.getElementById('modal-my-grades').classList.add('hidden');
+        }
+
+        function refreshMyGrades() {
+            fetch('{{ route("public.playground.grades") }}')
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.submissions) {
+                        studentSubmissions = data.submissions;
+                        renderMyGrades();
+                        showToast('Riwayat nilai berhasil diperbarui!', 'success');
+                    }
+                })
+                .catch(() => {
+                    showToast('Gagal menyinkronkan nilai.', 'error');
+                });
+        }
+
+        function renderMyGrades() {
+            const container = document.getElementById('my-grades-list-container');
+            container.innerHTML = '';
+
+            if (!studentSubmissions || studentSubmissions.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center text-slate-400 space-y-2">
+                        <div class="text-3xl">📭</div>
+                        <h4 class="font-bold text-white text-xs">Belum Ada Tugas Terkirim</h4>
+                        <p class="text-[11px] text-slate-400">Kirim kode latihan menggunakan tombol "Kirim / Simpan" untuk mendapatkan evaluasi nilai dari guru.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            studentSubmissions.forEach((sub, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2.5';
+
+                let scoreBadge = '';
+                if (sub.score > 0) {
+                    let color = 'bg-emerald-950/80 text-emerald-300 border-emerald-700';
+                    if (sub.score < 75) color = 'bg-amber-950/80 text-amber-300 border-amber-700';
+                    else if (sub.score < 85) color = 'bg-blue-950/80 text-blue-300 border-blue-700';
+
+                    scoreBadge = `<span class="px-2.5 py-1 rounded-xl text-xs font-black border ${color}">Skor: ${sub.score} / 100</span>`;
+                } else {
+                    scoreBadge = `<span class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-amber-950/60 text-amber-300 border border-amber-800">⏳ Belum Dinilai Guru</span>`;
+                }
+
+                const feedbackHtml = sub.feedback 
+                    ? `<div class="p-3 bg-blue-950/40 border border-blue-900/60 rounded-xl text-xs text-blue-200">
+                        <span class="font-extrabold text-[10px] text-blue-300 uppercase block mb-0.5">💬 Catatan & Umpan Balik Guru:</span>
+                        <p class="text-slate-200 leading-relaxed font-normal">"${sub.feedback}"</p>
+                      </div>`
+                    : `<div class="text-[11px] text-slate-500 italic">Belum ada catatan khusus dari guru.</div>`;
+
+                const timeStr = sub.created_at ? sub.created_at : '';
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="truncate">
+                            <span class="font-black text-white text-xs block truncate">${sub.challenge_title || ('Tugas Koding #' + (idx + 1))}</span>
+                            <span class="text-[10px] text-slate-500 font-mono">${timeStr}</span>
+                        </div>
+                        ${scoreBadge}
+                    </div>
+                    ${feedbackHtml}
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ========================================================
+        // SISTEM CUSTOM MODAL POPUP & TOAST (BEBAS DEFAULT BROWSER)
+        // ========================================================
+        let customConfirmCallback = null;
+
+        function showCustomAlert(title, message, type = 'info') {
+            const iconEl = document.getElementById('custom-alert-icon');
+            if (type === 'error') {
+                iconEl.className = 'w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 bg-rose-950/60 text-rose-400 border border-rose-800';
+                iconEl.innerHTML = '❌';
+            } else if (type === 'success') {
+                iconEl.className = 'w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 bg-emerald-950/60 text-emerald-400 border border-emerald-800';
+                iconEl.innerHTML = '✅';
+            } else {
+                iconEl.className = 'w-14 h-14 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3 bg-blue-950/60 text-blue-400 border border-blue-800';
+                iconEl.innerHTML = 'ℹ️';
+            }
+            document.getElementById('custom-alert-title').textContent = title;
+            document.getElementById('custom-alert-message').textContent = message;
+            document.getElementById('modal-custom-alert').classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('modal-custom-alert').classList.add('hidden');
+        }
+
+        function showCustomConfirm(title, message, callback) {
+            document.getElementById('custom-confirm-title').textContent = title;
+            document.getElementById('custom-confirm-message').textContent = message;
+            customConfirmCallback = callback;
+            document.getElementById('modal-custom-confirm').classList.remove('hidden');
+        }
+
+        function resolveCustomConfirm(result) {
+            document.getElementById('modal-custom-confirm').classList.add('hidden');
+            if (typeof customConfirmCallback === 'function') {
+                customConfirmCallback(result);
+                customConfirmCallback = null;
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto bg-slate-900 border border-slate-700 text-white px-4 py-2.5 rounded-2xl shadow-2xl text-xs flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0';
+            let icon = 'ℹ️';
+            if (type === 'success') icon = '✅';
+            if (type === 'error') icon = '❌';
+            toast.innerHTML = `<span>${icon}</span><span class="font-semibold">${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
         }
 
         // ========================================================

@@ -97,7 +97,41 @@ class PublicController extends Controller
         $user = Auth::user();
         $challenges = PlaygroundChallengeService::getActiveChallenges();
 
-        return view('public.playground', compact('settings', 'user', 'challenges'));
+        $userSubmissions = collect();
+        if ($user && Schema::hasTable('coding_submissions')) {
+            $userSubmissions = DB::table('coding_submissions')
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->limit(20)
+                ->get();
+        }
+
+        return view('public.playground', compact('settings', 'user', 'challenges', 'userSubmissions'));
+    }
+
+    // Endpoint API untuk Siswa melihat riwayat nilai & catatan tugas
+    public function myGradesApi()
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['success' => false, 'submissions' => []], 401);
+        }
+
+        $submissions = DB::table('coding_submissions')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(30)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'submissions' => $submissions,
+            'user' => [
+                'name' => $user->name,
+                'level' => $user->level,
+                'xp' => $user->xp,
+            ]
+        ]);
     }
 
     // Halaman Tutorial & Kamus Koding
@@ -202,16 +236,23 @@ class PublicController extends Controller
                 'css_code' => 'nullable|string|max:100000',
                 'js_code' => 'nullable|string|max:100000',
                 'guest_name' => 'nullable|string|max:100',
+                'challenge_title' => 'nullable|string|max:255',
             ]);
 
-            // Coba perbarui charset tabel coding_submissions ke utf8mb4 jika belum
+            // Coba perbarui charset tabel coding_submissions ke utf8mb4 jika belum & pastikan kolom challenge_title ada
             try {
                 DB::statement("ALTER TABLE `coding_submissions` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
                 DB::statement("ALTER TABLE `coding_submissions` MODIFY `user_id` BIGINT(20) UNSIGNED NULL");
+                if (Schema::hasTable('coding_submissions') && !Schema::hasColumn('coding_submissions', 'challenge_title')) {
+                    Schema::table('coding_submissions', function (\Illuminate\Database\Schema\Blueprint $table) {
+                        $table->string('challenge_title', 255)->nullable()->after('guest_name');
+                    });
+                }
             } catch (\Throwable $alterErr) {}
 
             $user = Auth::user();
             $clientIp = $request->ip() ?: '127.0.0.1';
+            $challengeTitle = trim((string) $request->input('challenge_title', ''));
 
             // Bersihkan emoji dari string kode agar aman 100% dari error SQLSTATE 1366 Incorrect string value
             $htmlCode = $this->sanitizeCodeForDatabase($request->input('html_code', ''));
@@ -246,6 +287,7 @@ class PublicController extends Controller
                 $insertData = [
                     'user_id' => $userId,
                     'guest_name' => $studentName,
+                    'challenge_title' => !empty($challengeTitle) ? $challengeTitle : null,
                     'html_code' => $htmlCode,
                     'css_code' => $cssCode,
                     'js_code' => $jsCode,
@@ -267,6 +309,7 @@ class PublicController extends Controller
                 $insertData = [
                     'user_id' => null,
                     'guest_name' => $guestDisplayName,
+                    'challenge_title' => !empty($challengeTitle) ? $challengeTitle : null,
                     'html_code' => $htmlCode,
                     'css_code' => $cssCode,
                     'js_code' => $jsCode,
@@ -298,6 +341,7 @@ class PublicController extends Controller
                 'xp_earned' => $xpEarned,
                 'total_xp' => $newXp,
                 'level' => $newLevel,
+                'challenge_title' => $challengeTitle,
             ]);
 
         } catch (\Throwable $fatalError) {

@@ -21,6 +21,7 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 // Live Coding Playground Publik
 Route::get('/playground', [PublicController::class, 'playground'])->name('public.playground');
 Route::post('/playground/submit', [PublicController::class, 'submitCode'])->middleware('throttle:10,1')->name('public.playground.submit');
+Route::get('/playground/my-grades', [PublicController::class, 'myGradesApi'])->name('public.playground.grades');
 
 // Papan Peringkat Siswa Berbasis XP & Level (Gamifikasi)
 Route::get('/leaderboard', [PublicController::class, 'leaderboard'])->name('public.leaderboard');

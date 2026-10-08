@@ -162,82 +162,115 @@
     </main>
 
     <!-- Modal Periksa, Live Preview & Beri Nilai -->
-    <div id="modal-eval" class="fixed inset-0 bg-slate-950/80 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden border border-slate-200">
+    <div id="modal-eval" class="fixed inset-0 bg-slate-950/85 z-[100] hidden flex items-center justify-center p-2 sm:p-4 backdrop-blur-md">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-[97vw] h-[94vh] max-h-[94vh] flex flex-col overflow-hidden border border-slate-300">
             
-            <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                <div>
-                    <h3 class="font-black text-slate-900 text-base" id="eval-title">Evaluasi Koding Siswa</h3>
-                    <span class="text-xs text-slate-500">Tinjau kode HTML, CSS, JS dan uji hasil tampilan website</span>
+            <div class="p-4 sm:px-6 sm:py-3.5 border-b border-slate-200 flex flex-wrap justify-between items-center bg-slate-50 gap-3 shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-lg font-bold shadow-md shadow-emerald-500/20">
+                        🔬
+                    </span>
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base" id="eval-title">Evaluasi Koding Siswa</h3>
+                        <span class="text-xs text-slate-500">Tinjau kode HTML, CSS, JS dan uji hasil tampilan website</span>
+                    </div>
                 </div>
 
-                <!-- Tab Switcher (Kode vs Live Output) -->
-                <div class="flex items-center bg-slate-200 p-1 rounded-xl text-xs font-bold">
-                    <button type="button" id="tab-btn-code" onclick="switchEvalTab('code')" class="px-4 py-1.5 rounded-lg bg-white text-slate-900 shadow-sm transition">
-                        💻 Kode Sintaksis
-                    </button>
-                    <button type="button" id="tab-btn-preview" onclick="switchEvalTab('preview')" class="px-4 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
-                        <span>⚡ Live Output</span>
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    </button>
-                </div>
+                <!-- Mode Switcher -->
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center bg-slate-200 p-1 rounded-xl text-xs font-bold border border-slate-300">
+                        <button type="button" id="tab-btn-guru-split" onclick="switchEvalMode('split')" class="px-3.5 py-1.5 rounded-lg bg-white text-slate-900 shadow-sm transition flex items-center gap-1.5">
+                            <span>🌓</span> <span>Dampingan (Split)</span>
+                        </button>
+                        <button type="button" id="tab-btn-guru-preview" onclick="switchEvalMode('preview')" class="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                            <span>⚡</span> <span>Preview Penuh</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        </button>
+                        <button type="button" id="tab-btn-guru-code" onclick="switchEvalMode('code')" class="px-3.5 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+                            <span>💻</span> <span>Kode Penuh</span>
+                        </button>
+                    </div>
 
-                <button onclick="tutupModal()" class="text-slate-400 hover:text-rose-500 font-bold text-2xl leading-none">&times;</button>
+                    <button onclick="tutupModal()" class="text-slate-400 hover:text-rose-500 font-bold text-3xl leading-none px-2 transition">&times;</button>
+                </div>
             </div>
             
-            <!-- Tab View 1: Kode -->
-            <div id="eval-view-code" class="flex-1 p-5 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-950 min-h-[350px]">
-                <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col">
-                    <span class="text-orange-400 text-xs font-mono font-bold mb-2 pb-2 border-b border-slate-800">HTML5</span>
-                    <pre id="code-html" class="text-slate-300 text-xs font-mono overflow-x-auto whitespace-pre-wrap flex-1 custom-scrollbar"></pre>
+            <!-- Main Workspace: Tinggi Lega -->
+            <div id="eval-workspace" class="flex-1 min-h-0 flex flex-col md:flex-row bg-slate-950 overflow-hidden relative">
+                
+                <!-- Panel Kode -->
+                <div id="eval-panel-code" class="flex-1 flex flex-col md:flex-row gap-2 p-3 overflow-y-auto custom-scrollbar bg-slate-950 border-r border-slate-800 transition-all duration-200">
+                    <div class="flex-1 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-inner min-h-[160px]">
+                        <span class="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800 text-orange-400 text-xs font-mono font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                            <span>HTML5 Markup</span>
+                        </span>
+                        <pre id="code-html" class="p-3 text-slate-300 text-xs font-mono overflow-auto whitespace-pre-wrap flex-1 custom-scrollbar leading-relaxed"></pre>
+                    </div>
+                    <div class="flex-1 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-inner min-h-[160px]">
+                        <span class="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800 text-blue-400 text-xs font-mono font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span>CSS3 Styling</span>
+                        </span>
+                        <pre id="code-css" class="p-3 text-slate-300 text-xs font-mono overflow-auto whitespace-pre-wrap flex-1 custom-scrollbar leading-relaxed"></pre>
+                    </div>
+                    <div class="flex-1 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-inner min-h-[160px]">
+                        <span class="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800 text-yellow-400 text-xs font-mono font-bold flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                            <span>JavaScript Logic</span>
+                        </span>
+                        <pre id="code-js" class="p-3 text-slate-300 text-xs font-mono overflow-auto whitespace-pre-wrap flex-1 custom-scrollbar leading-relaxed"></pre>
+                    </div>
                 </div>
-                <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col">
-                    <span class="text-blue-400 text-xs font-mono font-bold mb-2 pb-2 border-b border-slate-800">CSS3</span>
-                    <pre id="code-css" class="text-slate-300 text-xs font-mono overflow-x-auto whitespace-pre-wrap flex-1 custom-scrollbar"></pre>
-                </div>
-                <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 flex flex-col">
-                    <span class="text-yellow-400 text-xs font-mono font-bold mb-2 pb-2 border-b border-slate-800">JavaScript</span>
-                    <pre id="code-js" class="text-slate-300 text-xs font-mono overflow-x-auto whitespace-pre-wrap flex-1 custom-scrollbar"></pre>
-                </div>
-            </div>
 
-            <!-- Tab View 2: Live Preview Frame -->
-            <div id="eval-view-preview" class="hidden flex-1 bg-slate-100 p-4 min-h-[350px]">
-                <iframe id="eval-preview-frame" class="w-full h-full bg-white rounded-2xl border-2 border-slate-300 shadow-inner" sandbox="allow-scripts"></iframe>
+                <!-- Panel Live Output -->
+                <div id="eval-panel-preview" class="flex-1 flex flex-col bg-slate-200 transition-all duration-200 overflow-hidden relative">
+                    <div class="px-4 py-2 bg-slate-100 border-b border-slate-300 text-xs font-bold text-slate-700 flex justify-between items-center shrink-0">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>Tampilan Hasil Langsung (Live Output)</span>
+                        </span>
+                        <span class="text-[11px] text-slate-500 font-mono">Real-time Sandbox</span>
+                    </div>
+                    <div class="flex-1 bg-slate-300 p-2 sm:p-3 overflow-auto flex items-center justify-center">
+                        <iframe id="eval-preview-frame" class="w-full h-full bg-white rounded-2xl border border-slate-300 shadow-xl transition-all duration-200" sandbox="allow-scripts allow-modals"></iframe>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Form Nilai -->
-            <form id="form-eval" method="POST" class="p-5 border-t border-slate-200 bg-slate-50 flex flex-col lg:flex-row items-center justify-between gap-4">
+            <form id="form-eval" method="POST" class="p-4 sm:px-6 sm:py-3.5 border-t border-slate-200 bg-slate-50 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 shrink-0">
                 @csrf
-                <div class="flex flex-wrap items-center gap-4 w-full lg:w-auto flex-1">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4 flex-1">
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Skor (0-100)</label>
-                        <input type="number" id="eval-score" name="score" min="0" max="100" class="w-24 px-3 py-2 border border-slate-300 rounded-xl text-base font-extrabold text-center focus:ring-2 focus:ring-emerald-500 bg-white" required>
+                        <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Skor (0-100)</label>
+                        <input type="number" id="eval-score" name="score" min="0" max="100" class="w-20 sm:w-24 px-3 py-2 border border-slate-300 rounded-xl text-base font-extrabold text-center focus:ring-2 focus:ring-emerald-500 bg-white" required>
                     </div>
 
                     <!-- Preset Skor -->
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih Cepat</label>
-                        <div class="flex gap-1.5">
-                            <button type="button" onclick="setPresetScore(100)" class="px-2.5 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-bold hover:bg-emerald-200 transition">100</button>
-                            <button type="button" onclick="setPresetScore(90)" class="px-2.5 py-1.5 rounded-lg bg-blue-100 text-blue-800 text-xs font-bold hover:bg-blue-200 transition">90</button>
-                            <button type="button" onclick="setPresetScore(80)" class="px-2.5 py-1.5 rounded-lg bg-indigo-100 text-indigo-800 text-xs font-bold hover:bg-indigo-200 transition">80</button>
-                            <button type="button" onclick="setPresetScore(70)" class="px-2.5 py-1.5 rounded-lg bg-amber-100 text-amber-800 text-xs font-bold hover:bg-amber-200 transition">70</button>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Pilih Cepat</label>
+                        <div class="flex flex-wrap items-center gap-1">
+                            <button type="button" onclick="setPresetScore(100)" class="px-2.5 py-1.5 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-bold hover:bg-emerald-200 transition">100 Sempurna</button>
+                            <button type="button" onclick="setPresetScore(90)" class="px-2.5 py-1.5 rounded-lg bg-blue-100 text-blue-800 text-xs font-bold hover:bg-blue-200 transition">90 Hebat</button>
+                            <button type="button" onclick="setPresetScore(80)" class="px-2.5 py-1.5 rounded-lg bg-indigo-100 text-indigo-800 text-xs font-bold hover:bg-indigo-200 transition">80 Baik</button>
+                            <button type="button" onclick="setPresetScore(70)" class="px-2.5 py-1.5 rounded-lg bg-amber-100 text-amber-800 text-xs font-bold hover:bg-amber-200 transition">70 Cukup</button>
                         </div>
                     </div>
 
-                    <div class="flex-1 min-w-[200px]">
-                        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Catatan Evaluasi / Masukan</label>
+                    <div class="flex-1 min-w-[240px]">
+                        <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">Catatan Evaluasi / Masukan Guru</label>
                         <input type="text" id="eval-feedback" name="feedback" placeholder="Misal: Struktur HTML rapi, perbaiki responsive..." class="w-full px-4 py-2 border border-slate-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-emerald-500 bg-white">
                     </div>
                 </div>
 
-                <div class="flex gap-2.5 shrink-0 w-full lg:w-auto justify-end">
+                <div class="flex items-center gap-2.5 shrink-0 justify-end">
                     <button type="button" onclick="tutupModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100 transition">
                         Batal
                     </button>
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition">
-                        Simpan Nilai Siswa
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-6 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5">
+                        <span>💾</span> <span>Simpan Nilai Siswa</span>
                     </button>
                 </div>
             </form>
@@ -253,33 +286,47 @@
             document.getElementById('eval-score').value = val;
         }
 
-        function switchEvalTab(mode) {
-            const btnCode = document.getElementById('tab-btn-code');
-            const btnPreview = document.getElementById('tab-btn-preview');
-            const viewCode = document.getElementById('eval-view-code');
-            const viewPreview = document.getElementById('eval-view-preview');
-            const iframe = document.getElementById('eval-preview-frame');
+        function switchEvalMode(mode) {
+            const btnSplit = document.getElementById('tab-btn-guru-split');
+            const btnPreview = document.getElementById('tab-btn-guru-preview');
+            const btnCode = document.getElementById('tab-btn-guru-code');
+            const panelCode = document.getElementById('eval-panel-code');
+            const panelPreview = document.getElementById('eval-panel-preview');
 
-            if (mode === 'code') {
-                viewCode.classList.remove('hidden');
-                viewPreview.classList.add('hidden');
-                btnCode.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-                btnCode.classList.remove('text-slate-600');
-                btnPreview.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                btnPreview.classList.add('text-slate-600');
-            } else {
-                viewCode.classList.add('hidden');
-                viewPreview.classList.remove('hidden');
+            [btnSplit, btnPreview, btnCode].forEach(b => {
+                b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                b.classList.add('text-slate-600');
+            });
+
+            if (mode === 'split') {
+                btnSplit.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnSplit.classList.remove('text-slate-600');
+
+                panelCode.classList.remove('hidden');
+                panelCode.classList.add('flex', 'md:w-1/2');
+
+                panelPreview.classList.remove('hidden');
+                panelPreview.classList.add('flex', 'md:w-1/2');
+
+            } else if (mode === 'preview') {
                 btnPreview.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
                 btnPreview.classList.remove('text-slate-600');
-                btnCode.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                btnCode.classList.add('text-slate-600');
 
-                // Render ke Iframe
-                const doc = iframe.contentDocument || iframe.contentWindow.document;
-                doc.open();
-                doc.write(`<!DOCTYPE html><html><head><style>${currentCss}</style></head><body>${currentHtml}<script>${currentJs}<\/script></body></html>`);
-                doc.close();
+                panelCode.classList.add('hidden');
+                panelCode.classList.remove('flex');
+
+                panelPreview.classList.remove('hidden');
+                panelPreview.classList.add('flex', 'w-full');
+
+            } else if (mode === 'code') {
+                btnCode.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+                btnCode.classList.remove('text-slate-600');
+
+                panelPreview.classList.add('hidden');
+                panelPreview.classList.remove('flex');
+
+                panelCode.classList.remove('hidden');
+                panelCode.classList.add('flex', 'w-full');
             }
         }
 
@@ -298,11 +345,20 @@
             document.getElementById('code-css').textContent = currentCss || '/* Kosong */';
             document.getElementById('code-js').textContent = currentJs || '/* Kosong */';
 
+            // Render ke Iframe
+            const frameDoc = `<!DOCTYPE html><html><head><style>${currentCss}</style></head><body>${currentHtml}<script>${currentJs}<\/script></body></html>`;
+            document.getElementById('eval-preview-frame').srcdoc = frameDoc;
+
             document.getElementById('eval-score').value = score || 0;
             document.getElementById('eval-feedback').value = feedback || '';
             document.getElementById('form-eval').action = '/guru/submissions/' + id + '/grade';
 
-            switchEvalTab('code');
+            if (window.innerWidth < 768) {
+                switchEvalMode('preview');
+            } else {
+                switchEvalMode('split');
+            }
+
             document.getElementById('modal-eval').classList.remove('hidden');
         }
 

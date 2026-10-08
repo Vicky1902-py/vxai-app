@@ -334,9 +334,17 @@
 <script>
     function salinTautan() {
         navigator.clipboard.writeText(window.location.href).then(function() {
-            alert('Tautan artikel berhasil disalin ke papan klip (clipboard)!');
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-6 right-6 z-50 bg-slate-900 border border-emerald-500/80 text-emerald-300 px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 transform transition-all duration-300';
+            toast.innerHTML = '<span>✅</span> <span>Tautan artikel berhasil disalin ke papan klip!</span>';
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
         }).catch(function() {
-            prompt('Salin tautan ini secara manual:', window.location.href);
+            // Fallback jika browser membatasi clipboard otomatis
         });
     }
 </script>
