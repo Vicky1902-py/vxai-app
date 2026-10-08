@@ -22,11 +22,13 @@ yarn-error.log
 /.vscode
 /.zed
 
-# cPanel & temporary files
+# Database dumps, archives & server configs
+*.sql
+*.sqlite
 *.zip
-vxai.online.zip
-/.well-known
-/cgi-bin
-/cache
+*.tar.gz
+*.rar
 php.ini
 .user.ini
+cgi-bin/
+cache/
