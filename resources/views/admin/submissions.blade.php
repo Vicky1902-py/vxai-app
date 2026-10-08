@@ -10,9 +10,16 @@
             <h3 class="text-base font-extrabold text-slate-900">Daftar Submisi Koding Siswa & Pengunjung</h3>
             <p class="text-xs text-slate-500 mt-0.5">Tinjau kode dari siswa dan pengunjung publik, uji live secara berdampingan, dan berikan evaluasi nilai serta catatan</p>
         </div>
-        <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200">
-            Total: {{ count($submissions) }} Tugas
-        </span>
+        <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-600 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200">
+                Total: {{ count($submissions) }} Tugas
+            </span>
+            @if(count($submissions) > 0)
+                <button type="button" onclick="bukaModalHapusSemua()" class="text-xs font-bold text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 px-3 py-1.5 rounded-xl border border-rose-200 hover:border-rose-600 transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Hapus semua submisi & reset level siswa">
+                    <span>🗑️</span> <span>Reset Semua</span>
+                </button>
+            @endif
+        </div>
     </div>
 
     <div class="overflow-x-auto">
@@ -94,19 +101,28 @@
 
                     <!-- Aksi -->
                     <td class="px-6 py-4 whitespace-nowrap text-right font-medium">
-                        <button onclick="lihatDanUjiKode(this)" 
-                                data-id="{{ $sub->id }}"
-                                data-name="{{ $sub->student_name }}"
-                                data-challenge="{{ $sub->challenge_title ?? 'Latihan Koding' }}"
-                                data-score="{{ $sub->score ?? 0 }}"
-                                data-feedback="{{ $sub->feedback ?? '' }}"
-                                data-time="{{ \Carbon\Carbon::parse($sub->created_at)->translatedFormat('d M Y, H:i') }}"
-                                data-html="{{ base64_encode($sub->html_code ?? '') }}"
-                                data-css="{{ base64_encode($sub->css_code ?? '') }}"
-                                data-js="{{ base64_encode($sub->js_code ?? '') }}"
-                                class="inline-flex items-center gap-1.5 text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold transition duration-150 shadow-sm">
-                            <span>🔍</span> <span>Periksa & Uji Live (Besar)</span>
-                        </button>
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="lihatDanUjiKode(this)" 
+                                    data-id="{{ $sub->id }}"
+                                    data-name="{{ $sub->student_name }}"
+                                    data-challenge="{{ $sub->challenge_title ?? 'Latihan Koding' }}"
+                                    data-score="{{ $sub->score ?? 0 }}"
+                                    data-feedback="{{ $sub->feedback ?? '' }}"
+                                    data-time="{{ \Carbon\Carbon::parse($sub->created_at)->translatedFormat('d M Y, H:i') }}"
+                                    data-html="{{ base64_encode($sub->html_code ?? '') }}"
+                                    data-css="{{ base64_encode($sub->css_code ?? '') }}"
+                                    data-js="{{ base64_encode($sub->js_code ?? '') }}"
+                                    class="inline-flex items-center gap-1.5 text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-3.5 py-2 rounded-xl text-xs font-bold transition duration-150 shadow-sm active:scale-95">
+                                <span>🔍</span> <span>Periksa & Uji</span>
+                            </button>
+                            
+                            <button type="button" 
+                                    onclick="bukaModalHapusSubmisi('{{ $sub->id }}', '{{ addslashes($sub->student_name) }}', '{{ addslashes($sub->challenge_title ?? 'Latihan Koding') }}', '{{ route('admin.submissions.delete', $sub->id) }}')" 
+                                    class="inline-flex items-center gap-1 text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 px-3 py-2 rounded-xl text-xs font-bold transition duration-150 border border-rose-200 hover:border-rose-600 shadow-sm active:scale-95"
+                                    title="Hapus hasil koding & reset level pada akun siswa">
+                                <span>🗑️</span> <span>Hapus</span>
+                            </button>
+                        </div>
                     </td>
                 </tr>
                 @empty
@@ -263,12 +279,15 @@
                     </div>
                 </div>
                 
-                <!-- Tombol Aksi Simpan & Batal -->
+                <!-- Tombol Aksi Simpan, Hapus & Batal -->
                 <div class="flex items-center gap-2.5 justify-end shrink-0">
-                    <button type="button" onclick="tutupModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold transition">
+                    <button type="button" onclick="hapusSubmisiDariModal()" class="bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 hover:border-rose-600 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95" title="Hapus tugas ini dan kurangi level siswa">
+                        <span>🗑️</span> <span>Hapus Tugas</span>
+                    </button>
+                    <button type="button" onclick="tutupModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-2.5 rounded-xl text-xs font-bold transition active:scale-95">
                         Tutup
                     </button>
-                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-xs font-black shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5">
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 sm:px-6 py-2.5 rounded-xl text-xs font-black shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5 active:scale-95">
                         <span>💾</span> <span>Simpan Nilai & Feedback</span>
                     </button>
                 </div>
@@ -279,11 +298,95 @@
     </div>
 </div>
 
+<!-- ======================================================== -->
+<!-- MODAL KONFIRMASI HAPUS SUBMISI TUNGGAL                   -->
+<!-- ======================================================== -->
+<div id="modal-konfirmasi-hapus" class="fixed inset-0 bg-slate-950/85 z-[150] hidden flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col border border-slate-200 overflow-hidden transform transition-all duration-300">
+        
+        <div class="p-6 text-center space-y-3">
+            <div class="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mx-auto border border-rose-200 shadow-sm animate-bounce">
+                🗑️
+            </div>
+            
+            <h3 class="font-extrabold text-slate-900 text-lg">Hapus Hasil Koding & Level Siswa?</h3>
+            
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Anda akan menghapus tugas <strong id="hapus-nama-latihan" class="text-slate-900">-</strong> milik siswa <strong id="hapus-nama-siswa" class="text-blue-600">-</strong>.
+            </p>
+
+            <div class="p-4 bg-rose-50 rounded-2xl border border-rose-200 text-left text-xs text-rose-900 space-y-2">
+                <span class="font-black text-rose-700 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                    <span>⚠️</span> <span>Dampak Pada Akun Siswa:</span>
+                </span>
+                <ul class="list-disc list-inside space-y-1 text-slate-700 text-[11px]">
+                    <li>Hasil koding akan <strong>dihapus permanen</strong> dari server.</li>
+                    <li>Poin XP siswa dikurangi <strong>(-25 XP)</strong> dan <strong>Level siswa otomatis dihitung ulang</strong>.</li>
+                    <li>Status level pada akun siswa (di Playground & Dashboard) <strong>otomatis terhapus / kembali belum dikerjakan</strong>.</li>
+                </ul>
+            </div>
+        </div>
+
+        <form id="form-hapus-submisi" method="POST" action="" class="p-4 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="tutupModalHapusSubmisi()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition active:scale-95">
+                Batal
+            </button>
+            <button type="submit" class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/30 transition flex items-center justify-center gap-1.5 active:scale-95">
+                <span>🗑️</span> <span>Ya, Hapus Sekarang</span>
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL KONFIRMASI RESET / HAPUS SEMUA SUBMISI             -->
+<!-- ======================================================== -->
+<div id="modal-konfirmasi-hapus-semua" class="fixed inset-0 bg-slate-950/85 z-[150] hidden flex items-center justify-center p-4 backdrop-blur-md">
+    <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col border border-slate-200 overflow-hidden transform transition-all duration-300">
+        
+        <div class="p-6 text-center space-y-3">
+            <div class="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mx-auto border border-rose-200 shadow-sm">
+                ⚠️
+            </div>
+            
+            <h3 class="font-extrabold text-slate-900 text-lg">Reset Seluruh Hasil Koding?</h3>
+            
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Tindakan ini akan <strong>menghapus seluruh hasil koding siswa dan tamu</strong> yang ada di database.
+            </p>
+
+            <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 text-left text-xs text-amber-900 space-y-1.5">
+                <span class="font-black text-amber-800 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                    <span>⚡</span> <span>Perhatian Penting:</span>
+                </span>
+                <p class="text-slate-700 text-[11px] leading-relaxed">
+                    Seluruh riwayat tugas akan dikosongkan. Seluruh level dan XP siswa yang terdampak akan <strong>di-reset ke kondisi awal (0 XP, Level 1)</strong>.
+                </p>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ route('admin.submissions.delete_all') }}" class="p-4 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
+            @csrf
+            <button type="button" onclick="tutupModalHapusSemua()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition active:scale-95">
+                Batal
+            </button>
+            <button type="submit" class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/30 transition flex items-center justify-center gap-1.5 active:scale-95">
+                <span>⚠️</span> <span>Ya, Reset Semua</span>
+            </button>
+        </form>
+
+    </div>
+</div>
+
 <script>
     let currentRawHtml = '';
     let currentRawCss = '';
     let currentRawJs = '';
     let currentLayoutMode = 'split'; // 'split', 'preview', 'code'
+    let activeSubmissionData = null;
 
     function lihatDanUjiKode(btn) {
         const id = btn.getAttribute('data-id');
@@ -292,6 +395,12 @@
         const score = btn.getAttribute('data-score');
         const feedback = btn.getAttribute('data-feedback');
         const time = btn.getAttribute('data-time') || '-';
+
+        activeSubmissionData = {
+            id: id,
+            name: name,
+            challenge: challenge
+        };
 
         currentRawHtml = decodeURIComponent(escape(atob(btn.getAttribute('data-html'))));
         currentRawCss = decodeURIComponent(escape(atob(btn.getAttribute('data-css'))));
@@ -427,6 +536,37 @@
 
     function tutupModal() {
         document.getElementById('modal-kode').classList.add('hidden');
+    }
+
+    function bukaModalHapusSubmisi(id, name, challenge, deleteUrl) {
+        document.getElementById('hapus-nama-siswa').textContent = name;
+        document.getElementById('hapus-nama-latihan').textContent = challenge;
+        document.getElementById('form-hapus-submisi').action = deleteUrl;
+        document.getElementById('modal-konfirmasi-hapus').classList.remove('hidden');
+    }
+
+    function tutupModalHapusSubmisi() {
+        document.getElementById('modal-konfirmasi-hapus').classList.add('hidden');
+    }
+
+    function bukaModalHapusSemua() {
+        document.getElementById('modal-konfirmasi-hapus-semua').classList.remove('hidden');
+    }
+
+    function tutupModalHapusSemua() {
+        document.getElementById('modal-konfirmasi-hapus-semua').classList.add('hidden');
+    }
+
+    function hapusSubmisiDariModal() {
+        if (!activeSubmissionData) return;
+        const sub = activeSubmissionData;
+        tutupModal();
+        bukaModalHapusSubmisi(
+            sub.id, 
+            sub.name, 
+            sub.challenge, 
+            '/admin/submissions/' + sub.id
+        );
     }
 </script>
 @endsection

@@ -662,6 +662,89 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Nilai dan umpan balik berhasil disimpan!');
     }
 
+    // Hapus Satu Hasil Koding & Sesuaikan XP serta Level Siswa
+    public function deleteSubmission($id)
+    {
+        if (!Schema::hasTable('coding_submissions')) {
+            return redirect()->back()->with('error', 'Tabel coding_submissions tidak ditemukan.');
+        }
+
+        $submission = DB::table('coding_submissions')->where('id', $id)->first();
+        if (!$submission) {
+            return redirect()->back()->with('error', 'Data submisi tidak ditemukan atau sudah dihapus.');
+        }
+
+        $studentName = $submission->guest_name ?? 'Pengguna';
+        $challengeTitle = $submission->challenge_title ?? 'Latihan Koding';
+        $xpAdjusted = false;
+        $newLevel = 1;
+        $newXp = 0;
+
+        // 1. Hapus entri dari tabel coding_submissions
+        DB::table('coding_submissions')->where('id', $id)->delete();
+
+        // 2. Jika submisi ini milik akun siswa yang terdaftar, sinkronkan ulang XP & Level siswa
+        if (!empty($submission->user_id) && Schema::hasTable('users')) {
+            $user = DB::table('users')->where('id', $submission->user_id)->first();
+            if ($user) {
+                $studentName = $user->name;
+
+                // Hitung jumlah submisi koding siswa yang masih tersisa
+                $remainingSubmissions = DB::table('coding_submissions')
+                    ->where('user_id', $user->id)
+                    ->count();
+
+                // Hitung ulang XP (25 XP per submission unik)
+                $newXp = $remainingSubmissions * 25;
+                $newLevel = max(1, (int) floor($newXp / 100) + 1);
+
+                DB::table('users')->where('id', $user->id)->update([
+                    'xp' => $newXp,
+                    'level' => $newLevel,
+                    'updated_at' => now(),
+                ]);
+
+                $xpAdjusted = true;
+            }
+        }
+
+        $message = "Hasil koding \"{$challengeTitle}\" milik {$studentName} berhasil dihapus.";
+        if ($xpAdjusted) {
+            $message .= " XP siswa kini disesuaikan menjadi {$newXp} XP (Level {$newLevel}), dan status level pada akun siswa otomatis terhapus / ter-reset.";
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    // Reset / Hapus Seluruh Hasil Koding & Kembalikan Level Siswa
+    public function deleteAllSubmissions()
+    {
+        if (!Schema::hasTable('coding_submissions')) {
+            return redirect()->back()->with('error', 'Tabel coding_submissions tidak ditemukan.');
+        }
+
+        // Ambil seluruh user_id siswa yang memiliki submisi
+        $userIds = DB::table('coding_submissions')
+            ->whereNotNull('user_id')
+            ->distinct()
+            ->pluck('user_id')
+            ->toArray();
+
+        // Bersihkan seluruh data dari tabel coding_submissions
+        DB::table('coding_submissions')->truncate();
+
+        // Reset level dan XP seluruh siswa yang terimbas ke kondisi awal (0 XP, Level 1)
+        if (!empty($userIds) && Schema::hasTable('users')) {
+            DB::table('users')->whereIn('id', $userIds)->update([
+                'xp' => 0,
+                'level' => 1,
+                'updated_at' => now(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Seluruh hasil koding berhasil dibersihkan! Status level dan XP pada akun seluruh siswa telah di-reset ke kondisi awal.');
+    }
+
     // ========================================================
     // MANAJEMEN ARTIKEL & BERITA (CRUD LENGKAP ADMIN)
     // ========================================================

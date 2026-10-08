@@ -75,4 +75,57 @@ class TeacherController extends Controller
 
         return redirect()->back()->with('success', 'Nilai tugas siswa berhasil disimpan!');
     }
+
+    public function deleteSubmission($id)
+    {
+        if (!Schema::hasTable('coding_submissions')) {
+            return redirect()->back()->with('error', 'Tabel coding_submissions tidak ditemukan.');
+        }
+
+        $submission = DB::table('coding_submissions')->where('id', $id)->first();
+        if (!$submission) {
+            return redirect()->back()->with('error', 'Data submisi tidak ditemukan atau sudah dihapus.');
+        }
+
+        $studentName = $submission->guest_name ?? 'Pengguna';
+        $challengeTitle = $submission->challenge_title ?? 'Latihan Koding';
+        $xpAdjusted = false;
+        $newLevel = 1;
+        $newXp = 0;
+
+        // 1. Hapus entri dari tabel coding_submissions
+        DB::table('coding_submissions')->where('id', $id)->delete();
+
+        // 2. Jika submisi ini milik akun siswa yang terdaftar, sinkronkan ulang XP & Level siswa
+        if (!empty($submission->user_id) && Schema::hasTable('users')) {
+            $user = DB::table('users')->where('id', $submission->user_id)->first();
+            if ($user) {
+                $studentName = $user->name;
+
+                // Hitung jumlah submisi koding siswa yang masih tersisa
+                $remainingSubmissions = DB::table('coding_submissions')
+                    ->where('user_id', $user->id)
+                    ->count();
+
+                // Hitung ulang XP (25 XP per submission unik)
+                $newXp = $remainingSubmissions * 25;
+                $newLevel = max(1, (int) floor($newXp / 100) + 1);
+
+                DB::table('users')->where('id', $user->id)->update([
+                    'xp' => $newXp,
+                    'level' => $newLevel,
+                    'updated_at' => now(),
+                ]);
+
+                $xpAdjusted = true;
+            }
+        }
+
+        $message = "Hasil koding \"{$challengeTitle}\" milik {$studentName} berhasil dihapus.";
+        if ($xpAdjusted) {
+            $message .= " XP siswa disesuaikan menjadi {$newXp} XP (Level {$newLevel}), dan status level pada akun siswa otomatis terhapus.";
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
 }

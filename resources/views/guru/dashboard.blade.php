@@ -133,17 +133,25 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button onclick="lihatKode(this)"
-                                            data-id="{{ $sub->id }}"
-                                            data-name="{{ $sub->student_name }}"
-                                            data-score="{{ $sub->score ?? 0 }}"
-                                            data-feedback="{{ $sub->feedback ?? '' }}"
-                                            data-html="{{ base64_encode($sub->html_code ?? '') }}"
-                                            data-css="{{ base64_encode($sub->css_code ?? '') }}"
-                                            data-js="{{ base64_encode($sub->js_code ?? '') }}"
-                                            class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition duration-150 shadow-md shadow-emerald-600/20 inline-flex items-center gap-1.5">
-                                        <span>🔍</span> <span>Periksa & Nilai</span>
-                                    </button>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button onclick="lihatKode(this)"
+                                                data-id="{{ $sub->id }}"
+                                                data-name="{{ $sub->student_name }}"
+                                                data-score="{{ $sub->score ?? 0 }}"
+                                                data-feedback="{{ $sub->feedback ?? '' }}"
+                                                data-html="{{ base64_encode($sub->html_code ?? '') }}"
+                                                data-css="{{ base64_encode($sub->css_code ?? '') }}"
+                                                data-js="{{ base64_encode($sub->js_code ?? '') }}"
+                                                class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition duration-150 shadow-md shadow-emerald-600/20 inline-flex items-center gap-1.5 active:scale-95">
+                                            <span>🔍</span> <span>Periksa & Nilai</span>
+                                        </button>
+                                        <button type="button" 
+                                                onclick="bukaModalHapusSubmisiGuru('{{ $sub->id }}', '{{ addslashes($sub->student_name) }}', '{{ route('guru.submissions.delete', $sub->id) }}')" 
+                                                class="text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-200 hover:border-rose-600 font-bold text-xs px-3 py-2 rounded-xl transition duration-150 inline-flex items-center gap-1 active:scale-95"
+                                                title="Hapus tugas siswa & sesuaikan level">
+                                            <span>🗑️</span> <span>Hapus</span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
@@ -277,10 +285,53 @@
         </div>
     </div>
 
+    <!-- Modal Konfirmasi Hapus Submisi Guru -->
+    <div id="modal-guru-konfirmasi-hapus" class="fixed inset-0 bg-slate-950/85 z-[150] hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col border border-slate-200 overflow-hidden">
+            <div class="p-6 text-center space-y-3">
+                <div class="w-16 h-16 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl mx-auto border border-rose-200 shadow-sm animate-bounce">
+                    🗑️
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-lg">Hapus Tugas Siswa Ini?</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Tugas koding milik siswa <strong id="guru-hapus-nama-siswa" class="text-emerald-700">-</strong> akan dihapus permanen.
+                </p>
+                <div class="p-3.5 bg-rose-50 rounded-2xl border border-rose-200 text-left text-xs text-rose-900 space-y-1.5">
+                    <span class="font-black text-rose-700 flex items-center gap-1 text-[11px] uppercase">
+                        <span>⚠️</span> <span>Pengaruh Level & XP:</span>
+                    </span>
+                    <p class="text-slate-700 text-[11px] leading-relaxed">
+                        Poin XP siswa dikurangi (-25 XP), level siswa dihitung ulang, dan status penyelesaian level tugas ini pada akun siswa otomatis terhapus / kembali terbuka.
+                    </p>
+                </div>
+            </div>
+            <form id="form-guru-hapus-submisi" method="POST" action="" class="p-4 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
+                @csrf
+                @method('DELETE')
+                <button type="button" onclick="tutupModalHapusSubmisiGuru()" class="flex-1 py-2.5 px-4 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition active:scale-95">
+                    Batal
+                </button>
+                <button type="submit" class="flex-1 py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-md shadow-rose-600/30 transition flex items-center justify-center gap-1.5 active:scale-95">
+                    <span>🗑️</span> <span>Ya, Hapus Tugas</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <script>
         let currentHtml = '';
         let currentCss = '';
         let currentJs = '';
+
+        function bukaModalHapusSubmisiGuru(id, name, deleteUrl) {
+            document.getElementById('guru-hapus-nama-siswa').textContent = name;
+            document.getElementById('form-guru-hapus-submisi').action = deleteUrl;
+            document.getElementById('modal-guru-konfirmasi-hapus').classList.remove('hidden');
+        }
+
+        function tutupModalHapusSubmisiGuru() {
+            document.getElementById('modal-guru-konfirmasi-hapus').classList.add('hidden');
+        }
 
         function setPresetScore(val) {
             document.getElementById('eval-score').value = val;

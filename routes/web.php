@@ -87,6 +87,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Monitoring Hasil Koding Siswa & Tamu
     Route::get('/submissions', [AdminController::class, 'submissions'])->name('admin.submissions');
     Route::post('/submissions/{id}/grade', [AdminController::class, 'gradeSubmission'])->name('admin.submissions.grade');
+    Route::delete('/submissions/{id}', [AdminController::class, 'deleteSubmission'])->name('admin.submissions.delete');
+    Route::post('/submissions/delete-all', [AdminController::class, 'deleteAllSubmissions'])->name('admin.submissions.delete_all');
 
     // Manajemen Berita & Artikel Teknologi (CRUD)
     Route::get('/articles', [AdminController::class, 'articles'])->name('admin.articles');
@@ -126,6 +128,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 Route::middleware(['auth', 'role:guru'])->prefix('guru')->group(function () {
     Route::get('/', [TeacherController::class, 'dashboard'])->name('guru.dashboard');
     Route::post('/submissions/{id}/grade', [TeacherController::class, 'grade'])->name('guru.submissions.grade');
+    Route::delete('/submissions/{id}', [TeacherController::class, 'deleteSubmission'])->name('guru.submissions.delete');
 });
 
 /*
