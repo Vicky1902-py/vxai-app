@@ -1346,9 +1346,25 @@
                         ${scoreBadge}
                     </div>
                     ${feedbackHtml}
+                    <div class="pt-2 flex items-center justify-end">
+                        <button onclick="loadHistorySubmissionToPlayground(${idx})" class="px-3 py-1.5 rounded-xl bg-blue-600/30 hover:bg-blue-600 text-blue-300 hover:text-white text-[11px] font-bold border border-blue-500/50 transition flex items-center gap-1.5">
+                            <span>⚡</span> <span>Muat Kode Ini ke Editor</span>
+                        </button>
+                    </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function loadHistorySubmissionToPlayground(idx) {
+            const sub = studentSubmissions[idx];
+            if (!sub) return;
+            if (sub.html_code !== undefined) htmlEditor.setValue(sub.html_code || '');
+            if (sub.css_code !== undefined) cssEditor.setValue(sub.css_code || '');
+            if (sub.js_code !== undefined) jsEditor.setValue(sub.js_code || '');
+            updatePreview();
+            closeMyGradesModal();
+            showToast(`Kode "${sub.challenge_title || 'Tugas'}" berhasil dimuat ke editor!`, 'success');
         }
 
         // ========================================================
@@ -1416,6 +1432,23 @@
         // ========================================================
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
+            if (params.get('load') === 'custom') {
+                const customHtml = sessionStorage.getItem('vxai_load_html');
+                const customCss = sessionStorage.getItem('vxai_load_css');
+                const customJs = sessionStorage.getItem('vxai_load_js');
+                if (customHtml !== null || customCss !== null || customJs !== null) {
+                    if (customHtml) htmlEditor.setValue(customHtml);
+                    if (customCss) cssEditor.setValue(customCss);
+                    if (customJs) jsEditor.setValue(customJs);
+                    updatePreview();
+                    sessionStorage.removeItem('vxai_load_html');
+                    sessionStorage.removeItem('vxai_load_css');
+                    sessionStorage.removeItem('vxai_load_js');
+                    showToast('Kode tugas berhasil dimuat ke editor!', 'success');
+                    return;
+                }
+            }
+
             const challengeParam = params.get('challenge');
             if (challengeParam && codingChallenges.some(c => c.id === challengeParam)) {
                 loadChallenge(challengeParam);

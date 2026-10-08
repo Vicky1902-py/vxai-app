@@ -292,63 +292,121 @@
     </main>
 
     <!-- ======================================================== -->
-    <!-- MODAL INSPEKSI KODE SISWA (HTML/CSS/JS + LIVE OUTPUT)    -->
+    <!-- MODAL EKSPANSIF: INSPEKSI KODE SISWA, LIVE PREVIEW & HASIL -->
     <!-- ======================================================== -->
-    <div id="modal-siswa-kode" class="fixed inset-0 bg-slate-950/85 z-[100] hidden flex items-center justify-center p-3 sm:p-5 backdrop-blur-md">
-        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col border border-slate-800 overflow-hidden">
+    <div id="modal-siswa-kode" class="fixed inset-0 bg-slate-950/85 z-[100] hidden flex items-center justify-center p-2 sm:p-4 backdrop-blur-md">
+        <div class="bg-slate-900 text-slate-100 rounded-3xl shadow-2xl w-full max-w-[97vw] h-[94vh] max-h-[94vh] flex flex-col overflow-hidden border border-slate-700/80">
             
             <!-- Modal Header -->
-            <div class="p-5 border-b border-slate-800 bg-slate-950 flex flex-wrap justify-between items-center gap-3">
-                <div>
-                    <h3 class="font-black text-sm sm:text-base text-white" id="modal-code-title">Tinjau Kode Tugas</h3>
-                    <p class="text-[11px] text-slate-400" id="modal-code-subtitle">Dikirim pada: -</p>
+            <div class="p-4 sm:px-6 sm:py-3.5 border-b border-slate-800 bg-slate-950 flex flex-wrap justify-between items-center gap-3 shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center text-lg font-bold shadow-md shadow-blue-500/20">
+                        🔬
+                    </span>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-black text-white text-base" id="modal-code-title">Tinjau Kode & Hasil Live Tugas</h3>
+                            <span id="modal-code-challenge-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-900/60 text-blue-300 border border-blue-700">
+                                -
+                            </span>
+                        </div>
+                        <span class="text-xs text-slate-400" id="modal-code-subtitle">Dikirim pada: -</span>
+                    </div>
                 </div>
 
-                <!-- Tab Switcher -->
-                <div class="flex items-center bg-slate-850 p-1 rounded-xl text-xs font-bold border border-slate-800">
-                    <button type="button" id="tab-btn-siswa-code" onclick="switchSiswaModalView('code')" class="px-3.5 py-1.5 rounded-lg bg-blue-600 text-white shadow transition">
-                        💻 Kode Sumber
-                    </button>
-                    <button type="button" id="tab-btn-siswa-preview" onclick="switchSiswaModalView('preview')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5">
-                        <span>⚡ Live Output</span>
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    </button>
-                </div>
+                <!-- Mode View Switcher: Split (Dampingan) vs Full Preview vs Full Code -->
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center bg-slate-850 p-1 rounded-xl text-xs font-bold border border-slate-800">
+                        <button type="button" id="tab-btn-siswa-split" onclick="switchSiswaModalView('split')" class="px-3.5 py-1.5 rounded-lg bg-blue-600 text-white shadow-sm transition flex items-center gap-1.5" title="Tampilkan Kode & Live Output berdampingan">
+                            <span>🌓</span> <span>Dampingan (Split)</span>
+                        </button>
+                        <button type="button" id="tab-btn-siswa-preview" onclick="switchSiswaModalView('preview')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5" title="Layar penuh live output hasil render">
+                            <span>⚡</span> <span>Preview Penuh</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        </button>
+                        <button type="button" id="tab-btn-siswa-code" onclick="switchSiswaModalView('code')" class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5" title="Layar penuh kode sintaksis">
+                            <span>💻</span> <span>Kode Penuh</span>
+                        </button>
+                    </div>
 
-                <button onclick="tutupModalSiswaKode()" class="text-slate-400 hover:text-white text-2xl font-bold leading-none p-1 transition">&times;</button>
+                    <!-- Simulator Ukuran Layar untuk Preview -->
+                    <div id="device-simulator-siswa" class="hidden sm:flex items-center bg-slate-850 p-1 rounded-xl text-[11px] font-bold border border-slate-800">
+                        <button type="button" onclick="setSiswaFrameDevice('desktop')" id="dev-siswa-desktop" class="px-2.5 py-1 rounded-lg bg-blue-600 text-white shadow-xs transition" title="Lebar Desktop">💻 100%</button>
+                        <button type="button" onclick="setSiswaFrameDevice('tablet')" id="dev-siswa-tablet" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition" title="Lebar Tablet (768px)">📱 Tablet</button>
+                        <button type="button" onclick="setSiswaFrameDevice('mobile')" id="dev-siswa-mobile" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition" title="Lebar Smartphone (375px)">📱 Mobile</button>
+                        <button type="button" onclick="reloadSiswaFrame()" class="px-2 py-1 text-slate-400 hover:text-blue-400 transition" title="Muat Ulang Frame">🔄</button>
+                        <button type="button" onclick="openSiswaPreviewInNewTab()" class="px-2 py-1 text-slate-400 hover:text-blue-400 transition" title="Buka di Tab Baru">↗</button>
+                    </div>
+
+                    <button onclick="tutupModalSiswaKode()" class="text-slate-400 hover:text-white font-bold text-3xl leading-none px-2 transition">&times;</button>
+                </div>
             </div>
 
-            <!-- Tab Content 1: 3 Kolom Kode -->
-            <div id="modal-content-code" class="flex-1 p-4 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-3 bg-slate-950 min-h-[350px]">
-                <div class="bg-slate-900 rounded-2xl p-3.5 border border-slate-800 flex flex-col">
-                    <span class="text-orange-400 text-xs font-mono font-bold mb-2 pb-2 border-b border-slate-800">HTML5</span>
-                    <pre id="siswa-code-html" class="text-slate-300 text-xs font-mono overflow-x-auto whitespace-pre-wrap flex-1 custom-scrollbar"></pre>
+            <!-- Main Workspace: Fleksibel & Menempati Seluruh Sisa Layar Modal (Tinggi Lega) -->
+            <div id="modal-siswa-workspace" class="flex-1 min-h-0 flex flex-col md:flex-row bg-slate-950 overflow-hidden relative">
+                
+                <!-- Panel Kiri: Editor Sintaksis (HTML, CSS, JS) -->
+                <div id="panel-siswa-code" class="flex-1 flex flex-col md:flex-row gap-2 p-3 overflow-y-auto custom-scrollbar bg-slate-950 border-r border-slate-800 transition-all duration-200">
+                    <div class="flex-1 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-inner min-h-[160px]">
+                        <div class="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800 flex justify-between items-center text-xs font-mono font-bold text-orange-400">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+                                <span>HTML5 Markup</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500">index.html</span>
+                        </div>
+                        <pre id="siswa-code-html" class="p-3 text-slate-300 text-xs font-mono overflow-auto whitespace-pre-wrap flex-1 custom-scrollbar leading-relaxed"></pre>
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-inner min-h-[160px]">
+                        <div class="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800 flex justify-between items-center text-xs font-mono font-bold text-blue-400">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <span>CSS3 Styling</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500">style.css</span>
+                        </div>
+                        <pre id="siswa-code-css" class="p-3 text-slate-300 text-xs font-mono overflow-auto whitespace-pre-wrap flex-1 custom-scrollbar leading-relaxed"></pre>
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-inner min-h-[160px]">
+                        <div class="px-3.5 py-2 bg-slate-950/80 border-b border-slate-800 flex justify-between items-center text-xs font-mono font-bold text-yellow-400">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                <span>JavaScript Logic</span>
+                            </span>
+                            <span class="text-[10px] text-slate-500">script.js</span>
+                        </div>
+                        <pre id="siswa-code-js" class="p-3 text-slate-300 text-xs font-mono overflow-auto whitespace-pre-wrap flex-1 custom-scrollbar leading-relaxed"></pre>
+                    </div>
                 </div>
-                <div class="bg-slate-900 rounded-2xl p-3.5 border border-slate-800 flex flex-col">
-                    <span class="text-blue-400 text-xs font-mono font-bold mb-2 pb-2 border-b border-slate-800">CSS3</span>
-                    <pre id="siswa-code-css" class="text-slate-300 text-xs font-mono overflow-x-auto whitespace-pre-wrap flex-1 custom-scrollbar"></pre>
+
+                <!-- Panel Kanan: Live Preview Frame -->
+                <div id="panel-siswa-preview" class="flex-1 flex flex-col bg-slate-900 transition-all duration-200 overflow-hidden relative">
+                    <div class="px-4 py-2 bg-slate-950 border-b border-slate-800 text-xs font-bold text-slate-300 flex justify-between items-center shrink-0">
+                        <span class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="text-white">Hasil Tampilan Langsung (Live Rendered)</span>
+                        </span>
+                        <span class="text-[11px] text-slate-400 font-mono" id="preview-siswa-dimension-label">100% Layar Penuh</span>
+                    </div>
+                    <div class="flex-1 bg-slate-950 p-2 sm:p-3 overflow-auto flex items-center justify-center">
+                        <iframe id="siswa-preview-frame" class="w-full h-full bg-white rounded-2xl border border-slate-800 shadow-2xl transition-all duration-200" sandbox="allow-scripts allow-modals"></iframe>
+                    </div>
                 </div>
-                <div class="bg-slate-900 rounded-2xl p-3.5 border border-slate-800 flex flex-col">
-                    <span class="text-yellow-400 text-xs font-mono font-bold mb-2 pb-2 border-b border-slate-800">JavaScript</span>
-                    <pre id="siswa-code-js" class="text-slate-300 text-xs font-mono overflow-x-auto whitespace-pre-wrap flex-1 custom-scrollbar"></pre>
-                </div>
+
             </div>
 
-            <!-- Tab Content 2: Live Preview Frame -->
-            <div id="modal-content-preview" class="hidden flex-1 bg-white p-2 min-h-[350px]">
-                <iframe id="siswa-preview-frame" class="w-full h-full border-0 rounded-xl" sandbox="allow-scripts"></iframe>
-            </div>
-
-            <!-- Modal Footer: Nilai & Feedback Recap -->
-            <div class="p-4 border-t border-slate-800 bg-slate-950 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <!-- Modal Footer: Nilai, Feedback Guru & Tombol Aksi -->
+            <div class="p-4 sm:px-6 sm:py-3.5 border-t border-slate-800 bg-slate-950 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 shrink-0">
                 <div id="modal-code-grade-info" class="text-xs">
                     <!-- Dinamis -->
                 </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <a href="{{ route('public.playground') }}" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition">
-                        ⚡ Lanjut Edit di Playground
-                    </a>
-                    <button onclick="tutupModalSiswaKode()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
+                <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+                    <button type="button" onclick="muatKodeKePlayground()" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-md shadow-blue-600/30 transition flex items-center gap-1.5">
+                        <span>⚡</span> <span>Buka & Edit di Playground</span>
+                    </button>
+                    <button onclick="tutupModalSiswaKode()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
                         Tutup
                     </button>
                 </div>
@@ -362,6 +420,7 @@
         let modalRawHtml = '';
         let modalRawCss = '';
         let modalRawJs = '';
+        let currentSiswaLayoutMode = 'split';
 
         function bukaModalLihatKode(btn) {
             const title = btn.getAttribute('data-title');
@@ -374,61 +433,143 @@
             modalRawJs = decodeURIComponent(escape(atob(btn.getAttribute('data-js'))));
 
             document.getElementById('modal-code-title').textContent = title;
+            document.getElementById('modal-code-challenge-badge').textContent = title;
             document.getElementById('modal-code-subtitle').textContent = 'Dikirim pada: ' + time;
 
             document.getElementById('siswa-code-html').textContent = modalRawHtml || '<!-- Kosong -->';
             document.getElementById('siswa-code-css').textContent = modalRawCss || '/* Kosong */';
             document.getElementById('siswa-code-js').textContent = modalRawJs || '/* Kosong */';
 
-            // Preview iframe
-            const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${modalRawCss}</style></head><body>${modalRawHtml}<script>${modalRawJs}<\/script></body></html>`;
-            document.getElementById('siswa-preview-frame').srcdoc = doc;
+            renderSiswaPreviewFrame();
 
             // Info nilai & feedback di footer
             let gradeHtml = '';
             if (score > 0) {
-                gradeHtml = `<span class="text-emerald-400 font-black">🎯 Nilai: ${score}/100</span>`;
+                gradeHtml = `<span class="text-emerald-400 font-black text-sm">🎯 Nilai: ${score}/100</span>`;
                 if (feedback) {
-                    gradeHtml += `<span class="text-slate-400 ml-2">| Catatan Guru: "${feedback}"</span>`;
+                    gradeHtml += `<span class="text-slate-300 ml-2 bg-slate-850 px-3 py-1 rounded-xl border border-slate-700">💬 Catatan Guru: "${feedback}"</span>`;
                 }
             } else {
-                gradeHtml = `<span class="text-amber-400 font-bold">⏳ Status: Belum dinilai guru</span>`;
+                gradeHtml = `<span class="text-amber-400 font-bold bg-amber-950/60 px-3 py-1 rounded-xl border border-amber-800">⏳ Status: Belum dinilai guru</span>`;
             }
             document.getElementById('modal-code-grade-info').innerHTML = gradeHtml;
 
-            switchSiswaModalView('code');
+            // Default ke Split di desktop, atau Preview di layar sempit (< 768px)
+            if (window.innerWidth < 768) {
+                switchSiswaModalView('preview');
+            } else {
+                switchSiswaModalView('split');
+            }
+
             document.getElementById('modal-siswa-kode').classList.remove('hidden');
+        }
+
+        function renderSiswaPreviewFrame() {
+            const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>${modalRawCss}</style></head><body>${modalRawHtml}<script>${modalRawJs}<\/script></body></html>`;
+            document.getElementById('siswa-preview-frame').srcdoc = doc;
+        }
+
+        function reloadSiswaFrame() {
+            renderSiswaPreviewFrame();
+        }
+
+        function openSiswaPreviewInNewTab() {
+            const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Hasil Koding Siswa</title><style>${modalRawCss}</style></head><body>${modalRawHtml}<script>${modalRawJs}<\/script></body></html>`;
+            const blob = new Blob([doc], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+
+        function switchSiswaModalView(mode) {
+            currentSiswaLayoutMode = mode;
+            const panelCode = document.getElementById('panel-siswa-code');
+            const panelPreview = document.getElementById('panel-siswa-preview');
+            const btnSplit = document.getElementById('tab-btn-siswa-split');
+            const btnPreview = document.getElementById('tab-btn-siswa-preview');
+            const btnCode = document.getElementById('tab-btn-siswa-code');
+
+            [btnSplit, btnPreview, btnCode].forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+                b.classList.add('text-slate-400');
+            });
+
+            if (mode === 'split') {
+                btnSplit.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+                btnSplit.classList.remove('text-slate-400');
+
+                panelCode.classList.remove('hidden');
+                panelCode.classList.add('flex', 'md:w-1/2');
+                panelCode.classList.remove('md:w-full');
+
+                panelPreview.classList.remove('hidden');
+                panelPreview.classList.add('flex', 'md:w-1/2');
+                panelPreview.classList.remove('md:w-full');
+
+            } else if (mode === 'preview') {
+                btnPreview.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+                btnPreview.classList.remove('text-slate-400');
+
+                panelCode.classList.add('hidden');
+                panelCode.classList.remove('flex');
+
+                panelPreview.classList.remove('hidden');
+                panelPreview.classList.add('flex', 'w-full');
+                panelPreview.classList.remove('md:w-1/2');
+
+            } else if (mode === 'code') {
+                btnCode.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+                btnCode.classList.remove('text-slate-400');
+
+                panelPreview.classList.add('hidden');
+                panelPreview.classList.remove('flex');
+
+                panelCode.classList.remove('hidden');
+                panelCode.classList.add('flex', 'w-full');
+                panelCode.classList.remove('md:w-1/2');
+            }
+        }
+
+        function setSiswaFrameDevice(device) {
+            const iframe = document.getElementById('siswa-preview-frame');
+            const dimLabel = document.getElementById('preview-siswa-dimension-label');
+            const btnDesk = document.getElementById('dev-siswa-desktop');
+            const btnTab = document.getElementById('dev-siswa-tablet');
+            const btnMob = document.getElementById('dev-siswa-mobile');
+
+            [btnDesk, btnTab, btnMob].forEach(b => {
+                b.classList.remove('bg-blue-600', 'text-white', 'shadow-xs');
+                b.classList.add('text-slate-400');
+            });
+
+            if (device === 'tablet') {
+                btnTab.classList.add('bg-blue-600', 'text-white', 'shadow-xs');
+                btnTab.classList.remove('text-slate-400');
+                iframe.style.width = '768px';
+                iframe.style.maxWidth = '100%';
+                dimLabel.textContent = 'Mode Tablet (768px)';
+            } else if (device === 'mobile') {
+                btnMob.classList.add('bg-blue-600', 'text-white', 'shadow-xs');
+                btnMob.classList.remove('text-slate-400');
+                iframe.style.width = '375px';
+                iframe.style.maxWidth = '100%';
+                dimLabel.textContent = 'Mode Smartphone (375px)';
+            } else {
+                btnDesk.classList.add('bg-blue-600', 'text-white', 'shadow-xs');
+                btnDesk.classList.remove('text-slate-400');
+                iframe.style.width = '100%';
+                dimLabel.textContent = '100% Layar Penuh';
+            }
+        }
+
+        function muatKodeKePlayground() {
+            sessionStorage.setItem('vxai_load_html', modalRawHtml);
+            sessionStorage.setItem('vxai_load_css', modalRawCss);
+            sessionStorage.setItem('vxai_load_js', modalRawJs);
+            window.location.href = '{{ route("public.playground") }}?load=custom';
         }
 
         function tutupModalSiswaKode() {
             document.getElementById('modal-siswa-kode').classList.add('hidden');
-        }
-
-        function switchSiswaModalView(mode) {
-            const viewCode = document.getElementById('modal-content-code');
-            const viewPreview = document.getElementById('modal-content-preview');
-            const btnCode = document.getElementById('tab-btn-siswa-code');
-            const btnPreview = document.getElementById('tab-btn-siswa-preview');
-
-            if (mode === 'preview') {
-                viewCode.classList.add('hidden');
-                viewPreview.classList.remove('hidden');
-
-                btnPreview.classList.add('bg-blue-600', 'text-white');
-                btnPreview.classList.remove('text-slate-400');
-
-                btnCode.classList.remove('bg-blue-600', 'text-white');
-                btnCode.classList.add('text-slate-400');
-            } else {
-                viewPreview.classList.add('hidden');
-                viewCode.classList.remove('hidden');
-
-                btnCode.classList.add('bg-blue-600', 'text-white');
-                btnCode.classList.remove('text-slate-400');
-
-                btnPreview.classList.remove('bg-blue-600', 'text-white');
-                btnPreview.classList.add('text-slate-400');
-            }
         }
     </script>
 </body>
