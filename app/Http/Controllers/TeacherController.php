@@ -27,17 +27,27 @@ class TeacherController extends Controller
             $q->where('score', '<=', 0)->orWhereNull('score');
         })->count() : 0;
 
-        // 10 Submisi Terbaru (Dengan proteksi kolom guest_name)
+        // 10 Submisi Terbaru (Dengan identitas siswa / tamu ber-IP)
         $recentSubmissions = collect();
         if (Schema::hasTable('coding_submissions')) {
-            $hasGuestName = Schema::hasColumn('coding_submissions', 'guest_name');
-            $nameSelect = $hasGuestName 
-                ? 'COALESCE(users.name, coding_submissions.guest_name, "Tamu") as student_name'
-                : 'COALESCE(users.name, "Siswa") as student_name';
-
             $recentSubmissions = DB::table('coding_submissions')
                 ->leftJoin('users', 'coding_submissions.user_id', '=', 'users.id')
-                ->select('coding_submissions.*', DB::raw($nameSelect))
+                ->select(
+                    'coding_submissions.*',
+                    DB::raw('CASE 
+                        WHEN coding_submissions.guest_name LIKE "%[Tamu%" THEN coding_submissions.guest_name
+                        WHEN users.name IS NOT NULL THEN users.name
+                        WHEN coding_submissions.guest_name IS NOT NULL AND coding_submissions.guest_name != "" THEN coding_submissions.guest_name
+                        ELSE "Pengunjung Tamu"
+                    END as student_name'),
+                    DB::raw('CASE
+                        WHEN coding_submissions.guest_name LIKE "%[Tamu%" THEN "Publik (Tamu)"
+                        WHEN users.email IS NOT NULL THEN users.email
+                        ELSE "Publik (Tamu)"
+                    END as student_email'),
+                    'users.xp as student_xp',
+                    'users.level as student_level'
+                )
                 ->orderBy('coding_submissions.created_at', 'desc')
                 ->limit(10)
                 ->get();

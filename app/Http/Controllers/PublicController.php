@@ -181,6 +181,19 @@ class PublicController extends Controller
     }
 
     // Submit Kode dari Playground (Mendukung Siswa Login & Pengunjung Tamu)
+    // Sanitasi karakter 4-byte (Emoji seperti 🌍) agar aman disimpan di database berbagai charset (latin1 / utf8)
+    private function sanitizeCodeForDatabase($text)
+    {
+        if (empty($text) || !is_string($text)) {
+            return '';
+        }
+        // Konversi karakter 4-byte UTF-8 ke entitas HTML numerik (contoh: 🌍 menjadi &#127757;)
+        // Di browser / iframe, entitas ini tetap dirender sempurna sebagai emoji asli tanpa memicu SQLSTATE 1366
+        return preg_replace_callback('/[\x{10000}-\x{10FFFF}]/u', function ($match) {
+            return '&#' . mb_ord($match[0], 'UTF-8') . ';';
+        }, $text);
+    }
+
     public function submitCode(Request $request)
     {
         try {
@@ -191,70 +204,36 @@ class PublicController extends Controller
                 'guest_name' => 'nullable|string|max:100',
             ]);
 
-            // Pastikan tabel coding_submissions ada secara mandiri tanpa memicu tabrakan artisan migrate
-            if (!Schema::hasTable('coding_submissions')) {
-                try {
-                    \Illuminate\Database\Schema\Blueprint;
-                    Schema::create('coding_submissions', function ($table) {
-                        $table->id();
-                        $table->unsignedBigInteger('user_id')->nullable()->index();
-                        $table->string('guest_name')->nullable();
-                        $table->longText('html_code')->nullable();
-                        $table->longText('css_code')->nullable();
-                        $table->longText('js_code')->nullable();
-                        $table->integer('score')->nullable()->default(0);
-                        $table->text('feedback')->nullable();
-                        $table->timestamps();
-                    });
-                } catch (\Throwable $migErr) {}
-            }
+            // Coba perbarui charset tabel coding_submissions ke utf8mb4 jika belum
+            try {
+                DB::statement("ALTER TABLE `coding_submissions` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+                DB::statement("ALTER TABLE `coding_submissions` MODIFY `user_id` BIGINT(20) UNSIGNED NULL");
+            } catch (\Throwable $alterErr) {}
 
-            $userId = Auth::id();
-            $guestName = $userId 
-                ? (Auth::user()->name ?? 'Siswa Pembelajar') 
-                : ($request->input('guest_name') ?: 'Pengunjung Publik');
+            $user = Auth::user();
+            $clientIp = $request->ip() ?: '127.0.0.1';
 
-            if (Schema::hasTable('coding_submissions')) {
-                $insertData = [
-                    'guest_name' => $guestName,
-                    'html_code' => $request->input('html_code', ''),
-                    'css_code' => $request->input('css_code', ''),
-                    'js_code' => $request->input('js_code', ''),
-                    'score' => 0,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-
-                if ($userId) {
-                    $insertData['user_id'] = $userId;
-                } else {
-                    $insertData['user_id'] = null;
-                }
-
-                try {
-                    DB::table('coding_submissions')->insert($insertData);
-                } catch (\Throwable $insertErr) {
-                    // Fallback jika database memiliki constraint NOT NULL pada user_id:
-                    // Gunakan user ID pertama yang ada di database agar karya siswa tetap aman tersimpan
-                    $fallbackId = DB::table('users')->value('id') ?? 1;
-                    $insertData['user_id'] = $fallbackId;
-                    $insertData['guest_name'] = $guestName . ($userId ? '' : ' (Tamu)');
-                    DB::table('coding_submissions')->insert($insertData);
-                }
-            }
+            // Bersihkan emoji dari string kode agar aman 100% dari error SQLSTATE 1366 Incorrect string value
+            $htmlCode = $this->sanitizeCodeForDatabase($request->input('html_code', ''));
+            $cssCode = $this->sanitizeCodeForDatabase($request->input('css_code', ''));
+            $jsCode = $this->sanitizeCodeForDatabase($request->input('js_code', ''));
 
             $xpEarned = 0;
             $newLevel = null;
             $newXp = null;
 
-            if ($userId && Schema::hasTable('users')) {
-                try {
-                    $user = Auth::user();
-                    $xpEarned = 25;
-                    $currentXp = (int) ($user->xp ?? 0);
-                    $newXp = $currentXp + $xpEarned;
-                    $newLevel = (int) floor($newXp / 100) + 1;
+            if ($user) {
+                // 1. KONDISI SISWA / PENGGUNA TERDAFTAR (LOGIN)
+                $studentName = $user->name;
+                $userId = $user->id;
 
+                // Tambahkan poin XP dan naikkan level siswa
+                $xpEarned = 25;
+                $currentXp = (int) ($user->xp ?? 0);
+                $newXp = $currentXp + $xpEarned;
+                $newLevel = (int) floor($newXp / 100) + 1;
+
+                try {
                     DB::table('users')->where('id', $userId)->update([
                         'xp' => $newXp,
                         'level' => $newLevel,
@@ -263,14 +242,59 @@ class PublicController extends Controller
                 } catch (\Throwable $xpErr) {
                     \Illuminate\Support\Facades\Log::warning('Gagal update XP siswa: ' . $xpErr->getMessage());
                 }
+
+                $insertData = [
+                    'user_id' => $userId,
+                    'guest_name' => $studentName,
+                    'html_code' => $htmlCode,
+                    'css_code' => $cssCode,
+                    'js_code' => $jsCode,
+                    'score' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                $responseMessage = "Luar biasa, {$user->name}! Kode Anda berhasil dikirim ke guru. (+{$xpEarned} XP diperoleh! Total: {$newXp} XP | Level: {$newLevel})";
+
+            } else {
+                // 2. KONDISI PENGUNJUNG PUBLIK / TAMU (TANPA LOGIN)
+                $inputGuest = trim((string) $request->input('guest_name', ''));
+                $guestDisplayName = !empty($inputGuest) 
+                    ? "{$inputGuest} [Tamu - IP: {$clientIp}]" 
+                    : "Tamu [IP: {$clientIp}]";
+
+                $userId = null;
+                $insertData = [
+                    'user_id' => null,
+                    'guest_name' => $guestDisplayName,
+                    'html_code' => $htmlCode,
+                    'css_code' => $cssCode,
+                    'js_code' => $jsCode,
+                    'score' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+
+                $responseMessage = "Hasil koding Anda berhasil dikirim ke panel guru sebagai {$guestDisplayName}!";
+            }
+
+            if (Schema::hasTable('coding_submissions')) {
+                try {
+                    DB::table('coding_submissions')->insert($insertData);
+                } catch (\Throwable $insertErr) {
+                    // Fallback jika database memiliki constraint NOT NULL pada user_id:
+                    if (is_null($insertData['user_id'])) {
+                        $fallbackId = DB::table('users')->value('id') ?? 1;
+                        $insertData['user_id'] = $fallbackId;
+                    }
+                    DB::table('coding_submissions')->insert($insertData);
+                }
             }
 
             return response()->json([
                 'success' => true,
-                'message' => $userId 
-                    ? "Luar biasa! Kode Anda berhasil dikirim ke guru. (+{$xpEarned} XP diperoleh!)" 
-                    : "Kode Anda berhasil diuji dan disimpan di sistem!",
-                'is_logged_in' => (bool) $userId,
+                'message' => $responseMessage,
+                'is_logged_in' => (bool) $user,
                 'xp_earned' => $xpEarned,
                 'total_xp' => $newXp,
                 'level' => $newLevel,

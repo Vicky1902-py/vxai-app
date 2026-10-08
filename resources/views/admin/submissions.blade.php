@@ -30,13 +30,34 @@
                 <tr class="hover:bg-slate-50/80 transition">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
-                                {{ substr($sub->student_name, 0, 1) }}
-                            </div>
-                            <div>
-                                <div class="font-bold text-slate-900 text-sm">{{ $sub->student_name }}</div>
-                                <div class="text-[11px] text-slate-400 font-mono">{{ $sub->student_email ?? 'Pengunjung Publik (Tamu)' }}</div>
-                            </div>
+                            @if(str_contains($sub->student_name, '[Tamu'))
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
+                                    👤
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                        <span>{{ $sub->student_name }}</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">Tamu</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 font-mono">{{ $sub->student_email ?? 'Pengunjung Publik' }}</div>
+                                </div>
+                            @else
+                                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-sm">
+                                    {{ strtoupper(substr($sub->student_name, 0, 1)) }}
+                                </div>
+                                <div>
+                                    <div class="font-bold text-slate-900 text-sm flex items-center gap-2">
+                                        <span>{{ $sub->student_name }}</span>
+                                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">Siswa (Lv. {{ $sub->student_level ?? 1 }})</span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 font-mono flex items-center gap-2">
+                                        <span>{{ $sub->student_email }}</span>
+                                        @if(isset($sub->student_xp))
+                                            <span class="text-blue-600 font-bold">• {{ number_format($sub->student_xp) }} XP</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-slate-500 font-medium">
