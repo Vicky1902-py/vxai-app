@@ -20,7 +20,10 @@ Route::get('/', [PublicController::class, 'index'])->name('home');
 
 // Live Coding Playground Publik
 Route::get('/playground', [PublicController::class, 'playground'])->name('public.playground');
-Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name('public.playground.submit');
+Route::post('/playground/submit', [PublicController::class, 'submitCode'])->middleware('throttle:10,1')->name('public.playground.submit');
+
+// Papan Peringkat Siswa Berbasis XP & Level (Gamifikasi)
+Route::get('/leaderboard', [PublicController::class, 'leaderboard'])->name('public.leaderboard');
 
 // Panduan & Pembelajaran Koding Interaktif
 Route::get('/belajar', [PublicController::class, 'tutorials'])->name('public.learning');
@@ -50,9 +53,6 @@ Route::get('/ads.txt', [PublicController::class, 'adsTxt'])->name('ads.txt');
 Route::get('/sitemap.xml', [PublicController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [PublicController::class, 'robotsTxt'])->name('robots.txt');
 Route::get('/google{code}.html', [PublicController::class, 'googleVerificationHtml'])->where('code', '[a-zA-Z0-9_-]+')->name('google.verify.html');
-
-// Jalankan Migrasi Database Otomatis jika diperlukan
-Route::get('/migrate-db', [AdminController::class, 'runMigration'])->name('migrate.db');
 
 /*
 |--------------------------------------------------------------------------
@@ -112,6 +112,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     // Global Settings & Google AdSense Configuration
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+
+    // Jalankan Migrasi Database Khusus Super Admin
+    Route::get('/migrate-db', [AdminController::class, 'runMigration'])->name('admin.migrate.db');
 });
 
 /*
@@ -134,5 +137,5 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->group(function () {
     Route::get('/playground', function () {
         return redirect()->route('public.playground');
     })->name('siswa.playground');
-    Route::post('/playground/submit', [PublicController::class, 'submitCode'])->name('siswa.playground.submit');
+    Route::post('/playground/submit', [PublicController::class, 'submitCode'])->middleware('throttle:10,1')->name('siswa.playground.submit');
 });

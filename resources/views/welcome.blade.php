@@ -163,6 +163,11 @@
                         <span class="text-blue-600">⚡</span>
                         <span>Live Playground</span>
                     </a>
+
+                    <a href="{{ route('public.leaderboard') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
+                        <span>🏆</span>
+                        <span>Peringkat</span>
+                    </a>
                     
                     <a href="{{ route('public.news') }}" class="hover:text-blue-600 transition flex items-center gap-1.5">
                         <span>📰</span>
@@ -217,6 +222,9 @@
             </a>
             <a href="{{ route('public.playground') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 ⚡ Live Playground Koding
+            </a>
+            <a href="{{ route('public.leaderboard') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                🏆 Papan Peringkat Siswa
             </a>
             <a href="{{ route('public.news') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50">
                 📰 Berita & Tips Teknologi
@@ -579,13 +587,22 @@
                                 <span class="text-emerald-400 font-bold">✓</span>
                                 <span>Sertifikat Digital Resmi Kelulusan 10 Level Terverifikasi</span>
                             </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-amber-400 font-bold">✓</span>
+                                <span>Papan Peringkat Siswa (Leaderboard) & Gamifikasi Skor XP</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="pt-8 mt-6 border-t border-slate-800 flex items-center justify-between flex-wrap gap-3 relative z-10">
-                        <a href="{{ route('public.playground') }}" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
-                            <span>⚡ Buka Live Playground</span> ➔
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <a href="{{ route('public.playground') }}" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
+                                <span>⚡ Live Playground</span> ➔
+                            </a>
+                            <a href="{{ route('public.leaderboard') }}" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs border border-slate-700 transition flex items-center gap-1">
+                                <span>🏆 Peringkat</span>
+                            </a>
+                        </div>
                         <a href="{{ route('public.learning') }}" class="text-xs font-bold text-sky-300 hover:text-white transition">
                             Lihat Kurikulum Web
                         </a>

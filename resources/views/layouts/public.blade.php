@@ -161,6 +161,11 @@
                         <span class="text-blue-600">⚡</span>
                         <span>Live Playground</span>
                     </a>
+
+                    <a href="{{ route('public.leaderboard') }}" class="{{ request()->is('leaderboard*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition flex items-center gap-1.5">
+                        <span>🏆</span>
+                        <span>Peringkat</span>
+                    </a>
                     
                     <a href="{{ route('public.news') }}" class="{{ request()->is('berita*') ? 'text-blue-600 font-bold' : 'hover:text-blue-600' }} transition flex items-center gap-1.5">
                         <span>📰</span>
@@ -215,6 +220,9 @@
             </a>
             <a href="{{ route('public.playground') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('playground*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 ⚡ Live Playground Koding
+            </a>
+            <a href="{{ route('public.leaderboard') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('leaderboard*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
+                🏆 Papan Peringkat Siswa
             </a>
             <a href="{{ route('public.news') }}" class="block px-3 py-2 rounded-xl text-sm font-semibold {{ request()->is('berita*') ? 'bg-blue-50 text-blue-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 📰 Berita & Tips Teknologi

@@ -431,4 +431,26 @@ class PublicController extends Controller
         // Fallback jika pemrosesan gagal: alihkan ke gambar thumbnail asli
         return redirect($imageUrl);
     }
+
+    // Halaman Papan Peringkat (Leaderboard) Siswa Berbasis XP & Level (Gamifikasi)
+    public function leaderboard()
+    {
+        $settings = $this->getSettings();
+        
+        $topStudents = collect();
+        if (Schema::hasTable('users')) {
+            $topStudents = DB::table('users')
+                ->where('role_id', 3) // Khusus Siswa
+                ->orderBy('xp', 'desc')
+                ->orderBy('level', 'desc')
+                ->orderBy('id', 'asc')
+                ->limit(50)
+                ->get(['id', 'name', 'xp', 'level', 'created_at']);
+        }
+
+        $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
+        $totalStudents = Schema::hasTable('users') ? DB::table('users')->where('role_id', 3)->count() : 0;
+
+        return view('public.leaderboard', compact('settings', 'topStudents', 'totalSubmissions', 'totalStudents'));
+    }
 }
