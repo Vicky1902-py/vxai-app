@@ -79,15 +79,54 @@ class PublicController extends Controller
     {
         $settings = $this->getSettings();
         $user = Auth::user();
+        $searchQuery = trim((string) $request->query('nama', ''));
 
-        // Nama penerima sertifikat (dari akun login atau parameter input)
-        $studentName = $request->query('nama') 
-            ?? ($user ? $user->name : 'Siswa Pembelajar VxAI');
+        $studentName = $searchQuery ?: ($user ? $user->name : 'Siswa Pembelajar VxAI');
+        $completedCount = 0;
+        $totalChallenges = 10;
+        $isQualified = false;
+        $verifiedUser = null;
+
+        if (Schema::hasTable('coding_submissions')) {
+            if ($user && empty($searchQuery)) {
+                // Siswa sedang login melihat sertifikat miliknya sendiri
+                $verifiedUser = $user;
+                $studentName = $user->name;
+                $completedCount = DB::table('coding_submissions')
+                    ->where('user_id', $user->id)
+                    ->whereNotNull('challenge_id')
+                    ->where('challenge_id', '!=', 'eksplorasi_bebas')
+                    ->distinct('challenge_id')
+                    ->count('challenge_id');
+                $isQualified = ($completedCount >= $totalChallenges);
+            } elseif (!empty($studentName) && $studentName !== 'Siswa Pembelajar VxAI') {
+                // Pencarian verifikasi publik berdasarkan nama / email
+                $matchedUser = DB::table('users')
+                    ->where('name', 'LIKE', $studentName)
+                    ->orWhere('email', $studentName)
+                    ->first();
+
+                if ($matchedUser) {
+                    $verifiedUser = $matchedUser;
+                    $studentName = $matchedUser->name;
+                    $completedCount = DB::table('coding_submissions')
+                        ->where('user_id', $matchedUser->id)
+                        ->whereNotNull('challenge_id')
+                        ->where('challenge_id', '!=', 'eksplorasi_bebas')
+                        ->distinct('challenge_id')
+                        ->count('challenge_id');
+                    $isQualified = ($completedCount >= $totalChallenges);
+                }
+            }
+        }
 
         $certId = 'VXAI-CERT-' . strtoupper(substr(md5($studentName . '2026'), 0, 8));
         $issueDate = now()->translatedFormat('d F Y') ?? now()->format('d M Y');
 
-        return view('public.certificate', compact('settings', 'user', 'studentName', 'certId', 'issueDate'));
+        return view('public.certificate', compact(
+            'settings', 'user', 'studentName', 'certId', 'issueDate',
+            'isQualified', 'completedCount', 'totalChallenges', 'verifiedUser'
+        ));
     }
 
     // Halaman Playground Publik
@@ -331,9 +370,17 @@ class PublicController extends Controller
             $challengeTitle = trim((string) $request->input('challenge_title', ''));
             $isOverwrite = $request->boolean('overwrite');
 
-            // Cocokkan slug / title jika salah satunya kosong
-            if (empty($challengeId) && !empty($challengeTitle) && $challengeTitle !== 'Eksplorasi Bebas') {
-                $allChallenges = PlaygroundChallengeService::getActiveChallenges();
+            // Normalisasi Eksplorasi Bebas & Validasi ID Tantangan Resmi
+            $allChallenges = PlaygroundChallengeService::getActiveChallenges();
+            $validChallengeIds = array_column($allChallenges, 'id');
+
+            $isFreeExploration = (empty($challengeId) && (empty($challengeTitle) || $challengeTitle === 'Eksplorasi Bebas'))
+                || $challengeId === 'eksplorasi_bebas';
+
+            if ($isFreeExploration) {
+                $challengeId = 'eksplorasi_bebas';
+                $challengeTitle = 'Eksplorasi Bebas';
+            } elseif (empty($challengeId) && !empty($challengeTitle)) {
                 foreach ($allChallenges as $c) {
                     if (trim($c['title']) === $challengeTitle) {
                         $challengeId = $c['id'];
@@ -360,23 +407,14 @@ class PublicController extends Controller
 
                 // DETEKSI PENDOBELAN TUGAS OLEH SISWA:
                 // Cek apakah siswa ini sudah pernah mengirim tugas untuk challenge ini sebelumnya
-                $existingSubmission = null;
-                if (!empty($challengeId) || (!empty($challengeTitle) && $challengeTitle !== 'Eksplorasi Bebas')) {
-                    $existingQuery = DB::table('coding_submissions')->where('user_id', $userId);
-                    $existingQuery->where(function($q) use ($challengeId, $challengeTitle) {
-                        if (!empty($challengeId)) {
-                            $q->where('challenge_id', $challengeId);
-                        }
-                        if (!empty($challengeTitle)) {
-                            if (!empty($challengeId)) {
-                                $q->orWhere('challenge_title', $challengeTitle);
-                            } else {
-                                $q->where('challenge_title', $challengeTitle);
-                            }
-                        }
-                    });
-                    $existingSubmission = $existingQuery->first();
-                }
+                $existingQuery = DB::table('coding_submissions')->where('user_id', $userId);
+                $existingQuery->where(function($q) use ($challengeId, $challengeTitle) {
+                    $q->where('challenge_id', $challengeId);
+                    if (!empty($challengeTitle)) {
+                        $q->orWhere('challenge_title', $challengeTitle);
+                    }
+                });
+                $existingSubmission = $existingQuery->first();
 
                 // JIKA SUDAH PERNAH DIKERJAKAN & SISWA BELUM MEMILIH OVERWRITE:
                 if ($existingSubmission && !$isOverwrite) {
@@ -416,19 +454,24 @@ class PublicController extends Controller
 
                 } else {
                     // SKENARIO B: PERTAMA KALI MENYELESAIKAN LEVEL INI
-                    $xpEarned = 25;
+                    // Poin XP hanya diberikan untuk tantangan resmi yang sah atau eksplorasi pertama
+                    $isValidChallenge = in_array($challengeId, $validChallengeIds, true) || $challengeId === 'eksplorasi_bebas';
+                    $xpEarned = $isValidChallenge ? 25 : 0;
+
                     $currentXp = (int) ($user->xp ?? 0);
                     $newXp = $currentXp + $xpEarned;
                     $newLevel = (int) floor($newXp / 100) + 1;
 
-                    try {
-                        DB::table('users')->where('id', $userId)->update([
-                            'xp' => $newXp,
-                            'level' => $newLevel,
-                            'updated_at' => now(),
-                        ]);
-                    } catch (\Throwable $xpErr) {
-                        \Illuminate\Support\Facades\Log::warning('Gagal update XP siswa: ' . $xpErr->getMessage());
+                    if ($xpEarned > 0) {
+                        try {
+                            DB::table('users')->where('id', $userId)->update([
+                                'xp' => $newXp,
+                                'level' => $newLevel,
+                                'updated_at' => now(),
+                            ]);
+                        } catch (\Throwable $xpErr) {
+                            \Illuminate\Support\Facades\Log::warning('Gagal update XP siswa: ' . $xpErr->getMessage());
+                        }
                     }
 
                     $insertData = [

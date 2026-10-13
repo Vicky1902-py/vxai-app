@@ -480,6 +480,10 @@ class AdminController extends Controller
             'password' => 'nullable|string|min:6',
         ]);
 
+        if (Auth::id() == $id && (int) $request->role_id !== 1) {
+            return redirect()->back()->withErrors(['error' => 'Anda tidak dapat mengubah peran akun Anda sendiri menjadi non-admin agar tidak terkunci keluar dari sistem!']);
+        }
+
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
@@ -524,6 +528,11 @@ class AdminController extends Controller
     {
         $this->ensureTablesExist();
 
+        $request->validate([
+            'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'app_favicon' => 'nullable|mimes:jpeg,png,jpg,gif,svg,ico,webp|max:1024',
+        ]);
+
         $textSettings = $request->except(['_token', 'app_logo', 'app_favicon']);
         foreach ($textSettings as $key => $value) {
             DB::table('global_settings')->updateOrInsert(
@@ -537,7 +546,8 @@ class AdminController extends Controller
 
         if ($request->hasFile('app_logo')) {
             $logo = $request->file('app_logo');
-            $logoName = 'logo_' . time() . '.' . $logo->getClientOriginalExtension();
+            $logoExt = strtolower($logo->getClientOriginalExtension());
+            $logoName = 'logo_' . time() . '.' . $logoExt;
             $logo->move(public_path('images'), $logoName);
             
             DB::table('global_settings')->updateOrInsert(
@@ -548,7 +558,8 @@ class AdminController extends Controller
 
         if ($request->hasFile('app_favicon')) {
             $favicon = $request->file('app_favicon');
-            $faviconName = 'favicon_' . time() . '.' . $favicon->getClientOriginalExtension();
+            $faviconExt = strtolower($favicon->getClientOriginalExtension());
+            $faviconName = 'favicon_' . time() . '.' . $faviconExt;
             $favicon->move(public_path('images'), $faviconName);
             
             DB::table('global_settings')->updateOrInsert(

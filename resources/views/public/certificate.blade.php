@@ -14,14 +14,41 @@
 @endpush
 
 @section('content')
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-6">
+
+    @if(!$isQualified)
+    <!-- Banner Pemberitahuan Belum Lulus / Pratinjau -->
+    <div class="no-print bg-amber-50 border border-amber-200/80 p-4 sm:p-5 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm text-amber-950">
+        <div class="flex items-center gap-3.5 text-left">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center text-xl shrink-0">
+                ⚠️
+            </div>
+            <div>
+                <h4 class="font-extrabold text-sm text-amber-900">Mode Pratinjau — Belum Memenuhi Syarat Kelulusan Resmi</h4>
+                <p class="text-xs text-amber-800/90 mt-0.5 leading-relaxed">
+                    Siswa baru menyelesaikan <span class="font-bold underline decoration-amber-400">{{ $completedCount }} dari {{ $totalChallenges }} Level Tantangan Koding</span>. Selesaikan seluruh level tantangan di Playground untuk membuka sertifikat resmi berpredikat Sangat Memuaskan.
+                </p>
+            </div>
+        </div>
+        <a href="{{ route('public.playground') }}" class="shrink-0 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-amber-600/20 flex items-center gap-1.5">
+            <span>⚡</span>
+            <span>Lanjutkan di Playground</span>
+        </a>
+    </div>
+    @endif
 
     <!-- Action Bar Atas (Cetak & Bagikan) -->
     <div class="no-print bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/90 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4">
         <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-1">
-                <span>✓ Status: Terverifikasi Resmi</span>
-            </div>
+            @if($isQualified)
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold mb-1">
+                    <span>✓ Status: Terverifikasi Resmi (10/10 Level Tuntas)</span>
+                </div>
+            @else
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-1">
+                    <span>⏳ Status: Pratinjau Progres ({{ $completedCount }}/{{ $totalChallenges }} Level)</span>
+                </div>
+            @endif
             <h1 class="text-xl font-black text-slate-900">Sertifikat Kelulusan 10 Level Koding</h1>
             <p class="text-xs text-slate-500">ID Sertifikat: <code class="font-mono font-bold text-blue-600">{{ $certId }}</code></p>
         </div>
@@ -31,9 +58,11 @@
                 <span>🖨️</span> <span>Cetak / Simpan PDF</span>
             </button>
 
+            @if($isQualified)
             <a href="https://api.whatsapp.com/send?text={{ urlencode('Saya telah menyelesaikan 10 Level Tantangan Koding di VxAI Coding Lab! Cek sertifikat saya di: ' . url()->current()) }}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-1.5 shadow-md shadow-emerald-500/20">
                 <span>📱</span> <span>Bagikan ke WhatsApp</span>
             </a>
+            @endif
 
             <a href="{{ route('public.playground') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-xs transition">
                 ⚡ Ke Playground
@@ -48,6 +77,15 @@
         <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none font-black text-[220px]">
             VxAI
         </div>
+
+        @if(!$isQualified)
+        <!-- Diagonal Watermark saat belum lulus -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-20">
+            <div class="transform -rotate-12 border-4 border-dashed border-red-500/30 text-red-500/20 font-black text-2xl sm:text-4xl tracking-widest uppercase px-8 py-4 rounded-3xl">
+                PROSES BELAJAR • {{ $completedCount }}/{{ $totalChallenges }} LEVEL SELESAI
+            </div>
+        </div>
+        @endif
 
         <!-- Frame Sudut Emas / Aksen -->
         <div class="absolute top-4 left-4 w-12 h-12 border-t-4 border-l-4 border-amber-500 pointer-events-none"></div>
@@ -85,7 +123,11 @@
 
             <!-- Deskripsi Kelulusan -->
             <p class="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                @if($isQualified)
                 Telah berhasil menyelesaikan secara tuntas <strong>10 Level Tantangan Pemrograman Web</strong> (Fondasi Dokumen HTML5 Semantik, Desain Tata Letak Modern CSS3 Flexbox/Grid, Manipulasi Logika DOM JavaScript Interaktif, dan Proyek Pembuatan Aplikasi Mini Game) dengan predikat <strong>Sangat Memuaskan</strong>.
+                @else
+                Telah berpartisipasi dan sedang menyelesaikan jenjang <strong>10 Level Tantangan Pemrograman Web</strong> di VxAI Coding Lab (Telah menyelesaikan <strong>{{ $completedCount }} dari {{ $totalChallenges }} Level</strong> tantangan resmi).
+                @endif
             </p>
 
             <!-- Tanda Tangan & Kredensial -->
@@ -100,9 +142,15 @@
 
                 <div>
                     <!-- Cap Digital Stempel -->
+                    @if($isQualified)
                     <div class="inline-block px-3 py-1 rounded-lg border border-blue-300 text-blue-700 font-mono text-[10px] font-bold mb-2 bg-blue-50">
                         VERIFIED • {{ $certId }}
                     </div>
+                    @else
+                    <div class="inline-block px-3 py-1 rounded-lg border border-amber-300 text-amber-700 font-mono text-[10px] font-bold mb-2 bg-amber-50">
+                        PROGRES • {{ $completedCount }}/{{ $totalChallenges }} SELESAI
+                    </div>
+                    @endif
                     <div class="border-t border-slate-300 pt-1">
                         <span class="font-bold text-xs text-slate-900 block font-serif">Vicky Koroh</span>
                         <span class="text-[10px] text-slate-500 block">Lead Educator & Developer</span>
@@ -112,7 +160,7 @@
 
             <!-- Catatan Kaki Verifikasi -->
             <div class="pt-6 text-[10px] text-slate-400">
-                Sertifikat ini diotentikasi secara digital oleh ekosistem VxAI Coding Lab • Verifikasi mandiri: <span class="font-mono text-slate-500">{{ url()->current() }}</span>
+                Sertifikat ini diotentikasi secara digital oleh ekosistem {{ $settings['app_name'] ?? 'VxAI Coding Lab' }} • Verifikasi mandiri: <span class="font-mono text-slate-500">{{ url()->current() }}</span>
             </div>
 
         </div>

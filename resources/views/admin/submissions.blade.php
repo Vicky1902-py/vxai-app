@@ -85,7 +85,7 @@
 
                     <!-- Status & Nilai -->
                     <td class="px-6 py-4 whitespace-nowrap">
-                        @if ($sub->score > 0)
+                        @if ($sub->score > 0 || !is_null($sub->feedback))
                             <span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                                 Skor: {{ $sub->score }} / 100
                             </span>
@@ -117,7 +117,11 @@
                             </button>
                             
                             <button type="button" 
-                                    onclick="bukaModalHapusSubmisi('{{ $sub->id }}', '{{ addslashes($sub->student_name) }}', '{{ addslashes($sub->challenge_title ?? 'Latihan Koding') }}', '{{ route('admin.submissions.delete', $sub->id) }}')" 
+                                    onclick="bukaModalHapusSubmisi(this)"
+                                    data-id="{{ $sub->id }}"
+                                    data-name="{{ $sub->student_name }}"
+                                    data-challenge="{{ $sub->challenge_title ?? 'Latihan Koding' }}"
+                                    data-url="{{ route('admin.submissions.delete', $sub->id) }}"
                                     class="inline-flex items-center gap-1 text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 px-3 py-2 rounded-xl text-xs font-bold transition duration-150 border border-rose-200 hover:border-rose-600 shadow-sm active:scale-95"
                                     title="Hapus hasil koding & reset level pada akun siswa">
                                 <span>🗑️</span> <span>Hapus</span>
@@ -442,7 +446,8 @@
     }
 
     function openPreviewInNewTab() {
-        const frameDoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Pratinjau Tugas Siswa</title><style>${currentRawCss}</style></head><body>${currentRawHtml}<script>${currentRawJs}<\/script></body></html>`;
+        const cspMeta = `<meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts allow-modals; default-src 'self' data: https: 'unsafe-inline'; connect-src 'none';">`;
+        const frameDoc = `<!DOCTYPE html><html><head><meta charset="utf-8">${cspMeta}<title>Pratinjau Tugas Siswa</title><style>${currentRawCss}</style></head><body>${currentRawHtml}<script>${currentRawJs}<\/script></body></html>`;
         const blob = new Blob([frameDoc], { type: 'text/html' });
         const url = URL.createObjectURL(blob);
         window.open(url, '_blank');
@@ -538,9 +543,14 @@
         document.getElementById('modal-kode').classList.add('hidden');
     }
 
-    function bukaModalHapusSubmisi(id, name, challenge, deleteUrl) {
-        document.getElementById('hapus-nama-siswa').textContent = name;
-        document.getElementById('hapus-nama-latihan').textContent = challenge;
+    function bukaModalHapusSubmisi(elOrId, name, challenge, deleteUrl) {
+        if (typeof elOrId === 'object' && elOrId !== null && elOrId.getAttribute) {
+            name = elOrId.getAttribute('data-name');
+            challenge = elOrId.getAttribute('data-challenge');
+            deleteUrl = elOrId.getAttribute('data-url');
+        }
+        document.getElementById('hapus-nama-siswa').textContent = name || 'Siswa';
+        document.getElementById('hapus-nama-latihan').textContent = challenge || 'Latihan Koding';
         document.getElementById('form-hapus-submisi').action = deleteUrl;
         document.getElementById('modal-konfirmasi-hapus').classList.remove('hidden');
     }

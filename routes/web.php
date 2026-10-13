@@ -41,6 +41,20 @@ Route::get('/berita', [PublicController::class, 'newsIndex'])->name('public.news
 Route::get('/berita/og-image/{slug}.jpg', [PublicController::class, 'articleOgImage'])->name('public.news.og-image');
 Route::get('/berita/{slug}', [PublicController::class, 'newsDetail'])->name('public.news.detail');
 
+// Layanan Publik: Portal Pengusulan Model C Guru ASN (Google AdSense Enabled)
+Route::get('/public/modelc', function() {
+    $filePath = public_path('modelc/index.php');
+    if (file_exists($filePath)) {
+        ob_start();
+        include $filePath;
+        return response(ob_get_clean());
+    }
+    abort(404);
+})->name('public.modelc');
+Route::get('/modelc', function() {
+    return redirect('/public/modelc', 301);
+})->name('modelc');
+
 // Halaman Legalitas Wajib Google AdSense
 Route::get('/privacy-policy', [PublicController::class, 'privacyPolicy'])->name('privacy');
 Route::get('/terms', [PublicController::class, 'terms'])->name('terms');
@@ -64,7 +78,7 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'authenticate'])->name('login.post');
+Route::post('/login', [AuthController::class, 'authenticate'])->middleware('throttle:5,1')->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*

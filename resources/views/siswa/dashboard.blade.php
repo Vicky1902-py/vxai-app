@@ -211,11 +211,14 @@
 
                             <!-- Nilai & Status Badge -->
                             <div class="flex items-center gap-3 pt-1">
-                                @if ($sub->score > 0)
+                                @if ($sub->score > 0 || !is_null($sub->feedback))
                                     @php
                                         $badgeBg = 'bg-emerald-950/80 text-emerald-300 border-emerald-700';
                                         $labelGrade = 'Sangat Baik';
-                                        if ($sub->score < 75) {
+                                        if ($sub->score < 60) {
+                                            $badgeBg = 'bg-rose-950/80 text-rose-300 border-rose-700';
+                                            $labelGrade = 'Perlu Perbaikan';
+                                        } elseif ($sub->score < 75) {
                                             $badgeBg = 'bg-amber-950/80 text-amber-300 border-amber-700';
                                             $labelGrade = 'Cukup Baik';
                                         } elseif ($sub->score < 85) {
@@ -447,7 +450,7 @@
 
             // Info nilai & feedback di footer
             let gradeHtml = '';
-            if (score > 0) {
+            if (score > 0 || feedback) {
                 gradeHtml = `<span class="text-emerald-400 font-black text-sm">🎯 Nilai: ${score}/100</span>`;
                 if (feedback) {
                     gradeHtml += `<span class="text-slate-300 ml-2 bg-slate-850 px-3 py-1 rounded-xl border border-slate-700">💬 Catatan Guru: "${feedback}"</span>`;
@@ -477,7 +480,8 @@
         }
 
         function openSiswaPreviewInNewTab() {
-            const doc = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Hasil Koding Siswa</title><style>${modalRawCss}</style></head><body>${modalRawHtml}<script>${modalRawJs}<\/script></body></html>`;
+            const cspMeta = `<meta http-equiv="Content-Security-Policy" content="sandbox allow-scripts allow-modals; default-src 'self' data: https: 'unsafe-inline'; connect-src 'none';">`;
+            const doc = `<!DOCTYPE html><html><head><meta charset="utf-8">${cspMeta}<title>Hasil Koding Siswa</title><style>${modalRawCss}</style></head><body>${modalRawHtml}<script>${modalRawJs}<\/script></body></html>`;
             const blob = new Blob([doc], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             window.open(url, '_blank');

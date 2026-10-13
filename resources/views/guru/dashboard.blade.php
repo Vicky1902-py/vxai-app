@@ -122,7 +122,7 @@
                                     {{ \Carbon\Carbon::parse($sub->created_at)->diffForHumans() }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if($sub->score > 0)
+                                    @if($sub->score > 0 || !is_null($sub->feedback))
                                         <span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                                             Skor: {{ $sub->score }}/100
                                         </span>
@@ -146,7 +146,10 @@
                                             <span>🔍</span> <span>Periksa & Nilai</span>
                                         </button>
                                         <button type="button" 
-                                                onclick="bukaModalHapusSubmisiGuru('{{ $sub->id }}', '{{ addslashes($sub->student_name) }}', '{{ route('guru.submissions.delete', $sub->id) }}')" 
+                                                onclick="bukaModalHapusSubmisiGuru(this)" 
+                                                data-id="{{ $sub->id }}"
+                                                data-name="{{ $sub->student_name }}"
+                                                data-url="{{ route('guru.submissions.delete', $sub->id) }}"
                                                 class="text-rose-600 hover:text-white bg-rose-50 hover:bg-rose-600 border border-rose-200 hover:border-rose-600 font-bold text-xs px-3 py-2 rounded-xl transition duration-150 inline-flex items-center gap-1 active:scale-95"
                                                 title="Hapus tugas siswa & sesuaikan level">
                                             <span>🗑️</span> <span>Hapus</span>
@@ -323,8 +326,12 @@
         let currentCss = '';
         let currentJs = '';
 
-        function bukaModalHapusSubmisiGuru(id, name, deleteUrl) {
-            document.getElementById('guru-hapus-nama-siswa').textContent = name;
+        function bukaModalHapusSubmisiGuru(elOrId, name, deleteUrl) {
+            if (typeof elOrId === 'object' && elOrId !== null && elOrId.getAttribute) {
+                name = elOrId.getAttribute('data-name');
+                deleteUrl = elOrId.getAttribute('data-url');
+            }
+            document.getElementById('guru-hapus-nama-siswa').textContent = name || 'Siswa';
             document.getElementById('form-guru-hapus-submisi').action = deleteUrl;
             document.getElementById('modal-guru-konfirmasi-hapus').classList.remove('hidden');
         }

@@ -27,9 +27,12 @@ class StudentController extends Controller
                 ->get();
 
             $totalSubmissions = $mySubmissions->count();
-            $graded = $mySubmissions->where('score', '>', 0);
+            $graded = $mySubmissions->filter(function($sub) {
+                return ($sub->score > 0 || !is_null($sub->feedback));
+            });
             $gradedSubmissions = $graded->count();
-            $averageScore = $gradedSubmissions > 0 ? round($graded->avg('score'), 1) : 0;
+            $scored = $mySubmissions->where('score', '>', 0);
+            $averageScore = $scored->count() > 0 ? round($scored->avg('score'), 1) : 0;
         }
 
         return view('siswa.dashboard', compact('user', 'settings', 'mySubmissions', 'totalSubmissions', 'gradedSubmissions', 'averageScore'));

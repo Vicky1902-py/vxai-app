@@ -21,10 +21,13 @@ class TeacherController extends Controller
         $settings = $this->getSettings();
         
         $totalSiswa = Schema::hasTable('users') ? DB::table('users')->where('role_id', 3)->count() : 0;
-        $totalSubmissions = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->count() : 0;
-        $gradedCount = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->where('score', '>', 0)->count() : 0;
+        $gradedCount = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->where(function($q) {
+            $q->where('score', '>', 0)->orWhereNotNull('feedback');
+        })->count() : 0;
         $ungradedCount = Schema::hasTable('coding_submissions') ? DB::table('coding_submissions')->where(function($q) {
-            $q->where('score', '<=', 0)->orWhereNull('score');
+            $q->where(function($sq) {
+                $sq->where('score', '<=', 0)->orWhereNull('score');
+            })->whereNull('feedback');
         })->count() : 0;
 
         // 10 Submisi Terbaru (Dengan identitas siswa / tamu ber-IP)

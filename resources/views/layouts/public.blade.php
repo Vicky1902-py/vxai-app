@@ -284,6 +284,7 @@
                         <li><a href="{{ route('public.certificate') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📜</span> Sertifikat 10 Level</a></li>
                         <li><a href="{{ route('public.author') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>👨‍🏫</span> Profil Penulis (E-E-A-T)</a></li>
                         <li><a href="{{ route('public.news') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>📰</span> Warta & Tips Teknologi</a></li>
+                        <li><a href="{{ url('/public/modelc') }}" class="hover:text-blue-400 transition flex items-center gap-1.5"><span>🏛️</span> Layanan Pengusulan Model C ASN</a></li>
                     </ul>
                 </div>
 
