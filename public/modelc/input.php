@@ -4,24 +4,35 @@ require 'koneksi.php';
 $pesan = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $tanggal = $_POST['tanggal'];
-    $as = (int)$_POST['posisi_as'];
-    $kop = (int)$_POST['posisi_kop'];
-    $kepala = (int)$_POST['posisi_kepala'];
-    $ekor = (int)$_POST['posisi_ekor'];
+    $tanggal = $_POST['tanggal'] ?? '';
+    $as = (int)($_POST['posisi_as'] ?? 0);
+    $kop = (int)($_POST['posisi_kop'] ?? 0);
+    $kepala = (int)($_POST['posisi_kepala'] ?? 0);
+    $ekor = (int)($_POST['posisi_ekor'] ?? 0);
 
-    $sql = "INSERT INTO keluaran_toto (tanggal, posisi_as, posisi_kop, posisi_kepala, posisi_ekor) 
-            VALUES ('$tanggal', $as, $kop, $kepala, $ekor)";
-
-    if ($conn->query($sql) === TRUE) {
-        $pesan = '<div class="bg-emerald-500/10 border border-emerald-500 text-emerald-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
-                    <svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    <strong>Data untuk '.$tanggal.' berhasil disimpan.</strong>
-                  </div>';
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $tanggal)) {
+        $stmt = $conn->prepare("INSERT INTO keluaran_toto (tanggal, posisi_as, posisi_kop, posisi_kepala, posisi_ekor) VALUES (?, ?, ?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("siiii", $tanggal, $as, $kop, $kepala, $ekor);
+            if ($stmt->execute()) {
+                $pesan = '<div class="bg-emerald-500/10 border border-emerald-500 text-emerald-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <strong>Data untuk ' . htmlspecialchars($tanggal, ENT_QUOTES, 'UTF-8') . ' berhasil disimpan.</strong>
+                          </div>';
+            } else {
+                $pesan = '<div class="bg-red-500/10 border border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
+                            <strong>Gagal menyimpan data ke database.</strong>
+                          </div>';
+            }
+            $stmt->close();
+        } else {
+            $pesan = '<div class="bg-red-500/10 border border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
+                        <strong>Terjadi kesalahan sistem internal.</strong>
+                      </div>';
+        }
     } else {
         $pesan = '<div class="bg-red-500/10 border border-red-500 text-red-700 p-4 mb-6 rounded-lg shadow-sm flex items-center">
-                    <svg class="w-6 h-6 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <strong>Error: ' . $conn->error . '</strong>
+                    <strong>Format tanggal tidak valid.</strong>
                   </div>';
     }
 }

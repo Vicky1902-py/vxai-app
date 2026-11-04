@@ -1,0 +1,31 @@
+# ==============================================================================
+# Proteksi Folder Images vxai.online dari Eksekusi PHP & Web Shell
+# File ini mengisolasi folder images agar HANYA file gambar statis yang bisa diakses.
+# ==============================================================================
+
+# 1. Larang akses/eksekusi ke semua variasi skrip eksekusi (PHP, CGI, Python, Shell, dll.)
+<FilesMatch "(?i)\.(php|phtml|php3|php4|php5|php7|php8|phps|phar|inc|pl|py|cgi|sh|bash|exe|asp|aspx|jsp)$">
+    Order Deny,Allow
+    Deny from all
+    Require all denied
+</FilesMatch>
+
+# 2. Matikan PHP Engine jika server menggunakan mod_php
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# 3. Cegah eksekusi skrip sebagai handler
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .inc
+    RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar .inc
+</IfModule>
+
+# 4. Matikan Directory Browsing / Indexing
+Options -Indexes -ExecCGI

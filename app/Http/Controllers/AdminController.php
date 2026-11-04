@@ -546,7 +546,9 @@ class AdminController extends Controller
 
         if ($request->hasFile('app_logo')) {
             $logo = $request->file('app_logo');
-            $logoExt = strtolower($logo->getClientOriginalExtension());
+            $allowedLogoExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            $detectedExt = strtolower($logo->extension() ?: $logo->getClientOriginalExtension());
+            $logoExt = in_array($detectedExt, $allowedLogoExts, true) ? $detectedExt : 'png';
             $logoName = 'logo_' . time() . '.' . $logoExt;
             $logo->move(public_path('images'), $logoName);
             
@@ -558,7 +560,9 @@ class AdminController extends Controller
 
         if ($request->hasFile('app_favicon')) {
             $favicon = $request->file('app_favicon');
-            $faviconExt = strtolower($favicon->getClientOriginalExtension());
+            $allowedFaviconExts = ['ico', 'png', 'jpg', 'jpeg', 'webp', 'gif'];
+            $detectedExt = strtolower($favicon->extension() ?: $favicon->getClientOriginalExtension());
+            $faviconExt = in_array($detectedExt, $allowedFaviconExts, true) ? $detectedExt : 'ico';
             $faviconName = 'favicon_' . time() . '.' . $faviconExt;
             $favicon->move(public_path('images'), $faviconName);
             
@@ -1215,8 +1219,10 @@ class AdminController extends Controller
         }
 
         if (!$saved) {
-            $fallbackExt = strtolower($file->getClientOriginalExtension());
-            $filename = 'thumb_' . time() . '_' . Str::random(8) . ($fallbackExt ? '.' . $fallbackExt : '.jpg');
+            $allowedImgExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            $detectedExt = strtolower($file->extension() ?: $file->getClientOriginalExtension());
+            $fallbackExt = in_array($detectedExt, $allowedImgExts, true) ? $detectedExt : 'jpg';
+            $filename = 'thumb_' . time() . '_' . Str::random(8) . '.' . $fallbackExt;
             $file->move($uploadDir, $filename);
         }
 
