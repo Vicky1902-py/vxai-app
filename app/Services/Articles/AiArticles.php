@@ -386,7 +386,7 @@ demo.launch(share=True)</code></pre>
 <h2>7. Kesimpulan</h2>
 <p>Kehadiran arsitektur LTX-2 membuktikan bahwa teknologi pembuatan video AI berkualitas bioskop tidak lagi menjadi monopoli studio animasi raksasa dengan biaya fantastis. Berbekal Google Colab dan GPU NVIDIA A100, para pendidik, siswa kejuruan, dan kreator konten independen di Indonesia kini memiliki studio produksi film digital di genggaman tangan.</p>
 <p>Selamat bereksperimen, bebaskan imajinasi kreatif Anda, dan mari manfaatkan teknologi AI ini untuk memajukan inovasi digital Nusantara!</p>',
-                'thumbnail_url' => 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80',
+                'thumbnail_url' => '/images/ltx2_tutorial_thumbnail.jpg',
                 'author_id' => 1,
                 'author_name' => 'Vicky Koroh',
                 'views_count' => 0,
