@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Schema;
 class ArticleContentService
 {
     // Naikkan versi ini setiap kali konten artikel bawaan diperbarui
-    public const VERSION = '2026_10_08_panduan_lengkap_siswa_playground_v1';
+    public const VERSION = '2026_11_04_tutorial_lengkap_ltx2_video_ai_colab_v1';
 
     /**
      * Dapatkan semua artikel default komprehensif untuk kepatuhan penuh Google AdSense E-E-A-T
